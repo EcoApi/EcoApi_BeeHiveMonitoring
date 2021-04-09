@@ -4,9 +4,15 @@ description
 
 ## Features
 
-- function A
-- function B
-- ....
+- External 1 wire sensor (ex: DS18B20)
+- External i2c sensor (ex: as6200, si7021, shtxx, ...)
+- Microphone analog with max9814 
+- Weight with load scale using hx711
+- BlackPill or BluePill uC board
+- Motion detection using tilt vibration sensor
+- Internal i2c sensor (ex: bme180, bme280, ...)
+- Lora using rfm95w 
+- Powered by 18650 battery
 
 ## Hardware
 
