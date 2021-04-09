@@ -1,0 +1,10 @@
+(sym_lib_table
+  (lib (name YAAJ_BlackPill_SWD_Breakout)(type Legacy)(uri /home/rodrigue/Téléchargements/Kicad-STM32-master/Symbols/YAAJ_BlackPill_SWD_Breakout.lib)(options "")(descr ""))
+  (lib (name RF-LORA-868-SO)(type Legacy)(uri /home/rodrigue/Téléchargements/RF-LORA-868-SO/RF-LORA-868-SO.lib)(options "")(descr ""))
+  (lib (name HX711)(type Legacy)(uri /home/rodrigue/Téléchargements/HX711/HX711.lib)(options "")(descr ""))
+  (lib (name U.FL-R-SMT_01_)(type Legacy)(uri /home/rodrigue/Téléchargements/U.FL-R-SMT_01_/U.FL-R-SMT_01_.lib)(options "")(descr ""))
+  (lib (name BluePill)(type Legacy)(uri ${KIPRJMOD}/BluePill.lib)(options "")(descr ""))
+  (lib (name BluePillF4)(type Legacy)(uri /home/rodrigue/Téléchargements/STM32_Pill_Boards-master/Squonk42/KiCAD/BluePillF4.lib)(options "")(descr ""))
+  (lib (name EcoApi_pcb)(type Legacy)(uri ${KIPRJMOD}/EcoApi_pcb.lib)(options "")(descr ""))
+  (lib (name stm32f103c8t6-module-china)(type Legacy)(uri /home/rodrigue/Téléchargements/myelin-kicad-libraries-master/stm32f103c8t6-module-china.lib)(options "")(descr ""))
+)
