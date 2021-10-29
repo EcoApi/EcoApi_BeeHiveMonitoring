@@ -1,0 +1,23 @@
+#ifndef __IWATCHDOG_H__
+#define __IWATCHDOG_H__
+
+
+#include "board.h"
+
+#define WDG_TIMEOUT 32000000
+#define USE_IWDG_LL
+#define WDG_OCCURED (OK+1)
+#define WDG_NOT_OCCURED (ERROR-1)
+
+//#ifdef USE_IWDG_LL
+int32_t wdg_init(uint32_t timeout /* us */);
+void wdg_deinit(void);
+void wdg_reload(void);
+uint8_t wdg_isReset(uint8_t clear);
+int32_t wdg_getLastState(void);
+//#else
+
+//#endif
+
+
+#endif /* __IWATCHDOG_H__ */
