@@ -22,9 +22,7 @@ uploader_flags = env.get("UPLOADERFLAGS")
 #print(uploader_flags)
 #uploader_flags = [flags.replace('-d2', '-d3') for flags in uploader_flags]
 
-uploader_flags = [flags.replace('target/stm32f4x.cfg', project_dir + '/custom/stm32f4x.cfg') for flags in uploader_flags]
-
-#uploader_flags = [flags.replace('board/st_nucleo_l4.cfg', project_dir + '/custom/open-ocd_stm32l4.cfg') for flags in uploader_flags]
+uploader_flags = [flags.replace('target/stm32f4x.cfg', project_dir + '/Software/custom/stm32f4x.cfg') for flags in uploader_flags]
 
 #print(uploader_flags)
 
