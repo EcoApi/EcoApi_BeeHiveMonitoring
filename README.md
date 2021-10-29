@@ -57,5 +57,26 @@ To be define
 - plugins
 - ....
 
+### lmic debug ###
+
+in platformio.ini
+
+(1) uncomment :
+	-D LMIC_DEBUG_LEVEL=2
+	-D LMIC_ENABLE_event_logging=1
+	-D LMIC_X_DEBUG_LEVEL=1
+
+(2) replace in lmic/lmic.h :
+
+#  ifdef LMIC_DEBUG_PRINTF_FN
+#    define LMIC_X_DEBUG_PRINTF(f, ...) LMIC_DEBUG_PRINTF_FN(f, ## __VA_ARGS__)
+#  else
+#    error "LMIC_DEBUG_PRINTF_FN must be defined for LMIC_X_DEBUG_LEVEL > 0."
+#  endif
+
+by :
+
+#define LMIC_X_DEBUG_PRINTF(f, ...) LMIC_DEBUG_PRINTF(f, ## __VA_ARGS__)
+
 ### other 
 [Editor.md](https://pandao.github.io/editor.md/en.html "Editor.md")
