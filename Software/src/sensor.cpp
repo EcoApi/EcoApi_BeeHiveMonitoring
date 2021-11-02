@@ -114,7 +114,7 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
      pt_ramRet->telemetryData.contentInfo.details.vbatt || pt_ramRet->telemetryData.contentInfo.details.humidityInside ||
      pt_ramRet->telemetryData.contentInfo.details.frequency || pt_ramRet->telemetryData.contentInfo.details.gas ||
      pt_ramRet->telemetryData.contentInfo.details.temperatureInside) {
-    TRACE_CrLf("[SENSOR] data change | binfo %d, boot %d, t_out %d, h_out %d, p_out %d, w %d, vbatt %d, h_in %d, freq %d, gas %d, t_in %d", 
+    TRACE_CrLf("[SENSOR] data change, binfo %d, boot %d, t_out %d, h_out %d, p_out %d, w %d, vbatt %d, h_in %d, freq %d, gas %d, t_in %d", 
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.baseInfo,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.boot,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.temperatureOutside,

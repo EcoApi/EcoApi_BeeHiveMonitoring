@@ -47,6 +47,7 @@ typedef void (*fn_lora_event)(e_LORA_EVENT, void*);
 int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_receiveData fn_receiveData, fn_lora_event fn_event);
 int32_t lora_suspend(void);
 void lora_process(void);
+int32_t lora_getTime(void) ;
 void lora_schedule(uint32_t time);
 
 #ifdef __cplusplus

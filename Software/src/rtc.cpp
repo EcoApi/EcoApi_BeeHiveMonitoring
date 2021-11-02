@@ -24,16 +24,19 @@
 // ck_spre(1Hz) = RTCCLK(LSE) /(uwAsynchPrediv + 1)*(uwSynchPrediv + 1)
 // modify RTC_ASYNCH_PREDIV & RTC_SYNCH_PREDIV in board/<BN>/mpconfigport.h to change sub-second ticks
 // default is 3906.25 us, min is ~30.52 us (will increase Ivbat by ~500nA)
-//#if (USE_LSI == 1)
+#define USE_LSI 0
+
+#if (USE_LSI == 1)
   #define RTC_ASYNCH_PREDIV    0x7F
   #define RTC_SYNCH_PREDIV     0xF9
   //#define RTC_SYNCH_PREDIV     0x0130
-//#else
-//  #define RTC_ASYNCH_PREDIV  0x7F
-//  #define RTC_SYNCH_PREDIV   0x00FF
-//#endif
+  #define RTC_CLOCK LSI_VALUE
+#else
+  #define RTC_ASYNCH_PREDIV  0x7F
+  #define RTC_SYNCH_PREDIV   0x00FF
+  #define RTC_CLOCK LSE_VALUE
+#endif
 
-#define RTC_CLOCK LSI_VALUE
 #define RTC_CLOCK_US (((uint64_t)RTC_CLOCK << 32 ) / 1000000)
 
 /***************************************************************************************/
@@ -44,6 +47,11 @@ static RTC_HandleTypeDef RtcHandle;
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
+
+#if defined(RCC_LSE_HIGHDRIVE_MODE) || defined(RCC_LSE_LOWPOWER_MODE)
+    
+#endif
+
 
 /************************************************************************************
  *
@@ -58,7 +66,7 @@ int32_t rtc_init(void) {
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWR_EnableBkUpAccess();
 
-#if 1
+#if (USE_LSI == 1)
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_NONE;
   RCC_OscInitStruct.LSIState       = RCC_LSI_ON;
@@ -74,6 +82,17 @@ int32_t rtc_init(void) {
     return ERROR;
   }
 #else
+#if defined(RCC_LSE_HIGHDRIVE_MODE)
+  /* do not used RCC_LSE_LOWPOWER_MODE because lse wont start !!! */
+  HAL_RCCEx_SelectLSEMode(RCC_LSE_HIGHDRIVE_MODE);
+#else
+  //RCC_LSEDRIVE_LOW,
+  //RCC_LSEDRIVE_MEDIUMLOW,
+  //RCC_LSEDRIVE_MEDIUMHIGH,
+  //RCC_LSEDRIVE_HIGH
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);
+#endif
+
   RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;
@@ -138,6 +157,9 @@ int32_t rtc_init(void) {
     return ERROR;
   }
 #endif
+
+  //HAL_RTCEx_SetCalibrationOutPut(&RtcHandle, RTC_CALIBOUTPUT_1HZ);
+  //HAL_RTCEx_SetCalibrationOutPut(&RtcHandle, RTC_CALIBOUTPUT_512HZ);
 
   return OK;
 }
@@ -241,7 +263,7 @@ uint32_t rtc_read(void) {
     timeinfo.tm_hour = timeStruct.Hours;
     timeinfo.tm_min  = timeStruct.Minutes;
     timeinfo.tm_sec  = timeStruct.Seconds;
- 
+
     if (_rtc_maketime(&timeinfo, &timestamp, RTC_4_YEAR_LEAP_YEAR_SUPPORT) == false) {
       return 0;
     }

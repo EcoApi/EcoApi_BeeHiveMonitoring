@@ -21,6 +21,7 @@
 #include "ramret.h"
 #include "sensor.h"
 #include "lora.h"
+#include "wdg.h"
 
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
@@ -39,6 +40,9 @@
 static bool b_actionButtonPressed = false;
 static const uint32_t TX_INTERVAL = 60;
 static t_RamRet t_ramRet;
+static int32_t startTime = 0;
+
+//IWatchdogClass watchdog = IWatchdogClass();
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
@@ -59,6 +63,10 @@ static void actionButtonHandler(void);
 void setup(void) {
   system_clockConfig_16MHz(); // reduce cpu consumption
 
+  //system_setBorLevel(OB_BOR_LEVEL1);
+
+  //watchdog.begin(IWDG_TIMEOUT_MAX);
+
   //pinMode(LED_BUILTIN, OUTPUT);
   pinMode(SCALE_TYPE, INPUT);
   pinMode(BTN_TARE, INPUT);
@@ -78,6 +86,7 @@ void setup(void) {
   trace_init(&t_ramRet);
 
   { //todo move in trace init function
+#if (TRACE_ENABLE == 0)
 #if 1
     if(power_isPoweredOn()) {
 #else
@@ -100,6 +109,9 @@ void setup(void) {
 
       trace_setState(b_actionButtonPressed);
     }
+#else
+    trace_setState(TRUE);
+#endif
 
     Serial.setTx(UART1_TX);
     Serial.setRx(UART1_RX);
@@ -112,16 +124,20 @@ void setup(void) {
   TRACE_CrLf("[BOOT] EcoApi BeeHive Monitor [hw %d, sw %d]", HW_VERSION, SW_REVISION);
   TRACE_CrLf("[BOOT] tx freq %d, cpu uuid %08X%08X%08X", TX_INTERVAL, STM32_UUID[0], STM32_UUID[1], STM32_UUID[2]);
 
-  //https://github.com/stm32duino/Arduino_Core_STM32/tree/main/libraries/IWatchdog
-  
+  /*if(!watchdog.isEnabled()) {
+    TRACE_CrLf("[WDG] init ko");
+  } else {
+    TRACE_CrLf("[WDG] init ok");
+  } */
+
   if(powerInit == STANDBY_RESUMED) {
     TRACE_CrLf("[POWER] resume standby");
   } else if(powerInit != OK) {
     TRACE_CrLf("[POWER] init ko");
   }
 
-  //if wdg
-  t_ramRet.boot++;
+  //if(power_isWatchdogReset())
+  //  t_ramRet.boot++;
 
   power_traceState();
 
@@ -133,9 +149,18 @@ void setup(void) {
   if(rtcStart != OK) {
     TRACE_CrLf("[RTC] start ko");
   } else {
-    uint32_t now = rtc_read();
-    TRACE_CrLf("[RTC] start ok, timestamp: %d, lapse %d", now, now - t_ramRet.LORA_lastSendTime);
+    startTime = rtc_read();
+    TRACE_CrLf("[RTC] start ok, timestamp: %d, sleep time %d", startTime, startTime - t_ramRet.LORA_lastSendTime);
   }
+
+#if 0 /* test rtc */ 
+  int i = 10;
+  while(i--) {
+    delay(1000);
+    TRACE_CrLf("[RTC] timestamp: %d", rtc_read());
+  };
+  power_sleep(e_SLEEP_MODE_STANDBY, e_WAKEUP_TYPE_BOTH, 60000 /*ms*/, WAKEUP_PIN);
+#endif
 
   if(ramretInit) { 
     TRACE_CrLf("[RRAM] initialized to default");
@@ -168,10 +193,6 @@ void setup(void) {
 void loop(void) {
 #if (LORA_ENABLE == 1)
   lora_process();
-#else
-  if(sensor_getData() != OK) {
-
-  }
 #endif
 }
 
@@ -185,10 +206,18 @@ void loop(void) {
 static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint8_t *p_sendSize) {
   uint16_t payloadTmp;
   int32_t ret;
-  uint8_t i;
+  uint8_t i, sendSize = 0;
 
   if((payload == NULL) || !payloadSize || (p_sendSize == NULL))
     return ERROR;
+
+#if (STANDBY_ENABLE == 0) 
+  startTime = rtc_read();
+
+  if(power_isPoweredOn() == FALSE)
+    TRACE_CrLf("################");
+  TRACE_CrLf("[RTC] send data, timestamp: %d, sleep time %d", startTime, startTime - t_ramRet.LORA_lastSendTime);
+#endif
 
   ret = sensor_getData();
 
@@ -196,75 +225,75 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
     return ret;
 
   //add content info first
-  payload[*p_sendSize++] = t_ramRet.telemetryData.contentInfo.data[0];
-  payload[*p_sendSize++] = t_ramRet.telemetryData.contentInfo.data[1];
+  payload[sendSize++] = t_ramRet.telemetryData.contentInfo.data[0];
+  payload[sendSize++] = t_ramRet.telemetryData.contentInfo.data[1];
 
   if(t_ramRet.telemetryData.contentInfo.details.baseInfo == TRUE) {
     // hardware id : hardware_id (12 bytes)
-    memcpy(&payload[*p_sendSize], (uint8_t*) STM32_UUID, 3 * sizeof(uint32_t));
-    *p_sendSize += (3 * sizeof(uint32_t));
+    memcpy(&payload[sendSize], (uint8_t*) STM32_UUID, 3 * sizeof(uint32_t));
+    sendSize += (3 * sizeof(uint32_t));
 
     // tx interval : measurement_interval_min (1 byte)
-    payload[*p_sendSize++] = TX_INTERVAL / 60;
+    payload[sendSize++] = TX_INTERVAL / 60;
 
     // hw version : hardware_version (1 bytes)
-    payload[*p_sendSize++] = (uint8_t) HW_VERSION;
+    payload[sendSize++] = (uint8_t) HW_VERSION;
 
     // fw version : firmware_version (2 bytes)
-    payload[*p_sendSize++] = highByte((uint16_t) SW_REVISION);
-    payload[*p_sendSize++] = lowByte((uint16_t) SW_REVISION);
+    payload[sendSize++] = highByte((uint16_t) SW_REVISION);
+    payload[sendSize++] = lowByte((uint16_t) SW_REVISION);
 
     // time device : time_device
-    //payload[*p_sendSize++] = 
-    //payload[*p_sendSize++] = 
-    //payload[*p_sendSize++] = 
-    //payload[*p_sendSize++] = 
+    //payload[sendSize++] = 
+    //payload[sendSize++] = 
+    //payload[sendSize++] = 
+    //payload[sendSize++] = 
 
     // total byte 17 + 4 (if time)
   }
 
   if(t_ramRet.telemetryData.contentInfo.details.boot == TRUE) {
-    payload[*p_sendSize++] = t_ramRet.boot;
+    payload[sendSize++] = t_ramRet.boot;
   }
 
   if(t_ramRet.telemetryData.contentInfo.details.temperatureOutside == TRUE) {
     payloadTmp = t_ramRet.telemetryData.temperatureOutside * 100;
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
   }
 
   if(t_ramRet.telemetryData.contentInfo.details.humidityOutside == TRUE) {
     payloadTmp = t_ramRet.telemetryData.humidityOutside * 100;
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
   }  
 
   if(t_ramRet.telemetryData.contentInfo.details.pressureOutside == TRUE) {
     payloadTmp = t_ramRet.telemetryData.pressureOutside; /* 100 exceed 16 bits encoding */
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
   }  
 
   if(t_ramRet.telemetryData.contentInfo.details.weight == TRUE) {
     payloadTmp = t_ramRet.telemetryData.weight * 100;
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
   }
 
   if(t_ramRet.telemetryData.contentInfo.details.vbatt == TRUE) {
     payloadTmp = t_ramRet.telemetryData.vbatt;
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
 
     payloadTmp = analog_getVBattPercent(t_ramRet.telemetryData.vbatt) * 100;
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
   }
 
   if(t_ramRet.telemetryData.contentInfo.details.humidityInside == TRUE) {
     payloadTmp = t_ramRet.telemetryData.humidityInside * 100;
-    payload[*p_sendSize++] = highByte(payloadTmp);
-    payload[*p_sendSize++] = lowByte(payloadTmp);
+    payload[sendSize++] = highByte(payloadTmp);
+    payload[sendSize++] = lowByte(payloadTmp);
   }  
 
   if(t_ramRet.telemetryData.contentInfo.details.frequency == TRUE) {
@@ -278,11 +307,12 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
   if(t_ramRet.telemetryData.contentInfo.details.temperatureInside) {
     for(i=0;i<t_ramRet.telemetryData.contentInfo.details.temperatureInsideCount;i++) {
       payloadTmp = t_ramRet.telemetryData.temperatureInside[i] * 100;
-      payload[*p_sendSize++] = highByte(payloadTmp);
-      payload[*p_sendSize++] = lowByte(payloadTmp);
+      payload[sendSize++] = highByte(payloadTmp);
+      payload[sendSize++] = lowByte(payloadTmp);
     }
-
   }
+
+  *p_sendSize = sendSize;
 
   return OK;
 }  
@@ -330,7 +360,21 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
       break;
     
     case e_SEND_FAILED:
+      TRACE_CrLf("[LORA] send failed");
+#if 0
+      uint32_t now = rtc_read();
 
+      //uint32_t lapse = now - t_ramRet.LORA_lastSendTime;
+
+      if(lapse < (TX_INTERVAL - 1)) {
+        TRACE_CrLf("[ERROR] send time lapse %d, timestamp %d, run %d", lapse, now, runTime);
+
+        t_ramRet.forceNewJoining = TRUE;
+        ramret_save(&t_ramRet);
+
+        system_reset();
+      } 
+#endif
       break;
 
     case e_RX_TIME: {
@@ -364,30 +408,25 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
  ***************************************************************************************/
 static void gotoSleep(void) {
   uint32_t now = rtc_read();
+  uint32_t runTime = now - startTime;
+  uint32_t sleepTime = TX_INTERVAL - runTime;
 
-  uint32_t lapse = now - t_ramRet.LORA_lastSendTime;
+  //watchdog.stop();
 
-  if(lapse < (TX_INTERVAL - 1)) {
-    TRACE_CrLf("[ERROR] send time lapse %d, timestamp %d", lapse, now);
-
-    t_ramRet.forceNewJoining = TRUE;
-    ramret_save(&t_ramRet);
-
-    system_reset();
-  } 
+  if(sleepTime > TX_INTERVAL)
+    sleepTime = TX_INTERVAL;
 
   t_ramRet.LORA_lastSendTime = now;
   ramret_save(&t_ramRet);
 
-  TRACE_CrLf("[RTC] before standby, timestamp: %d", t_ramRet.LORA_lastSendTime);
+  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d, runtime %d", t_ramRet.LORA_lastSendTime, sleepTime, runTime);
 
 #if (STANDBY_ENABLE == 1) 
   setLowConsumption();
 
-  power_sleep(e_SLEEP_MODE_STANDBY, e_WAKEUP_TYPE_BOTH, TX_INTERVAL * 1000 /*ms*/, WAKEUP_PIN);
-
+  power_sleep(e_SLEEP_MODE_STANDBY, e_WAKEUP_TYPE_BOTH, sleepTime * 1000 /*ms*/, WAKEUP_PIN);
 #else
-  lora_schedule(TX_INTERVAL);
+  lora_schedule(sleepTime);
 #endif 
 }
 #endif
