@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		trace.h
+ *	\file		onewire.h
  *
  *	\brief
  *
@@ -10,25 +10,22 @@
  *
  ***************************************************************************************/
 
-#ifndef __TRACE_H
-#define __TRACE_H
+#ifndef __ONEWIRE_H_
+#define __ONEWIRE_H_
 
 /***************************************************************************************/
 /*	Includes																		
 /***************************************************************************************/
 #include "board.h"
 #include "ramret.h"
-#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**************************************************************************************/
+/***************************************************************************************/
 /* Define
-/**************************************************************************************/
-#define TRACE(fmt, ...) trace_callback(FALSE, fmt, ##__VA_ARGS__)
-#define TRACE_CrLf(fmt, ...) trace_callback(TRUE, fmt, ##__VA_ARGS__)
+/***************************************************************************************/
 
 /***************************************************************************************/
 /* Typedef                                                                        
@@ -37,13 +34,11 @@ extern "C" {
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
-void trace_init(t_RamRet *pt_ramRet);
-void trace_setState(uint8_t u8_enable);
-uint8_t trace_getState(void);
-void trace_callback(uint8_t withCrLf, const char * format, ... );
+int32_t onewire_setup(t_RamRet *pt_ramRet);
+int32_t onewire_getData(t_telemetryData *pt_telemetryData);
+int32_t onewire_suspend(void);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

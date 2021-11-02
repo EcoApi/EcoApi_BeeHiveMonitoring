@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		trace.h
+ *	\file		lora.h
  *
  *	\brief
  *
@@ -10,40 +10,46 @@
  *
  ***************************************************************************************/
 
-#ifndef __TRACE_H
-#define __TRACE_H
+#ifndef __LORA_H_
+#define __LORA_H_
 
 /***************************************************************************************/
 /*	Includes																		
 /***************************************************************************************/
 #include "board.h"
 #include "ramret.h"
-#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**************************************************************************************/
+/***************************************************************************************/
 /* Define
-/**************************************************************************************/
-#define TRACE(fmt, ...) trace_callback(FALSE, fmt, ##__VA_ARGS__)
-#define TRACE_CrLf(fmt, ...) trace_callback(TRUE, fmt, ##__VA_ARGS__)
+/***************************************************************************************/
 
 /***************************************************************************************/
 /* Typedef                                                                        
 /***************************************************************************************/
+typedef enum {
+    e_TX_COMPLETE = 0,
+    e_DATA_NOT_CHANGED,
+    e_SEND_FAILED,
+    e_RX_TIME,
+} e_LORA_EVENT;
+
+typedef int32_t (*fn_lora_sendData)(uint8_t*, uint8_t, uint8_t*);
+typedef int32_t (*fn_lora_receiveData)(uint8_t*, uint8_t);
+typedef void (*fn_lora_event)(e_LORA_EVENT, void*);
 
 /***************************************************************************************/
 /*	Shared Functions																  
-/***************************************************************************************/  
-void trace_init(t_RamRet *pt_ramRet);
-void trace_setState(uint8_t u8_enable);
-uint8_t trace_getState(void);
-void trace_callback(uint8_t withCrLf, const char * format, ... );
+/***************************************************************************************/ 
+int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_receiveData fn_receiveData, fn_lora_event fn_event);
+int32_t lora_suspend(void);
+void lora_process(void);
+void lora_schedule(uint32_t time);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

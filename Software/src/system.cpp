@@ -1,54 +1,31 @@
 /************************************************************************************//**
  *
- *	\file		system.c
+ *	\file		system.cpp
  *
  *	\brief
  *
- *	\date		30 sept. 2019
+ *	\date		2 nov. 2021
  *
- *	\author		rvaast
+ *	\author		ecoapi
  *
  ***************************************************************************************/
 
 /***************************************************************************************/
-/*	Includes																		                                       */
+/*	Includes																		                                       
 /***************************************************************************************/
 #include "system.h"
-
-#if 0
-/***************************************************************************************/
-/*	Defines		  	 	 															                                     */
-/***************************************************************************************/
-#define MAX_CAPTURE 5
-
-/***************************************************************************************/
-/*	Local variables                                                                    */
-/***************************************************************************************/
-
-static TIM_HandleTypeDef    TimerLsCaptureHandle;
-
-uint16_t au16_captureValue[MAX_CAPTURE]; /* = {0, 0};*/
-__IO uint32_t u32_lsFreq = 0;
-__IO uint32_t u32_captureNumber = 0;
-
-uint16_t au32_frequencyValue[MAX_CAPTURE]; /* = {0, 0};*/
-__IO uint32_t u32_frequencyNumber = 0;
-
-__IO uint32_t u32_periodValue = 0;
-#endif
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         */
 /***************************************************************************************/
 
-/************************************************************************************
+/***************************************************************************************
  *
- *	\fn		void system_clockConfig_80MHz(void)
- *	\brief 
+ *	\fn		void system_clockConfig_16MHz(void)
+ *	\brief 16 MHz on HSI
  *
  ***************************************************************************************/
-void system_clockConfig_16MHz(void) /* 16 MHz on HSI */
-{
+void system_clockConfig_16MHz(void) {
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_OscInitTypeDef RCC_OscInitStruct;
 
@@ -216,7 +193,7 @@ int32_t system_getBorLevel(e_BOR_LEVEL *pe_borLevel) {
 int32_t system_setBorLevel(e_BOR_LEVEL e_borLevel) {
   HAL_StatusTypeDef status = HAL_ERROR;
 	FLASH_OBProgramInitTypeDef FLASH_Handle;
-	e_BOR_LEVEL e_currentBorLevel = OB_BOR_OFF;
+	e_BOR_LEVEL e_currentBorLevel = BOR_Level_0;
 
   system_getBorLevel(&e_currentBorLevel);
 
@@ -253,189 +230,3 @@ int32_t system_setBorLevel(e_BOR_LEVEL e_borLevel) {
 void system_reset(void) {
   NVIC_SystemReset();
 }
-
-/************************************************************************************
- *
- *	\fn		void system_rescueReset(t_RamRet *pt_ramRet) 
- *	\brief 
- *
- ***************************************************************************************/
-void system_rescueReset(t_RamRet *pt_ramRet) {
-  ramret_clean(pt_ramRet);
-
-  NVIC_SystemReset();
-}
-
-#if 0
-/************************************************************************************
- *
- *	\fn		void system_printLsiCapturedFrequency(void)
- *	\brief 
- *
- ***************************************************************************************/ 
-void system_printLsCapturedFrequency(void) {
-  uint8_t i;
-
-  for(i=0;i<u32_frequencyNumber;i++) {
-#if (USE_LSI == 1)
-    TRACE("LSI: capture %d = %d Hz", i, au32_frequencyValue[i]);
-#else
-    TRACE("LSE: capture %d = %d Hz", i, au32_frequencyValue[i]);
-#endif   
-  }  
-} 
-
-/************************************************************************************
- *
- *	\fn		uint32_t system_getLsFrequency(void)
- *	\brief 
- *
- ***************************************************************************************/ 
-uint32_t system_getLsFrequency(void) {
-  TIM_IC_InitTypeDef    TIMInput_Config;
-  
-  __HAL_RCC_TIM16_CLK_ENABLE();
-
-  HAL_NVIC_SetPriority(TIM1_UP_TIM16_IRQn, 0x0, 0);
-  HAL_NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);
-
-  HAL_RCC_GetHCLKFreq();
-
-  TimerLsCaptureHandle.Instance = TIM16;
-  
-  /* TIM21 configuration: Input Capture mode ---------------------
-     The LSI oscillator is connected to TIM21 CH1.
-     The Rising edge is used as active edge.
-     The TIM21 CCR1 is used to compute the frequency value. 
-  ------------------------------------------------------------ */
-  TimerLsCaptureHandle.Init.Prescaler         = 0; 
-  TimerLsCaptureHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;  
-  TimerLsCaptureHandle.Init.Period            = 0xFFFF; 
-  TimerLsCaptureHandle.Init.ClockDivision     = 0;   
-  if(HAL_TIM_IC_Init(&TimerLsCaptureHandle) != HAL_OK)
-  {
-#if (USE_LSI == 1)
-    return LSI_VALUE;
-#else
-    return LSE_VALUE;
-#endif
-  }
-  
-  /* Connect internally the TIM21_CH1 Input Capture to the LSI clock output */
-#if (USE_LSI == 1)
-  HAL_TIMEx_RemapConfig(&TimerLsCaptureHandle, TIM_TIM16_TI1_LSI);
-#else
-  HAL_TIMEx_RemapConfig(&TimerLsCaptureHandle, TIM_TIM16_TI1_LSE);
-#endif  
-
-  /* Configure the Input Capture of channel 1 */
-  TIMInput_Config.ICPolarity  = TIM_ICPOLARITY_RISING;
-  TIMInput_Config.ICSelection = TIM_ICSELECTION_DIRECTTI;
-  TIMInput_Config.ICPrescaler = TIM_ICPSC_DIV8;
-  TIMInput_Config.ICFilter    = 0;
-  if(HAL_TIM_IC_ConfigChannel(&TimerLsCaptureHandle, &TIMInput_Config, TIM_CHANNEL_1) != HAL_OK)
-  {
-#if (USE_LSI == 1)
-    return LSI_VALUE;
-#else
-    return LSE_VALUE;
-#endif
-  }
-
-  /* Start the TIM Input Capture measurement in interrupt mode */
-  if(HAL_TIM_IC_Start_IT(&TimerLsCaptureHandle, TIM_CHANNEL_1) != HAL_OK)
-  {
-#if (USE_LSI == 1)
-    return LSI_VALUE;
-#else
-    return LSE_VALUE;
-#endif
-  }
-
-  /* Wait until the TIM21 get 2 LSI edges */
-  while(u32_captureNumber != MAX_CAPTURE)
-  {
-  }
-
-  HAL_TIM_IC_Stop_IT(&TimerLsCaptureHandle, TIM_CHANNEL_1);
-  HAL_TIM_IC_DeInit(&TimerLsCaptureHandle);
-
-  HAL_NVIC_DisableIRQ(TIM1_UP_TIM16_IRQn);
-
-  __HAL_RCC_TIM16_CLK_DISABLE();
-
-  return u32_lsFreq;
-}
-
-/************************************************************************************
- *
- *	\fn		TIM_HandleTypeDef* system_getTimerLsCaptureHandle(void)
- *	\brief 
- *
- ***************************************************************************************/ 
-TIM_HandleTypeDef* system_getTimerLsCaptureHandle(void) {
-  return &TimerLsCaptureHandle;
-}
-
-/************************************************************************************
- *
- *	\fn		TIM_HandleTypeDef* system_getTimerLsCaptureHandle(void)
- *	\brief 
- *
- ***************************************************************************************/ 
-void system_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
-  uint8_t i;
-  
-  au16_captureValue[u32_captureNumber] = HAL_TIM_ReadCapturedValue(&TimerLsCaptureHandle, TIM_CHANNEL_1);
-
-  if(u32_captureNumber) {
-    if (au16_captureValue[u32_captureNumber-1] > au16_captureValue[u32_captureNumber]) { /* Compute the period length */
-      u32_periodValue = (uint16_t)(0xFFFF - au16_captureValue[u32_captureNumber-1] + au16_captureValue[u32_captureNumber] + 1);
-    } else {
-      u32_periodValue  = (uint16_t)(au16_captureValue[u32_captureNumber] - au16_captureValue[u32_captureNumber-1]);
-    }
-
-    au32_frequencyValue[u32_frequencyNumber] = (uint32_t) SystemCoreClock / u32_periodValue;
-    au32_frequencyValue[u32_frequencyNumber] *= 8;
-
-    u32_frequencyNumber++;
-  }
-
-  u32_captureNumber++;
-
-  if (u32_captureNumber >= MAX_CAPTURE) {
-    u32_periodValue = 0;
-    for(i=0;i<u32_frequencyNumber;i++) {
-      if((au32_frequencyValue[i] >= 26000) && (au32_frequencyValue[i] <= 56000)) {
-        u32_lsFreq += au32_frequencyValue[i];
-
-        if(i) { /* dynamic average */
-          u32_lsFreq /= 2;
-        }
-      }
-    }
-
-    if(i <= 1) { /* no average computed */
-#if (USE_LSI == 1)
-      u32_lsFreq = LSI_VALUE;
-#else
-      u32_lsFreq = LSE_VALUE;
-#endif    
-      
-    }
-
-    HAL_TIM_IC_Stop_IT(&TimerLsCaptureHandle, TIM_CHANNEL_1);
-  }
-}
-
-/************************************************************************************
- *
- *	\fn		void TIM21_IRQHandler(void)
- *	\brief 
- *
- ***************************************************************************************/ 
-void TIM1_UP_TIM16_IRQHandler(void)
-{
-  HAL_TIM_IRQHandler(&TimerLsCaptureHandle);
-}
-#endif

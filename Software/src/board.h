@@ -1,7 +1,26 @@
-#ifndef BOARD_H_
-#define BOARD_H_
+/************************************************************************************//**
+ *
+ *	\file		board.h
+ *
+ *	\brief
+ *
+ *	\date		2 nov. 2021
+ *
+ *	\author		ecoapi
+ *
+ ***************************************************************************************/
 
+#ifndef __BOARD_H_
+#define __BOARD_H_
+
+/***************************************************************************************/
+/*	Includes																		
+/***************************************************************************************/
 #include <Arduino.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #if defined(STM32F411xE) //blackpill
     #include "stm32f4xx_hal_rcc.h"
@@ -17,11 +36,15 @@
 
 #include "stm32yyxx_ll_adc.h"
 
+/***************************************************************************************/
+/* Define
+/***************************************************************************************/
 #define TRUE (1)
 #define FALSE !(TRUE)
 
 #define OK (0)
 #define ERROR (-1)
+#define DATA_NOT_CHANGED (ERROR - 1)
 
 #define HX711_DT PB_8
 #define HX711_CK PB_9
@@ -76,4 +99,7 @@
     #error "Bad µC defined"
 #endif
 
+#ifdef __cplusplus
+}
+#endif
 #endif

@@ -1,23 +1,23 @@
 /************************************************************************************//**
  *
- *	\file		rtc.c
+ *	\file		rtc.cpp
  *
  *	\brief
  *
- *	\date		30 sept. 2019
+ *	\date		2 nov. 2021
  *
- *	\author		rvaast
+ *	\author		ecoapi
  *
  ***************************************************************************************/
 
 /***************************************************************************************/
-/*	Includes																		                                       */
+/*	Includes				
 /***************************************************************************************/
 #include "rtc.h"
 #include "stm32yyxx_ll_rtc.h"
 
 /***************************************************************************************/
-/*	Defines		  	 	 															                                     */
+/*	Defines		  	 	 															                                     
 /***************************************************************************************/
 //see 1.1.4 RTC clock configuration in /doc/en.DM00226326.pdf
 // Note: LSI is around (37KHz), these dividers should work either way
@@ -37,12 +37,12 @@
 #define RTC_CLOCK_US (((uint64_t)RTC_CLOCK << 32 ) / 1000000)
 
 /***************************************************************************************/
-/*	Local variables                                                                    */
+/*	Local variables                                                                    
 /***************************************************************************************/
 static RTC_HandleTypeDef RtcHandle;
 
 /***************************************************************************************/
-/*	Local Functions prototypes                                                         */
+/*	Local Functions prototypes                                                         
 /***************************************************************************************/
 
 /************************************************************************************
@@ -51,10 +51,7 @@ static RTC_HandleTypeDef RtcHandle;
  *	\brief 
  *
  ***************************************************************************************/
-//#include "stm32_hal_legacy.h"
-
-int32_t rtc_init(void)
-{
+int32_t rtc_init(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct;
 
@@ -151,8 +148,7 @@ int32_t rtc_init(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_start(uint32_t u32_lsFrequency)
-{
+int32_t rtc_start(uint32_t u32_lsFrequency) {
 #if 0
   RtcHandle.Instance = RTC;
   //RtcHandle.State = HAL_RTC_STATE_RESET;
@@ -203,8 +199,7 @@ int32_t rtc_start(uint32_t u32_lsFrequency)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_deinit(void)
-{
+int32_t rtc_deinit(void) {
   if(HAL_RTC_DeInit(&RtcHandle) != HAL_OK) {
     return ERROR;
   }
@@ -222,8 +217,7 @@ int32_t rtc_deinit(void)
  *	\brief 
  *
  ***************************************************************************************/
-uint32_t rtc_read(void)
-{
+uint32_t rtc_read(void) {
   RTC_DateTypeDef dateStruct = {0};
   RTC_TimeTypeDef timeStruct = {0};
   struct tm timeinfo;
@@ -262,8 +256,7 @@ uint32_t rtc_read(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_write(uint32_t timestamp)
-{
+int32_t rtc_write(uint32_t timestamp) {
 #if defined(STM32F1) 
   RtcHandle.Instance = RTC;
   if (RTC_WriteTimeCounter(&RtcHandle, t) != HAL_OK) {
@@ -316,8 +309,7 @@ int32_t rtc_write(uint32_t timestamp)
  *	\brief 
  *
  ***************************************************************************************/ 
-int32_t rtc_isEnabled(void)
-{
+int32_t rtc_isEnabled(void) {
 #if defined (RTC_FLAG_INITS) /* all STM32 except STM32F1 */
   return LL_RTC_IsActiveFlag_INITS(RTC);
 #else /* RTC_FLAG_INITS */ /* TARGET_STM32F1 */
@@ -331,9 +323,7 @@ int32_t rtc_isEnabled(void)
  *	\brief 
  *
  ***************************************************************************************/
-#if 1
-int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */)
-{
+int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */) {
   uint32_t u32_wakeUpCounter, u32_wakeUpClock;
 
   /*The Following Wakeup sequence is highly recommended prior to each Standby mode entry
@@ -401,137 +391,6 @@ int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */)
 
   return OK;  
 }
-#else
-
-volatile uint32_t LPTICKER_counter = 0;
-volatile uint32_t LPTICKER_RTC_time = 0;
-
-uint32_t rtc_read_lp(void)
-{
-    /* RTC_time_tick is the addition of the RTC time register (in second) and the RTC sub-second register
-    *  This time value is breaking each 24h (= 86400s = 0x15180)
-    *  In order to get a U32 continuous time information, we use an internal counter : LPTICKER_counter
-    *  This counter is the addition of each spent time since last function call
-    *  Current RTC time is saved into LPTICKER_RTC_time
-    *  NB: rtc_read_lp() output is not the time in us, but the LPTICKER_counter (frequency LSE/4 = 8kHz => 122us)
-    */
-    //core_util_critical_section_enter();
-    struct tm timeinfo;
-
-    /* Since the shadow registers are bypassed we have to read the time twice and compare them until both times are the same */
-    /* We don't have to read date as we bypass shadow registers */
-    uint32_t Read_time = (uint32_t)(RTC->TR & RTC_TR_RESERVED_MASK);
-    uint32_t Read_SubSeconds = (uint32_t)(RTC->SSR);
-
-    while ((Read_time != (RTC->TR & RTC_TR_RESERVED_MASK)) || (Read_SubSeconds != (RTC->SSR))) {
-        Read_time = (uint32_t)(RTC->TR & RTC_TR_RESERVED_MASK);
-        Read_SubSeconds = (uint32_t)(RTC->SSR);
-    }
-
-    timeinfo.tm_hour = RTC_Bcd2ToByte((uint8_t)((Read_time & (RTC_TR_HT  | RTC_TR_HU))  >> 16));
-    timeinfo.tm_min  = RTC_Bcd2ToByte((uint8_t)((Read_time & (RTC_TR_MNT | RTC_TR_MNU)) >> 8));
-    timeinfo.tm_sec  = RTC_Bcd2ToByte((uint8_t)((Read_time & (RTC_TR_ST  | RTC_TR_SU))  >> 0));
-
-    uint32_t RTC_time_tick = (timeinfo.tm_sec + timeinfo.tm_min * 60 + timeinfo.tm_hour * 60 * 60) * RTC_SYNCH_PREDIV + RTC_SYNCH_PREDIV - Read_SubSeconds; // Max 0x0001-517F * 8191 + 8191 = 0x2A2E-AE80
-
-    if (LPTICKER_RTC_time <= RTC_time_tick) {
-        LPTICKER_counter += (RTC_time_tick - LPTICKER_RTC_time);
-    } else {
-        /* When RTC time is 0h00.01 and was 11H59.59, difference is "current time + 24h - previous time" */
-        LPTICKER_counter += (RTC_time_tick + 24 * 60 * 60 * RTC_SYNCH_PREDIV - LPTICKER_RTC_time);
-    }
-    LPTICKER_RTC_time = RTC_time_tick;
-
-    //core_util_critical_section_exit();
-    return LPTICKER_counter;
-}
-
-int32_t rtc_set_wake_up_timer(uint32_t timestamp)
-{
-    /* RTC periodic auto wake up timer is used
-    *  This WakeUpTimer is loaded to an init value => WakeUpCounter
-    *  then timer starts counting down (even in low-power modes)
-    *  When it reaches 0, the WUTF flag is set in the RTC_ISR register
-    */
-    uint32_t WakeUpCounter;
-    uint32_t WakeUpClock = RTC_WAKEUPCLOCK_RTCCLK_DIV4;
-
-    //core_util_critical_section_enter();
-
-    /* MBED API gives the timestamp value to set
-    *  WakeUpCounter is then the delta between timestamp and the current tick (LPTICKER_counter)
-    *  If the current tick preceeds timestamp value, max U32 is added
-    */
-    uint32_t current_lp_time = rtc_read_lp();
-    if (timestamp < current_lp_time) {
-        WakeUpCounter = 0xFFFFFFFF - current_lp_time + timestamp;
-    } else {
-        WakeUpCounter = timestamp - current_lp_time;
-    }
-
-    /* RTC WakeUpCounter is 16 bits
-    *  Corresponding time value depends on WakeUpClock
-    *  - RTC clock divided by 4  : max WakeUpCounter value is  8s (precision around 122 us)
-    *  - RTC clock divided by 8  : max WakeUpCounter value is 16s (precision around 244 us)
-    *  - RTC clock divided by 16 : max WakeUpCounter value is 32s (precision around 488 us)
-    *  - 1 Hz internal clock 16b : max WakeUpCounter value is 18h (precision 1 s)
-    *  - 1 Hz internal clock 17b : max WakeUpCounter value is 36h (precision 1 s)
-    */
-    if (WakeUpCounter > 0xFFFF) {
-        WakeUpClock = RTC_WAKEUPCLOCK_RTCCLK_DIV8;
-        WakeUpCounter = WakeUpCounter / 2;
-
-        if (WakeUpCounter > 0xFFFF) {
-            WakeUpClock = RTC_WAKEUPCLOCK_RTCCLK_DIV16;
-            WakeUpCounter = WakeUpCounter / 2;
-
-            if (WakeUpCounter > 0xFFFF) {
-                /* Tick value needs to be translated in seconds : TICK * 16 (previous div16 value) / RTC clock (32768) */
-                WakeUpClock = RTC_WAKEUPCLOCK_CK_SPRE_16BITS;
-                WakeUpCounter = WakeUpCounter / 2048;
-
-                if (WakeUpCounter > 0xFFFF) {
-                    /* In this case 2^16 is added to the 16-bit counter value */
-                    WakeUpClock = RTC_WAKEUPCLOCK_CK_SPRE_17BITS;
-                    WakeUpCounter = WakeUpCounter - 0x10000;
-                }
-            }
-        }
-    }
-
-    RtcHandle.Instance = RTC;
-    HAL_RTCEx_DeactivateWakeUpTimer(&RtcHandle);
-
-  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-
-#if defined (RTC_WUTR_WUTOCLR) /* STM32L5 */
-    if (HAL_RTCEx_SetWakeUpTimer_IT(&RtcHandle, WakeUpCounter, RTC_WAKEUPCLOCK_RTCCLK_DIV4, 0) != HAL_OK) {
-        return ERROR;
-    }
-#else /* RTC_WUTR_WUTOCLR */
-    if (HAL_RTCEx_SetWakeUpTimer_IT(&RtcHandle, WakeUpCounter, WakeUpClock) != HAL_OK) {
-        return ERROR;
-    }
-#endif /* RTC_WUTR_WUTOCLR */
-
-    //NVIC_SetVector(RTC_WKUP_IRQn, (uint32_t)_RTC_IRQHandler);
-    //irq_handler = (void (*)(void))lp_ticker_irq_handler;
-    //NVIC_EnableIRQ(RTC_WKUP_IRQn);
-    
-    HAL_NVIC_SetPriority(RTC_WKUP_IRQn, 0x0, 0);
-    HAL_NVIC_EnableIRQ(RTC_WKUP_IRQn); 
-    
-    //core_util_critical_section_exit();
-
-    return OK;
-}
-
-int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */) {
-  return rtc_set_wake_up_timer(u32_sleepTime / 1000);
-}
-
-
-#endif
 
 /************************************************************************************
  *
@@ -539,8 +398,7 @@ int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */) {
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_isEnabledWakeUpRtc()
-{
+int32_t rtc_isEnabledWakeUpRtc(void) {
   uint8_t u8_isRTCWakeUpEnabled =  (RtcHandle.Instance->CR & (RTC_CR_WUTE)) ? 1 : 0;
   uint8_t u8_isRTCWakeUpEnabledIT = (RtcHandle.Instance->CR & (RTC_IT_WUT)) ? 1 : 0;
 
@@ -556,8 +414,7 @@ int32_t rtc_isEnabledWakeUpRtc()
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_disableWakeUpTimer(void)
-{
+int32_t rtc_disableWakeUpTimer(void) {
   HAL_RTCEx_DeactivateWakeUpTimer(&RtcHandle);
   NVIC_DisableIRQ(RTC_WKUP_IRQn);
 
@@ -570,8 +427,7 @@ int32_t rtc_disableWakeUpTimer(void)
  *	\brief 
  *
  ***************************************************************************************/
-void RTC_IRQHandler(void)
-{
+void RTC_IRQHandler(void) {
   HAL_RTCEx_WakeUpTimerIRQHandler(&RtcHandle);
 
 #ifdef __HAL_RTC_WAKEUPTIMER_EXTI_CLEAR_FLAG
@@ -585,8 +441,7 @@ void RTC_IRQHandler(void)
  *	\brief 
  *
  ***************************************************************************************/
-uint32_t rtc_backupRead( uint32_t u32_index )
-{
+uint32_t rtc_backupRead(uint32_t u32_index) {
   if(u32_index <= RTC_BACKUP_MAX_INDEX)
     return HAL_RTCEx_BKUPRead(&RtcHandle, u32_index);
   
@@ -599,10 +454,8 @@ uint32_t rtc_backupRead( uint32_t u32_index )
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_backupWrite( uint32_t u32_index, uint32_t u32_value )
-{
-  if(u32_index <= RTC_BACKUP_MAX_INDEX)
-  {
+int32_t rtc_backupWrite( uint32_t u32_index, uint32_t u32_value ) {
+  if(u32_index <= RTC_BACKUP_MAX_INDEX) {
     HAL_RTCEx_BKUPWrite( &RtcHandle, u32_index, u32_value );
     return TRUE;
   }

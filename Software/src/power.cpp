@@ -1,17 +1,17 @@
 /************************************************************************************//**
  *
- *	\file		power.c
+ *	\file		power.cpp
  *
  *	\brief
  *
- *	\date		30 sept. 2019
+ *	\date		2 nov. 2021
  *
- *	\author		rvaast
+ *	\author		ecoapi
  *
  ***************************************************************************************/
 
 /***************************************************************************************/
-/*	Includes																		                                       */
+/*	Includes				
 /***************************************************************************************/
 #include "power.h"
 #include "system.h"
@@ -22,11 +22,11 @@
 #include <stdio.h>
 
 /***************************************************************************************/
-/*	Defines		  	 	 															                                     */
+/*	Defines		  	 	 															                                     
 /***************************************************************************************/
 
 /***************************************************************************************/
-/*	Local variables                                                                    */
+/*	Local variables                                                                    
 /***************************************************************************************/
 static int32_t s32_lastState = STANDBY_NOT_RESUMED;
 static uint8_t u8_independentWindowWatchdogReset = FALSE;
@@ -38,7 +38,7 @@ static uint8_t u8_borReset = FALSE;
 static uint8_t u8_poweredOn = FALSE;
 
 /***************************************************************************************/
-/*	Local Functions prototypes                                                         */
+/*	Local Functions prototypes                                                         
 /***************************************************************************************/
 static void power_stopMode(void);
 static void power_standbyMode(void);
@@ -53,8 +53,7 @@ static void power_disableWakeUpPin(uint32_t u32_wakeupPin);
  *
  ***************************************************************************************/
 #if 0
-static void power_stopMode(void)
-{
+static void power_stopMode(void) {
   __disable_irq();
 
 #ifdef __HAL_RCC_WAKEUPSTOP_CLK_CONFIG
@@ -81,8 +80,7 @@ static void power_stopMode(void)
  *	\brief 
  *
  ***************************************************************************************/
-static void power_standbyMode(void)
-{
+static void power_standbyMode(void) {
   HAL_PWR_EnterSTANDBYMode();
 }
 
@@ -93,8 +91,7 @@ static void power_standbyMode(void)
  *	\brief 
  *
  ***************************************************************************************/
-static void power_sleepMode(void)
-{
+static void power_sleepMode(void) {
   system_clockConfig_32KHz();
   //__HAL_RCC_MSI_RANGE_CONFIG(RCC_MSIRANGE_0);
 
@@ -124,22 +121,7 @@ static void power_sleepMode(void)
  *	\brief 
  *
  ***************************************************************************************/ 
-static void power_enableWakeUpPin(uint32_t u32_wakeupPin)
-{
-  /*The Following Wakeup sequence is highly recommended prior to each Standby mode entry
-     mainly  when using more than one wakeup source this is to not miss any wakeup event.
-       - Disable all used wakeup sources,
-       - Clear all related wakeup flags, 
-       - Re-enable all used wakeup sources,
-       - Enter the Standby mode.
-     */
-
-  //HAL_PWREx_EnableGPIOPullUp(TOR_FALLING_SYS_PORT, TOR_FALLING_SYS_PIN); /* todo set dynamically ???*/  
-  
-  //HAL_PWREx_EnableGPIOPullDown(TOR_RISING_SYS_PORT, TOR_RISING_SYS_PIN); /* todo set dynamically ???*/  
-
-  //HAL_PWREx_EnablePullUpPullDownConfig(); 
-
+static void power_enableWakeUpPin(uint32_t u32_wakeupPin) {
   HAL_PWR_DisableWakeUpPin(u32_wakeupPin);
 
   __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
@@ -153,8 +135,7 @@ static void power_enableWakeUpPin(uint32_t u32_wakeupPin)
  *	\brief 
  *
  ***************************************************************************************/
-static void power_disableWakeUpPin(uint32_t u32_wakeupPin)
-{
+static void power_disableWakeUpPin(uint32_t u32_wakeupPin) {
   HAL_PWR_DisableWakeUpPin(u32_wakeupPin);
 
   __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
@@ -166,8 +147,7 @@ static void power_disableWakeUpPin(uint32_t u32_wakeupPin)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u32_sleepTime, uint32_t u32_wakeupPin)
-{
+int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u32_sleepTime, uint32_t u32_wakeupPin) {
   if(e_mode > e_SLEEP_MODE_STANDBY)
     goto error;
   
@@ -238,8 +218,7 @@ error:
  *	\brief 
  *
  ***************************************************************************************/
-int32_t power_resumeSleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u32_wakeupPin)
-{
+int32_t power_resumeSleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u32_wakeupPin) {
   switch(e_wakeupType) {
     case e_WAKEUP_TYPE_RTC:
       break;  
@@ -298,8 +277,7 @@ error:
  *	\brief 
  *
  ***************************************************************************************/
-int32_t power_init(void)
-{
+int32_t power_init(void) {
   int32_t s32_ret = OK;
   
   __HAL_RCC_PWR_CLK_ENABLE();
