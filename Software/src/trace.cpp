@@ -59,13 +59,13 @@ void trace_init(t_RamRet *pt_ramRet) {
  *
  ***************************************************************************************/
 void trace_setState(uint8_t u8_enable) {
-  if((pt_ramRet_ == NULL) || (pt_ramRet_->traceEnable == u8_enable))
+  if(pt_ramRet_ == NULL)
     return;
   
-  if(u8_enable)
+  /*if(u8_enable)
     printf("[TRACE] enable\r\n");
   else
-    printf("[TRACE] disable\r\n");
+    printf("[TRACE] disable\r\n");*/
 
   pt_ramRet_->traceEnable = u8_enable;
   ramret_save(pt_ramRet_);

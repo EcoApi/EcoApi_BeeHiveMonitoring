@@ -49,6 +49,9 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
   pt_ramRet->hx711_offset = 0;
   pt_ramRet->hx711_calibrationFactor = DEFAULT_CALIFACTOR;  
   
+  pinMode(LED_INFO, OUTPUT);
+  pinMode(BTN_TARE, INPUT_PULLUP);
+
   while (digitalRead(BTN_TARE)) {
     TRACE_CrLf("[HX711] start calibration, remove all weight and press <TARE> button");
     digitalWrite(LED_INFO, HIGH);
@@ -128,7 +131,10 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
         delay(250);
         digitalWrite(LED_INFO, HIGH);
         delay(250);
-        digitalWrite(LED_INFO, LOW);                                                                                            
+        digitalWrite(LED_INFO, LOW);  
+
+        pinMode(BTN_TARE, INPUT);
+        pinMode(LED_INFO, INPUT);                                                                                          
       }
     } 
   } 
@@ -150,16 +156,25 @@ int32_t hx711_setup(t_RamRet *pt_ramRet) {
 
   scale.begin(HX711_DT, HX711_CK);
 
+  scale.power_up();
+
   if(pt_ramRet_->hx711_calibrated == FALSE) {  
-    TRACE_CrLf("[HX711] not initialized");
- 
     hx711_calibrate(pt_ramRet_);
+
+    pinMode(SCALE_TYPE, INPUT_PULLUP);
+    pt_ramRet->telemetryData.contentInfo.details.scaleType = digitalRead(SCALE_TYPE);
+    pinMode(SCALE_TYPE, INPUT);
+
+    TRACE_CrLf("[HX711] new calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_ramRet_->hx711_offset,
+                                                                                                       pt_ramRet_->hx711_calibrationFactor,
+                                                                                                       pt_ramRet->telemetryData.contentInfo.details.scaleType);    
   } else {
     scale.set_scale(pt_ramRet_->hx711_calibrationFactor / LB2KG);
     scale.set_offset(pt_ramRet_->hx711_offset);
 
-    TRACE_CrLf("[HX711] restore calibration, currentOffset: %d, calibration_factor: %0.0f", pt_ramRet_->hx711_offset,
-                                                                                             pt_ramRet_->hx711_calibrationFactor);
+    TRACE_CrLf("[HX711] restore calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_ramRet_->hx711_offset,
+                                                                                                           pt_ramRet_->hx711_calibrationFactor,
+                                                                                                           pt_ramRet->telemetryData.contentInfo.details.scaleType);
   }
 
   return OK;
@@ -174,26 +189,26 @@ int32_t hx711_setup(t_RamRet *pt_ramRet) {
 int32_t hx711_getData(t_telemetryData *pt_telemetryData) {
   if(pt_telemetryData == NULL)
     return ERROR;
-  
-  //scale.power_up();
 
-  float weight = abs(scale.get_units());
+#if (STANDBY_ENABLE == 0)   
+  scale.power_up();
+#endif  
+
+#if 0
+  pt_telemetryData->weight = abs(scale.get_units());
   // issue with abs missing at the 4th digit after the dot (bug!!)
   if (0.0000 - weight > 0.0001) 
     weight = 0.00; //reset to zero
-
-  pt_telemetryData->weight = abs(scale.get_units(10));
+#else
+  pt_telemetryData->weight = abs(scale.get_units(2));
   // issue with abs missing at the 4th digit after the dot (bug!!)
   if (0.0000 - pt_telemetryData->weight > 0.0001) 
     pt_telemetryData->weight = 0.00; //reset to zero
-  
-  pt_telemetryData->contentInfo.details.scaleType = digitalRead(SCALE_TYPE);
+#endif
 
-  TRACE_CrLf("[HX711] weight oneshot: %0.1f kg, weight average: %0.1f kg, scale type: %d", weight,
-                                                                                            pt_telemetryData->weight,
-                                                                                            pt_telemetryData->contentInfo.details.scaleType);
+  TRACE_CrLf("[HX711] weight: %0.1f kg", pt_telemetryData->weight);
 
-  //scale.power_down();
+  scale.power_down();
 
   return OK;
 }
@@ -205,6 +220,13 @@ int32_t hx711_getData(t_telemetryData *pt_telemetryData) {
  *
  ***************************************************************************************/
 int32_t hx711_suspend(void) {
+
+  pinMode(BTN_TARE, INPUT);
+  pinMode(SCALE_TYPE, INPUT);
+
+  //HX711_DT, HX711_CK
+
+  scale.power_down();
 
   return OK;
 }

@@ -35,7 +35,6 @@ typedef enum e_BOR_LEVEL_{
 /***************************************************************************************/
 /*	Shared Functions																
 /***************************************************************************************/  
-void system_clockConfig_16MHz(void);
 int32_t system_getBorLevel(e_BOR_LEVEL *pe_borLevel);
 int32_t system_setBorLevel(e_BOR_LEVEL e_borLevel);
 void system_reset(void);

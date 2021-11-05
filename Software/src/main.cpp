@@ -14,6 +14,7 @@
 /*	Includes				
 /***************************************************************************************/
 #include "board.h"
+#include <Wire.h>
 #include "trace.h"
 #include "power.h"
 #include "system.h"
@@ -61,19 +62,12 @@ static void actionButtonHandler(void);
  *
  ***************************************************************************************/
 void setup(void) {
-  system_clockConfig_16MHz(); // reduce cpu consumption
-
   //system_setBorLevel(OB_BOR_LEVEL1);
 
-  //watchdog.begin(IWDG_TIMEOUT_MAX);
-
   //pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(SCALE_TYPE, INPUT);
-  pinMode(BTN_TARE, INPUT);
-  pinMode(BTN_ACT, INPUT);
-  pinMode(ANA_VBATT, INPUT_ANALOG);
-  pinMode(RING, INPUT);
-  pinMode(LED_INFO, OUTPUT);
+  //pinMode(ANA_VBATT, INPUT_ANALOG);
+  //pinMode(RING, INPUT);
+
 
   //clock debug with mco pin
   //HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSI, RCC_MCODIV_1);
@@ -94,8 +88,10 @@ void setup(void) {
 #endif
       uint32_t traceActivationTimeout = 3000;
     
+      pinMode(BTN_ACT, INPUT_PULLUP);
       attachInterrupt(digitalPinToInterrupt(BTN_ACT), actionButtonHandler, FALLING);
     
+      pinMode(LED_INFO, OUTPUT);
       while(traceActivationTimeout) {
         digitalWrite(LED_INFO, HIGH);
         delay(50);
@@ -104,20 +100,26 @@ void setup(void) {
         traceActivationTimeout -= 100;
       };
       digitalWrite(LED_INFO, LOW);
+      pinMode(LED_INFO, INPUT);
 
       detachInterrupt(digitalPinToInterrupt(BTN_ACT));
+      pinMode(BTN_ACT, INPUT);
 
-      trace_setState(b_actionButtonPressed);
+
     }
 #else
-    trace_setState(TRUE);
+    b_actionButtonPressed = TRUE;
 #endif
 
-    Serial.setTx(UART1_TX);
-    Serial.setRx(UART1_RX);
+    if(b_actionButtonPressed) {
+      Serial.setTx(UART1_TX);
+      Serial.setRx(UART1_RX);
 
-    Serial.begin(115200); // Sets the speed needed to read from the serial port when connected
-    while (!Serial); // Loop that only continues once the serial port is active (true)
+      Serial.begin(115200); // Sets the speed needed to read from the serial port when connected
+      while (!Serial); // Loop that only continues once the serial port is active (true)
+    } 
+
+    trace_setState(b_actionButtonPressed);
   }
 
   TRACE_CrLf("################");
@@ -154,12 +156,29 @@ void setup(void) {
   }
 
 #if 0 /* test rtc */ 
+#if (LORA_ENABLE == 1)
+  lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_receiveDataCallback, &lora_eventCallback);
+
+#if (STANDBY_ENABLE == 0)
+  t_ramRet.LORA_lastSendTime = 0;
+#endif  
+#endif
+
+  pinMode(LED_INFO, INPUT_ANALOG);
+
   int i = 10;
   while(i--) {
     delay(1000);
     TRACE_CrLf("[RTC] timestamp: %d", rtc_read());
   };
-  power_sleep(e_SLEEP_MODE_STANDBY, e_WAKEUP_TYPE_BOTH, 60000 /*ms*/, WAKEUP_PIN);
+
+  Serial.end();
+  pinMode(UART1_TX, INPUT);
+  pinMode(UART1_RX, INPUT);
+
+  lora_suspend();
+
+  power_sleep(e_SLEEP_MODE_STANDBY, e_WAKEUP_TYPE_BOTH, 10000 /*ms*/, WAKEUP_PIN);
 #endif
 
   if(ramretInit) { 
@@ -180,8 +199,6 @@ void setup(void) {
 #endif
 
   ramret_save(&t_ramRet);
-
-  pinMode(LED_INFO, INPUT_ANALOG); 
 }
 
 /***************************************************************************************
@@ -411,8 +428,6 @@ static void gotoSleep(void) {
   uint32_t runTime = now - startTime;
   uint32_t sleepTime = TX_INTERVAL - runTime;
 
-  //watchdog.stop();
-
   if(sleepTime > TX_INTERVAL)
     sleepTime = TX_INTERVAL;
 
@@ -442,16 +457,18 @@ static void setLowConsumption(void) {
 
   }
 
+  pinMode(LED_INFO, INPUT);
+  pinMode(BTN_ACT, INPUT);
+
+  Serial.end();
+  pinMode(UART1_TX, INPUT);
+  pinMode(UART1_RX, INPUT);
+
 #if (LORA_ENABLE == 1)
   if(lora_suspend() != OK) {
 
   }
 #endif
-
-  //rfm95w
-
-  //gpio
-  //input analog
 }
 
 /***************************************************************************************

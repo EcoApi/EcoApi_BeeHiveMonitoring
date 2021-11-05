@@ -66,7 +66,7 @@ static void power_stopMode(void) {
   HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
   HAL_ResumeTick();
 
-  system_clockConfig_100MHz();
+  //system_clockConfig();
 
   __enable_irq();
 
@@ -188,17 +188,22 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
 
   switch(e_mode) {
     case e_SLEEP_MODE_STANDBY:
+      //HAL_EnableDBGStandbyMode();
+
       power_standbyMode();
       break;
 
 #if 0
+    case e_SLEEP_MODE_STOP:
+      power_stopMode();
+      break;
+
+
     case e_SLEEP_MODE_SLEEP:
       power_sleepMode();
       break;
 
-    case e_SLEEP_MODE_STOP:
-      power_stopMode();
-      break;
+
 #endif      
   }  
 

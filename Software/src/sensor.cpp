@@ -22,7 +22,12 @@
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
 #define BMP180_ENABLE (1)
-#define ONEWIRE_ENABLE (1)
+
+#if (USE_HSI_HSE_WITHOUT_PLL == 1) && (USE_HSE==1)
+  #define ONEWIRE_ENABLE (0)
+#else
+  #define ONEWIRE_ENABLE (0)
+#endif
 #define ANALOG_ENABLE (1)
 #define HX711_ENABLE (1)
 #define MAX9815_ENABLE (0)
@@ -68,6 +73,9 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
 
   if((pt_ramRet == NULL) || (pt_telemetryData == NULL))
     return ERROR;
+
+  pt_telemetryData->contentInfo.details.scaleType = pt_ramRet->telemetryData.contentInfo.details.scaleType; 
+  
 #if 0
   if(power_isPoweredOn()) {
     // todo define default value and check 
@@ -213,6 +221,24 @@ int32_t sensor_getData(void) {
  *
  ***************************************************************************************/
 int32_t sensor_suspend(void) {
+
+#if (ONEWIRE_ENABLE == 1)    
+    onewire_suspend();
+#endif
+#if (BMP180_ENABLE == 1)
+    bmp180_suspend();
+#endif
+#if (HX711_ENABLE == 1)
+    hx711_suspend();
+#endif
+#if (ANALOG_ENABLE == 1)
+    analog_suspend();
+#endif
+
+  pinMode(I2C1_SCL, INPUT);
+  pinMode(I2C1_SDA, INPUT);
+
+  Wire.end();
 
   return OK;
 }

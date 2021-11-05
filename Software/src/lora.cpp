@@ -14,6 +14,7 @@
 /*	Includes				
 /***************************************************************************************/
 #include <SPI.h>
+
 #include <lmic.h>
 #include <hal/hal.h>
 #include <lmic/lmic_util.h>
@@ -118,7 +119,9 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_re
 
   LMIC_reset(); 
   
-  LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
+#if	(LMIC_ENABLE_arbitrary_clock_error == 1)  
+  LMIC_setClockError(MAX_CLOCK_ERROR * 5 / 100); /* if use hsi 16 mHz without pll (SystemClock_Config) */
+#endif
 
   /*LMIC_setupChannel(0, 868100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(1, 868300000, DR_RANGE_MAP(DR_SF12, DR_SF7B), BAND_CENTI);      // g-band
@@ -162,6 +165,18 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_re
  *
  ***************************************************************************************/
 int32_t lora_suspend(void) {
+  LMIC_shutdown();
+
+  //pinMode(SPI1_MOSI, INPUT);
+  //pinMode(SPI1_MISO, INPUT_ANALOG);
+  //pinMode(SPI1_SCK, INPUT);
+  //pinMode(SPI1_NSS, INPUT);
+  
+  //pinMode(LORA_RST, INPUT);
+  
+  //pinMode(LORA_DIO0, INPUT);
+  //pinMode(LORA_DIO1, INPUT);
+  //pinMode(LORA_DIO2, INPUT);
 
   return OK;
 }
@@ -174,6 +189,7 @@ int32_t lora_suspend(void) {
  ***************************************************************************************/
 void lora_process(void) {
    os_runloop_once(); // Readings taken, sent and looped in the do_send() function called from setup
+   //os_queryTimeCriticalJobs(ms2osticks(n))
 }
 
 /***************************************************************************************
