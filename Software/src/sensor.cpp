@@ -30,8 +30,9 @@
 #endif
 #define ANALOG_ENABLE (1)
 #define HX711_ENABLE (1)
-#define MAX9815_ENABLE (0)
+#define SOUND_ENABLE (0)
 #define TILT_ENABLE (0)
+#define SHT31_ENABLE (0)
 
 #define T_PRECISION (1)
 #define H_PRECISION (1)
@@ -155,7 +156,7 @@ int32_t sensor_setup(t_RamRet *pt_ramRet) {
 
   pt_ramRet_ = pt_ramRet;
 
-//io setup
+  /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 
 
   Wire.setSCL(I2C1_SCL);
   Wire.setSDA(I2C1_SDA);
@@ -163,12 +164,15 @@ int32_t sensor_setup(t_RamRet *pt_ramRet) {
 #if (ONEWIRE_ENABLE == 1)    
   onewire_setup(pt_ramRet);
 #endif
+
 #if (BMP180_ENABLE == 1)
   bmp180_setup(pt_ramRet);
 #endif
+
 #if (HX711_ENABLE == 1)
   hx711_setup(pt_ramRet);
 #endif
+
 #if (ANALOG_ENABLE == 1)
   analog_setup(pt_ramRet);
 #endif
@@ -188,6 +192,11 @@ int32_t sensor_getData(void) {
 #if (ONEWIRE_ENABLE == 1)    
     onewire_getData(&telemetryData);
 #endif
+
+#if((ONEWIRE_ENABLE == 0) && (SHT31_ENABLE == 0)) /* outside temperature */
+  telemetryData.contentInfo.details.temperatureInsideCount = 0;
+#endif
+
 #if (BMP180_ENABLE == 1)
     bmp180_getData(&telemetryData);
 #endif

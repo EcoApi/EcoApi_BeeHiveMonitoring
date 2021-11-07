@@ -63,8 +63,8 @@ extern "C" {
 
 #define LED_INFO PA_8
 
-#define R1 33000.0
-#define R2 100000.0
+#define R1 300000.0
+#define R2 300000.0
 
 #define WAKEUP_PIN PWR_WAKEUP_PIN1
 

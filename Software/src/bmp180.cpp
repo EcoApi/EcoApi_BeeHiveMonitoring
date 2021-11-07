@@ -82,7 +82,7 @@ int32_t bmp180_getData(t_telemetryData *pt_telemetryData) {
     }  
   }  
 
-  status = bmp180.startPressure(3);
+  status = bmp180.startPressure(1 /* oversampling standard */);
   if(status != 0) {
     delay(status);
 

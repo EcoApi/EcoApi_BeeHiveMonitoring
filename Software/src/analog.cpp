@@ -163,6 +163,8 @@ int32_t analog_setup(t_RamRet *pt_ramRet) {
 
   pt_ramRet_ = pt_ramRet;
 
+  pinMode(ANA_VBATT, INPUT_ANALOG);
+
   return OK;
 }
 
@@ -180,13 +182,12 @@ int32_t analog_getData(t_telemetryData *pt_telemetryData) {
   //static int32_t getInternalVrefInternal(int32_t vref_mvolt);
   int32_t temperatureInternal = getInternalTemp(vref); 
   int32_t vbatt = getInternalVbatt(vref);
-  int32_t anaRing = getExternalAnaRing(vref);
+  //int32_t anaRing = getExternalAnaRing(vref);
   pt_telemetryData->vbatt = (float) getExternalVbatt(vref) / ((float)R2/((float)R1+(float)R2)); 
 
-  TRACE_CrLf("[ANALOG] vbattInt: %d mv, vbattExtPercent: %0.2f, vbattExt: %d mv, ring: %d, temp: %d  C", vbatt,
+  TRACE_CrLf("[ANALOG] vref %d mv, vbattInt: %d mv, vbattExtPercent: %0.2f, vbattExt: %d mv, temp: %d  C", vref, vbatt,
                                                                                                          analog_getVBattPercent(pt_telemetryData->vbatt),
                                                                                                          pt_telemetryData->vbatt,
-                                                                                                         anaRing,
                                                                                                          temperatureInternal);
 
   return OK;                                                                                                       
@@ -199,6 +200,7 @@ int32_t analog_getData(t_telemetryData *pt_telemetryData) {
  *
  ***************************************************************************************/
 int32_t analog_suspend(void) {
+  __HAL_RCC_ADC1_CLK_DISABLE();
 
   return OK;
 }

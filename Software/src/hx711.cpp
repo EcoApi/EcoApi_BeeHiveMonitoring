@@ -196,15 +196,12 @@ int32_t hx711_getData(t_telemetryData *pt_telemetryData) {
 
 #if 0
   pt_telemetryData->weight = abs(scale.get_units());
-  // issue with abs missing at the 4th digit after the dot (bug!!)
-  if (0.0000 - weight > 0.0001) 
-    weight = 0.00; //reset to zero
 #else
   pt_telemetryData->weight = abs(scale.get_units(2));
+#endif
   // issue with abs missing at the 4th digit after the dot (bug!!)
   if (0.0000 - pt_telemetryData->weight > 0.0001) 
-    pt_telemetryData->weight = 0.00; //reset to zero
-#endif
+  pt_telemetryData->weight = 0.00; //reset to zero
 
   TRACE_CrLf("[HX711] weight: %0.1f kg", pt_telemetryData->weight);
 
@@ -226,7 +223,9 @@ int32_t hx711_suspend(void) {
 
   //HX711_DT, HX711_CK
 
-  scale.power_down();
+  //scale.power_down();
+
+  //delayMicroseconds(60);
 
   return OK;
 }

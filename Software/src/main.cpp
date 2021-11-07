@@ -65,8 +65,11 @@ void setup(void) {
   //system_setBorLevel(OB_BOR_LEVEL1);
 
   //pinMode(LED_BUILTIN, OUTPUT);
-  //pinMode(ANA_VBATT, INPUT_ANALOG);
+ 
   //pinMode(RING, INPUT);
+
+  //digitalWrite(LED_INFO, LOW);
+  //pinMode(LED_INFO, OUTPUT);
 
 
   //clock debug with mco pin
@@ -210,6 +213,14 @@ void setup(void) {
 void loop(void) {
 #if (LORA_ENABLE == 1)
   lora_process();
+#else
+  sensor_getData();
+
+  delay(1000);
+
+  sensor_suspend();
+  delay(1000);
+  system_reset();
 #endif
 }
 
