@@ -35,13 +35,26 @@
 //#define STM32_ID	((u1_t *) 0x1FFFF7E8) //F1
 #define STM32_UUID	((uint32_t *) 0x1FFF7A10) //F4
 
+#define MIN_TO_SEC(min) (min*60)
+
 /***************************************************************************************/
 /*	Local variables                                                                    
 /***************************************************************************************/
+typedef enum e_DATA_STATE {
+  e_dataStateDefault = 0,
+  e_dataStateNotChange,
+  e_dataStateQueued,
+  e_dataStateSended,
+  e_dataStateSendFailed,
+  e_dataStateStandby,
+};
+
+static e_DATA_STATE e_dataState = e_dataStateDefault;
+
 static bool b_actionButtonPressed = false;
-static const uint32_t TX_INTERVAL = 60;
 static t_RamRet t_ramRet;
 static int32_t startTime = 0;
+static uint32_t startDataQueuedTime = 0;
 
 //IWatchdogClass watchdog = IWatchdogClass();
 
@@ -49,8 +62,10 @@ static int32_t startTime = 0;
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
 static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint8_t *p_sendSize);
-static int32_t lora_receiveDataCallback(uint8_t *payload, uint8_t payloadSize);
-static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data);
+static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data, uint32_t size);
+#if (STANDBY_ENABLE == 0)
+  static void lora_wakeupCallback(void);
+#endif  
 static void gotoSleep(void);
 static void setLowConsumption(void);
 static void actionButtonHandler(void);
@@ -127,7 +142,7 @@ void setup(void) {
 
   TRACE_CrLf("################");
   TRACE_CrLf("[BOOT] EcoApi BeeHive Monitor [hw %d, sw %d]", HW_VERSION, SW_REVISION);
-  TRACE_CrLf("[BOOT] tx freq %d, cpu uuid %08X%08X%08X", TX_INTERVAL, STM32_UUID[0], STM32_UUID[1], STM32_UUID[2]);
+  TRACE_CrLf("[BOOT] tx freq %d, cpu uuid %08X%08X%08X", t_ramRet.sendFrequency, STM32_UUID[0], STM32_UUID[1], STM32_UUID[2]);
 
   /*if(!watchdog.isEnabled()) {
     TRACE_CrLf("[WDG] init ko");
@@ -155,7 +170,7 @@ void setup(void) {
     TRACE_CrLf("[RTC] start ko");
   } else {
     startTime = rtc_read();
-    TRACE_CrLf("[RTC] start ok, timestamp: %d, sleep time %d", startTime, startTime - t_ramRet.LORA_lastSendTime);
+    TRACE_CrLf("[RTC] start ok, timestamp: %d, sleep time %d", startTime, startTime - t_ramRet.lastSendTime);
   }
 
 #if 0 /* test rtc */ 
@@ -163,7 +178,7 @@ void setup(void) {
   lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_receiveDataCallback, &lora_eventCallback);
 
 #if (STANDBY_ENABLE == 0)
-  t_ramRet.LORA_lastSendTime = 0;
+  t_ramRet.lastSendTime = 0;
 #endif  
 #endif
 
@@ -189,16 +204,34 @@ void setup(void) {
   } else
     TRACE_CrLf("[RRAM] restored");
 
-  if(sensor_setup(&t_ramRet) != OK) {
+  TRACE_CrLf("[RRAM] size %d, %d x %d bytes", sizeof(t_RamRet), (sizeof(t_RamRet) % 4) ? sizeof(t_RamRet) / sizeof(void*) + 1 : sizeof(t_RamRet) / sizeof(void*), sizeof(void*));  
 
-  }  
+ 
 
 #if (LORA_ENABLE == 1)
-  lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_receiveDataCallback, &lora_eventCallback);
+  if(t_ramRet.audioSettings.sendData == FALSE) {
+    if(sensor_setup(&t_ramRet, FLAG_ALL_WITHOUT_AUDIO) != OK) {
+      //todo qos
+    } 
+  } else {
+    if(sensor_setup(&t_ramRet, FLAG_AUDIO_INFO) != OK) {
+      //todo qos
+     }
+  }  
 
-#if (STANDBY_ENABLE == 0)
-  t_ramRet.LORA_lastSendTime = 0;
-#endif  
+#if (STANDBY_ENABLE == 1)
+  lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_eventCallback);
+#else
+  lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_eventCallback, &lora_wakeupCallback);
+
+  t_ramRet.lastSendTime = 0;
+#endif
+#else
+  if(t_ramRet.audioSettings.sendData == FALSE) {
+    if(sensor_setup(&t_ramRet, /*FLAG_ALL_WITHOUT_AUDIO | */FLAG_AUDIO_INFO) != OK) {
+      //todo qos
+    } 
+  } 
 #endif
 
   ramret_save(&t_ramRet);
@@ -213,13 +246,31 @@ void setup(void) {
 void loop(void) {
 #if (LORA_ENABLE == 1)
   lora_process();
+
+  if((e_dataState == e_dataStateSended) ||
+     (e_dataState == e_dataStateSendFailed) || 
+     (e_dataState == e_dataStateNotChange)) {
+
+    e_dataState = e_dataStateStandby;
+
+    gotoSleep();
+  }
+
+  if(e_dataState == e_dataStateQueued) {
+    if((startDataQueuedTime != 0) && (millis() > (startDataQueuedTime + 20000))) {
+      //todo qos
+      startDataQueuedTime = 0;
+      e_dataState = e_dataStateSended; /* force go to sleep state */
+    } 
+  }
 #else
   sensor_getData();
 
-  delay(1000);
+  //delay(1000);
 
   sensor_suspend();
-  delay(1000);
+  delay(5000);
+  ramret_save(&t_ramRet);
   system_reset();
 #endif
 }
@@ -239,14 +290,6 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
   if((payload == NULL) || !payloadSize || (p_sendSize == NULL))
     return ERROR;
 
-#if (STANDBY_ENABLE == 0) 
-  startTime = rtc_read();
-
-  if(power_isPoweredOn() == FALSE)
-    TRACE_CrLf("################");
-  TRACE_CrLf("[RTC] send data, timestamp: %d, sleep time %d", startTime, startTime - t_ramRet.LORA_lastSendTime);
-#endif
-
   ret = sensor_getData();
 
   if(ret != OK)
@@ -262,7 +305,7 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
     sendSize += (3 * sizeof(uint32_t));
 
     // tx interval : measurement_interval_min (1 byte)
-    payload[sendSize++] = TX_INTERVAL / 60;
+    payload[sendSize++] = t_ramRet.sendFrequency;
 
     // hw version : hardware_version (1 bytes)
     payload[sendSize++] = (uint8_t) HW_VERSION;
@@ -324,20 +367,29 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
     payload[sendSize++] = lowByte(payloadTmp);
   }  
 
-  if(t_ramRet.telemetryData.contentInfo.details.frequency == TRUE) {
-
-  }  
-
-  if(t_ramRet.telemetryData.contentInfo.details.gas == TRUE) {
-
-  }  
-
   if(t_ramRet.telemetryData.contentInfo.details.temperatureInside) {
     for(i=0;i<t_ramRet.telemetryData.contentInfo.details.temperatureInsideCount;i++) {
       payloadTmp = t_ramRet.telemetryData.temperatureInside[i] * 100;
       payload[sendSize++] = highByte(payloadTmp);
       payload[sendSize++] = lowByte(payloadTmp);
     }
+  }
+
+  if(t_ramRet.telemetryData.contentInfo.details.custom == TRUE) {
+
+  } 
+
+  if(t_ramRet.telemetryData.contentInfo.details.audio == TRUE) {
+    uint8_t size = sensor_getAudioData(&payload[sendSize], payloadSize - sendSize);
+    
+    if(!size) {
+      /*payload[sendSize++] = 0x00; // binOffset
+      payload[sendSize++] = 0x00; // binOffset
+      payload[sendSize++] = 0x00; // binSize
+      payload[sendSize++] = 0x00; // binCount*/
+      return ERROR;
+    } else
+      sendSize += size;
   }
 
   *p_sendSize = sendSize;
@@ -347,44 +399,58 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
 
 /***************************************************************************************
  *
- *	\fn		static int32_t lora_receiveDataCallback(uint8_t *payload, uint8_t payloadSize)
- *	\brief 
- *
- ***************************************************************************************/
-static int32_t lora_receiveDataCallback(uint8_t *payload, uint8_t payloadSize) {
-  int i;
-  
-  if((payload == NULL) || !payloadSize)
-    return ERROR;
-
-  TRACE("[LORA] received %d bytes :", payloadSize);
-  for(i=0;i<payloadSize;i++) {
-    TRACE(" %02x", payload[i]);
-  }
-  TRACE_CrLf("");
-
-  return OK;
-}
-
-/***************************************************************************************
- *
  *	\fn		static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data)
  *	\brief 
  *
  ***************************************************************************************/
-static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
+static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data, uint32_t size) {
   switch(e_event) {
-    case e_TX_COMPLETE:
+    case e_TX_RX_ACK:
+      TRACE_CrLf("[LORA] received ack tx / rx");
+      break;
+
+    case e_RX_DATA: {
+      uint8_t *pu8_data = (uint8_t*) pv_data;
+      uint32_t i;
+  
+      if((pu8_data == NULL) || !size)
+          break;
+
+      TRACE("[LORA] received %d bytes :", size);
+      for(i=0;i<size;i++) {
+        TRACE(" %02x", pu8_data[i]);
+      }
+      TRACE_CrLf("");
+
+      /* todo get audio config and store in flash (count, start,stop,gain,sampling frequency) */
+
+      break;
+    }
+
+    case e_TX_DATA_QUEUED:
+      TRACE_CrLf("[LORA] data queued");
+
+      startDataQueuedTime = millis();
+
+      e_dataState = e_dataStateQueued;
+      break;
+
+    case e_TX_DONE:
+      TRACE_CrLf("[LORA] data sended");
+      
       if(t_ramRet.telemetryData.contentInfo.details.baseInfo == TRUE) {
         t_ramRet.baseInfoSended = TRUE;
         TRACE_CrLf("[LORA] base info sended");
       }  
 
-      gotoSleep();
+      if(e_dataState != e_dataStateStandby)
+        e_dataState = e_dataStateSended;
       break;
     
     case e_DATA_NOT_CHANGED:
-      gotoSleep();
+      TRACE_CrLf("[LORA] data not changed");
+
+      e_dataState = e_dataStateNotChange;
       break;
     
     case e_SEND_FAILED:
@@ -392,9 +458,9 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
 #if 0
       uint32_t now = rtc_read();
 
-      //uint32_t lapse = now - t_ramRet.LORA_lastSendTime;
+      //uint32_t lapse = now - t_ramRet.lastSendTime;
 
-      if(lapse < (TX_INTERVAL - 1)) {
+      if(lapse < (MIN_TO_SEC(t_ramRet.sendFrequency) - 1)) {
         TRACE_CrLf("[ERROR] send time lapse %d, timestamp %d, run %d", lapse, now, runTime);
 
         t_ramRet.forceNewJoining = TRUE;
@@ -403,6 +469,8 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
         system_reset();
       } 
 #endif
+
+      e_dataState = e_dataStateSendFailed;
       break;
 
     case e_RX_TIME: {
@@ -428,6 +496,35 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
   }
 }
 
+#if (STANDBY_ENABLE == 0)
+/***************************************************************************************
+ *
+ *	\fn		static void lora_wakeupCallback(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void lora_wakeupCallback(void) {
+  e_dataState = e_dataStateDefault;
+  
+  startTime = rtc_read();
+
+  if(power_isPoweredOn() == FALSE)
+    TRACE_CrLf("################");
+
+  TRACE_CrLf("[RTC] send data, timestamp: %d, sleep time %d", startTime, startTime - t_ramRet.lastSendTime);
+
+  if(t_ramRet.audioSettings.sendData == FALSE) {
+    if(sensor_setup(&t_ramRet, FLAG_ALL_WITHOUT_AUDIO) != OK) {
+      //todo qos
+    } 
+  } else {
+    if(sensor_setup(&t_ramRet, FLAG_AUDIO_INFO) != OK) {
+      //todo qos
+     }
+  } 
+}
+#endif
+
 /***************************************************************************************
  *
  *	\fn		static void gotoSleep(void)
@@ -437,15 +534,34 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data) {
 static void gotoSleep(void) {
   uint32_t now = rtc_read();
   uint32_t runTime = now - startTime;
-  uint32_t sleepTime = TX_INTERVAL - runTime;
+  uint32_t sleepTime;
 
-  if(sleepTime > TX_INTERVAL)
-    sleepTime = TX_INTERVAL;
+  if(t_ramRet.audioSettings.sendData == FALSE) { // if not send audio data
+    if(++t_ramRet.audioSettings.sendDataCounter >= t_ramRet.audioSettings.sendDataMaxCycle) { // if time to send audio (next cycle)
+      t_ramRet.audioSettings.sendData = TRUE;
+      sleepTime = MIN_TO_SEC(AUDIO_SEND_DATA_OFFSET); //short suspend for sending audio data
+      
+      TRACE_CrLf("[RTC] send audio data %d / %d next wakeup", t_ramRet.audioSettings.sendDataCounter, t_ramRet.audioSettings.sendDataMaxCycle);
+    } else { 
+      sleepTime = MIN_TO_SEC(t_ramRet.sendFrequency) - runTime; // compute real suspend time 
+      
+      TRACE_CrLf("[RTC] send audio data %d / %d", t_ramRet.audioSettings.sendDataCounter, t_ramRet.audioSettings.sendDataMaxCycle);
+    }  
+  } else { // just send audio data
+    t_ramRet.audioSettings.sendData = FALSE;
+    t_ramRet.audioSettings.sendDataCounter = 0;
 
-  t_ramRet.LORA_lastSendTime = now;
+    sleepTime = MIN_TO_SEC(t_ramRet.sendFrequency) - runTime - MIN_TO_SEC(AUDIO_SEND_DATA_OFFSET); // compute real suspend time with offset send audio data adjustment
+  }
+
+  if(sleepTime > MIN_TO_SEC(t_ramRet.sendFrequency))
+    sleepTime = MIN_TO_SEC(t_ramRet.sendFrequency);
+
+  t_ramRet.lastSendTime = now;
+  
   ramret_save(&t_ramRet);
 
-  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d, runtime %d", t_ramRet.LORA_lastSendTime, sleepTime, runTime);
+  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d, runtime %d", t_ramRet.lastSendTime, sleepTime, runTime);
 
 #if (STANDBY_ENABLE == 1) 
   setLowConsumption();
@@ -490,4 +606,18 @@ static void setLowConsumption(void) {
  ***************************************************************************************/
 static void actionButtonHandler(void) {
   b_actionButtonPressed = true;
+}
+
+/***************************************************************************************
+ *
+ *	\fn		void _Error_Handler(const char *msg, int val)
+ *	\brief 
+ *
+ ***************************************************************************************/
+void _Error_Handler(const char *msg, int val) {
+  /* User can add his own implementation to report the HAL error return state */
+  //core_debug("Error: %s (%i)\n", msg, val);
+  TRACE_CrLf("Error: %s (%i)\n", msg, val);
+  while (1) {
+  }
 }

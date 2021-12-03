@@ -48,8 +48,25 @@ uint8_t ramret_init(t_RamRet *pt_ramRet) {
     pt_ramRet->isUsed = 0;
 
   if(0 == pt_ramRet->isUsed || RAMRET_MAGIC != pt_ramRet->u32_magic) {
-    memset(pt_ramRet, 0, sizeof(t_RamRet));    
+    memset(pt_ramRet, 0, sizeof(t_RamRet)); 
+
     u8_ramRetIsNew = TRUE;
+    
+    /* lora */
+    pt_ramRet->loraSettings.waitDownlinkMaxCycle = LORA_DEFAULT_MAX_WAIT_DOWNLINK_CYCLE;
+    
+    /* audio */
+    pt_ramRet->audioSettings.binOffset = AUDIO_DEFAULT_BIN_OFFSET;
+    pt_ramRet->audioSettings.binSize = AUDIO_DEFAULT_BIN_SIZE;
+    pt_ramRet->audioSettings.binCount = AUDIO_MAX_BINS;
+    pt_ramRet->audioSettings.sendDataMaxCycle = AUDIO_DEFAULT_MAX_SEND_DATA_CYCLE;
+    pt_ramRet->audioSettings.samplingFrequency = AUDIO_DEFAULT_SAMPLING_FREQUENCY;
+    // gain
+    // other audio
+
+    /* common */
+    pt_ramRet->sendFrequency = DEFAULT_SEND_FREQUENCY;
+
     pt_ramRet->isUsed = TRUE;
     pt_ramRet->u32_magic = RAMRET_MAGIC;
     

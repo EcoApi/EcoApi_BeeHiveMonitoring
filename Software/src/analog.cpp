@@ -25,6 +25,7 @@
 /*	Local variables                                                                    
 /***************************************************************************************/
 static t_RamRet *pt_ramRet_ = NULL;
+static int32_t vRef_ = 3300;
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
@@ -116,7 +117,7 @@ static int32_t getInternalVrefInternal(int32_t vref_mvolt) {
  *	\brief 
  *
  ***************************************************************************************/
-static int32_t getInternalVref(void) {
+int32_t analog_getInternalVref(void) {
   uint16_t vref_12b;
   int32_t vref_mvolt, vrefint_mvolt;
 
@@ -157,11 +158,12 @@ float analog_getVBattPercent(int32_t vbatt) {
  *	\brief 
  *
  ***************************************************************************************/
-int32_t analog_setup(t_RamRet *pt_ramRet) {
+int32_t analog_setup(t_RamRet *pt_ramRet, int32_t vRef) {
   if(pt_ramRet == NULL)
     return ERROR;
 
   pt_ramRet_ = pt_ramRet;
+  vRef_ = vRef;
 
   pinMode(ANA_VBATT, INPUT_ANALOG);
 
@@ -178,14 +180,14 @@ int32_t analog_getData(t_telemetryData *pt_telemetryData) {
   if(pt_telemetryData == NULL)
     return ERROR;
   
-  int32_t vref = getInternalVref();
+  //int32_t vref = getInternalVref();
   //static int32_t getInternalVrefInternal(int32_t vref_mvolt);
-  int32_t temperatureInternal = getInternalTemp(vref); 
-  int32_t vbatt = getInternalVbatt(vref);
+  int32_t temperatureInternal = getInternalTemp(vRef_); 
+  int32_t vbatt = getInternalVbatt(vRef_);
   //int32_t anaRing = getExternalAnaRing(vref);
-  pt_telemetryData->vbatt = (float) getExternalVbatt(vref) / ((float)R2/((float)R1+(float)R2)); 
+  pt_telemetryData->vbatt = (float) getExternalVbatt(vRef_) / ((float)R2/((float)R1+(float)R2)); 
 
-  TRACE_CrLf("[ANALOG] vref %d mv, vbattInt: %d mv, vbattExtPercent: %0.2f, vbattExt: %d mv, temp: %d  C", vref, vbatt,
+  TRACE_CrLf("[ANALOG] vref %d mv, vbattInt: %d mv, vbattExtPercent: %0.2f, vbattExt: %d mv, temp: %d  C", vRef_, vbatt,
                                                                                                          analog_getVBattPercent(pt_telemetryData->vbatt),
                                                                                                          pt_telemetryData->vbatt,
                                                                                                          temperatureInternal);

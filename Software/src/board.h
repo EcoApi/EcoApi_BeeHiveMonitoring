@@ -39,6 +39,28 @@ extern "C" {
 /***************************************************************************************/
 /* Define
 /***************************************************************************************/
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+
+/*
+-O0 : optimize for compile time and debug-ability. Most performance optimizations are disabled. This is the default for GCC.
+-O1: pick the low hanging fruit in terms of performance, without impacting compilation time too much.
+-O2: optimize for performance more aggressively, but not at the cost of larger code size.
+-O3: optimize for performance at all cost, no matter the code size or compilation time impact.
+-Ofast a.k.a. ludicrous mode: take off the guard rails, and disregard strict C standard compliance in the name of speed. This may lead to invalid programs.
+-Os optimize for code size. This uses O2 as the baseline, but disables some optimizations. For example, it will not inline3 code if that leads to a size increase.
+
+or
+
+#pragma GCC push_options
+#pragma GCC optimize ("O3")
+
+ Code that needs optimizing
+
+#pragma GCC pop_options
+*/
+
+//#define WEAK __attribute__ ((weak))
+
 #define TRUE (1)
 #define FALSE !(TRUE)
 

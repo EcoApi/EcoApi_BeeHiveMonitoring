@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		lora.h
+ *	\file		audio.h
  *
  *	\brief
  *
@@ -10,15 +10,14 @@
  *
  ***************************************************************************************/
 
-#ifndef __LORA_H_
-#define __LORA_H_
+#ifndef __AUDIO_H_
+#define __AUDIO_H_
 
 /***************************************************************************************/
 /*	Includes																		
 /***************************************************************************************/
 #include "board.h"
 #include "ramret.h"
-#include "power.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,39 +26,30 @@ extern "C" {
 /***************************************************************************************/
 /* Define
 /***************************************************************************************/
+// define macro to pack structures correctly with both GCC and MSVC compilers
 
 /***************************************************************************************/
 /* Typedef                                                                        
 /***************************************************************************************/
-typedef enum {
-    e_TX_RX_ACK = 0,
-    e_RX_DATA,
-    e_TX_DATA_QUEUED,
-    e_TX_DONE,
-    e_DATA_NOT_CHANGED,
-    e_SEND_FAILED,
-    e_RX_TIME,
-} e_LORA_EVENT;
-
-typedef int32_t (*fn_lora_sendData)(uint8_t*, uint8_t, uint8_t*);
-typedef void (*fn_lora_event)(e_LORA_EVENT, void*, uint32_t);
-#if (STANDBY_ENABLE == 0)
-    typedef void (*fn_lora_wakeup)(void);
-#endif
+PACK(struct FFT_RESULTS_ {
+  uint16_t binOffset; /* start bin */
+  uint8_t binSize; /* bin count in one outputbin */
+  uint8_t binCount; /* bin output count */
+  uint16_t values[AUDIO_MAX_BINS];
+});
+typedef FFT_RESULTS_ FFT_RESULTS;
 
 /***************************************************************************************/
 /*	Shared Functions																  
-/***************************************************************************************/ 
-#if (STANDBY_ENABLE == 1)
-    int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_event fn_event);
-#else
-    int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_event fn_event, fn_lora_wakeup fn_wakeup);
-    void lora_schedule(uint32_t time);
-#endif
+/***************************************************************************************/  
+int32_t audio_setup(t_RamRet *pt_ramRet, int32_t vref);
+int32_t audio_getData(t_telemetryData *pt_telemetryData);
+int32_t audio_suspend(void);
+uint8_t audio_getResultCount(void);
+int32_t audio_getResult(FFT_RESULTS *p_fftResult, uint8_t resultIndex);
 
-int32_t lora_suspend(void);
-void lora_process(void);
-int32_t lora_getTime(void);
+void _DMA2_Stream0_IRQHandler(void);
+void _TIM2_IRQHandler(void);
 
 #ifdef __cplusplus
 }

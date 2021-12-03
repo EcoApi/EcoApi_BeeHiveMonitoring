@@ -21,19 +21,6 @@
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
-#define BMP180_ENABLE (1)
-
-#if (USE_HSI_HSE_WITHOUT_PLL == 1) && (USE_HSE==1)
-  #define ONEWIRE_ENABLE (0)
-#else
-  #define ONEWIRE_ENABLE (0)
-#endif
-#define ANALOG_ENABLE (1)
-#define HX711_ENABLE (1)
-#define SOUND_ENABLE (0)
-#define TILT_ENABLE (0)
-#define SHT31_ENABLE (0)
-
 #define T_PRECISION (1)
 #define H_PRECISION (1)
 #define P_PRECISION (0)
@@ -44,6 +31,7 @@
 /*	Local variables                                                                    
 /***************************************************************************************/
 static t_RamRet *pt_ramRet_ = NULL;
+static uint16_t dataFlag_ = FLAG_NONE;
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
@@ -75,36 +63,58 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
   if((pt_ramRet == NULL) || (pt_telemetryData == NULL))
     return ERROR;
 
-  pt_telemetryData->contentInfo.details.scaleType = pt_ramRet->telemetryData.contentInfo.details.scaleType; 
-  
-#if 0
-  if(power_isPoweredOn()) {
-    // todo define default value and check 
-
-    pt_telemetryData->contentInfo.details.baseInfo = TRUE;
-    pt_telemetryData->contentInfo.details.boot = TRUE;
-    pt_telemetryData->contentInfo.details.temperatureOutside = (roundFloat(pt_telemetryData->temperatureOutside, 1) != roundFloat(pt_ramRet->telemetryData.temperatureOutside, 1)) ? TRUE : FALSE;  
-    pt_telemetryData->contentInfo.details.humidityOutside = (roundFloat(pt_telemetryData->humidityOutside, 1) != roundFloat(pt_ramRet->telemetryData.humidityOutside, 1)) ? TRUE : FALSE;  
-    pt_telemetryData->contentInfo.details.pressureOutside = (roundFloat(pt_telemetryData->pressureOutside, 0) != roundFloat(pt_ramRet->telemetryData.pressureOutside, 0)) ? TRUE : FALSE;  
-    pt_telemetryData->contentInfo.details.weight = (roundFloat(pt_telemetryData->weight, 0) != roundFloat(pt_ramRet->telemetryData.weight, 0)) ? TRUE : FALSE;  
-    pt_telemetryData->contentInfo.details.vbatt = (roundFloat(pt_telemetryData->vbatt / 1000, 1) != roundFloat(pt_ramRet->telemetryData.vbatt / 1000, 1)) ? TRUE : FALSE;  
-    pt_telemetryData->contentInfo.details.humidityInside = (roundFloat(pt_telemetryData->humidityInside, 1) != roundFloat(pt_ramRet->telemetryData.humidityInside, 1)) ? TRUE : FALSE;
-    pt_telemetryData->contentInfo.details.frequency = FALSE; // not implemented for the moment
-    pt_telemetryData->contentInfo.details.gas = FALSE; // not impemented for the moment
-
-  } else
-#endif  
-  {
+  /* base info */
+  if(dataFlag_ & FLAG_BASE_INFO)
     pt_telemetryData->contentInfo.details.baseInfo = (pt_ramRet->baseInfoSended == FALSE) ? TRUE : FALSE;
+  else
+    pt_telemetryData->contentInfo.details.baseInfo = FALSE;
+
+  /* boot info */
+  if(dataFlag_ & FLAG_BOOT_INFO)
     pt_telemetryData->contentInfo.details.boot = (power_isWatchdogReset() == TRUE) ? TRUE : FALSE;
+  else
+    pt_telemetryData->contentInfo.details.boot = FALSE;
+
+  /* outside info */
+  if(dataFlag_ & FLAG_OUT_INFO) {
     pt_telemetryData->contentInfo.details.temperatureOutside = (roundFloat(pt_telemetryData->temperatureOutside, T_PRECISION) != roundFloat(pt_ramRet->telemetryData.temperatureOutside, T_PRECISION)) ? TRUE : FALSE;  
     pt_telemetryData->contentInfo.details.humidityOutside = (roundFloat(pt_telemetryData->humidityOutside, H_PRECISION) != roundFloat(pt_ramRet->telemetryData.humidityOutside, H_PRECISION)) ? TRUE : FALSE;  
     pt_telemetryData->contentInfo.details.pressureOutside = (roundFloat(pt_telemetryData->pressureOutside, P_PRECISION) != roundFloat(pt_ramRet->telemetryData.pressureOutside, P_PRECISION)) ? TRUE : FALSE;  
+  } else {
+    pt_telemetryData->contentInfo.details.temperatureOutside = FALSE;
+    pt_telemetryData->contentInfo.details.humidityOutside = FALSE;
+    pt_telemetryData->contentInfo.details.pressureOutside = FALSE;
+  }
+
+  /* weight info */
+  pt_telemetryData->contentInfo.details.scaleType = pt_ramRet->telemetryData.contentInfo.details.scaleType; 
+  if(dataFlag_ & FLAG_WEIGHT_INFO)
     pt_telemetryData->contentInfo.details.weight = (roundFloat(pt_telemetryData->weight, W_PRECISION) != roundFloat(pt_ramRet->telemetryData.weight, W_PRECISION)) ? TRUE : FALSE;  
+  else
+    pt_telemetryData->contentInfo.details.weight = FALSE;
+    
+  /* batt info */
+  if(dataFlag_ & FLAG_BATT_INFO)
     pt_telemetryData->contentInfo.details.vbatt = (roundFloat(pt_telemetryData->vbatt / 1000, V_PRECISION) != roundFloat(pt_ramRet->telemetryData.vbatt / 1000, V_PRECISION)) ? TRUE : FALSE;  
+  else 
+    pt_telemetryData->contentInfo.details.vbatt = FALSE;
+  
+  /* audio info */  
+  if(dataFlag_ & FLAG_AUDIO_INFO)  
+    pt_telemetryData->contentInfo.details.audio = audio_getResultCount() ? TRUE : FALSE;
+  else
+    pt_telemetryData->contentInfo.details.audio = FALSE;
+
+  /* custom info */
+  if(dataFlag_ & FLAG_CUSTOM_INFO) {
+
+  } else {
+    pt_telemetryData->contentInfo.details.custom = FALSE; // not impemented for the moment
+  }
+
+  /* inside info */
+  if(dataFlag_ & FLAG_IN_INFO) {
     pt_telemetryData->contentInfo.details.humidityInside = (roundFloat(pt_telemetryData->humidityInside, H_PRECISION) != roundFloat(pt_ramRet->telemetryData.humidityInside, H_PRECISION)) ? TRUE : FALSE;
-    pt_telemetryData->contentInfo.details.frequency = FALSE; // not implemented for the moment
-    pt_telemetryData->contentInfo.details.gas = FALSE; // not impemented for the moment
 
     pt_telemetryData->contentInfo.details.temperatureInside = FALSE;
     for(i=0;i<pt_telemetryData->contentInfo.details.temperatureInsideCount;i++) {
@@ -113,6 +123,10 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
         break;
       }  
     }
+  } else {
+    pt_telemetryData->contentInfo.details.humidityInside = FALSE;
+    pt_telemetryData->contentInfo.details.temperatureInside = FALSE;
+    pt_telemetryData->contentInfo.details.temperatureInsideCount = 0;
   }  
 
   memcpy(&pt_ramRet->telemetryData, pt_telemetryData, sizeof(t_telemetryData));
@@ -121,9 +135,9 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
      pt_ramRet->telemetryData.contentInfo.details.temperatureOutside || pt_ramRet->telemetryData.contentInfo.details.humidityOutside ||
      pt_ramRet->telemetryData.contentInfo.details.pressureOutside || pt_ramRet->telemetryData.contentInfo.details.weight ||
      pt_ramRet->telemetryData.contentInfo.details.vbatt || pt_ramRet->telemetryData.contentInfo.details.humidityInside ||
-     pt_ramRet->telemetryData.contentInfo.details.frequency || pt_ramRet->telemetryData.contentInfo.details.gas ||
+     pt_ramRet->telemetryData.contentInfo.details.audio || pt_ramRet->telemetryData.contentInfo.details.custom ||
      pt_ramRet->telemetryData.contentInfo.details.temperatureInside) {
-    TRACE_CrLf("[SENSOR] data change, binfo %d, boot %d, t_out %d, h_out %d, p_out %d, w %d, vbatt %d, h_in %d, freq %d, gas %d, t_in %d", 
+    TRACE_CrLf("[SENSOR] data change, binfo %d, boot %d, t_out %d, h_out %d, p_out %d, w %d, vbatt %d, h_in %d, audio %d, custom %d, t_in %d", 
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.baseInfo,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.boot,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.temperatureOutside,
@@ -132,8 +146,8 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.weight,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.vbatt,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.humidityInside,
-                                                                                                pt_ramRet->telemetryData.contentInfo.details.frequency,
-                                                                                                pt_ramRet->telemetryData.contentInfo.details.gas,
+                                                                                                pt_ramRet->telemetryData.contentInfo.details.audio,
+                                                                                                pt_ramRet->telemetryData.contentInfo.details.custom,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.temperatureInside);
                                                                                                
   } else {
@@ -150,32 +164,87 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
  *	\brief 
  *
  ***************************************************************************************/
-int32_t sensor_setup(t_RamRet *pt_ramRet) {
+int32_t sensor_setup(t_RamRet *pt_ramRet, uint16_t dataFlag) {
   if(pt_ramRet == NULL)
     return ERROR;
 
   pt_ramRet_ = pt_ramRet;
-
-  /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 
+  dataFlag_ = dataFlag;
 
   Wire.setSCL(I2C1_SCL);
   Wire.setSDA(I2C1_SDA);
 
-#if (ONEWIRE_ENABLE == 1)    
-  onewire_setup(pt_ramRet);
-#endif
+  //if(power_isPoweredOn()) {
+    /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 
+    /* static detection */
+    pt_ramRet_->sensorPresence.sht3x = TRUE;
+    pt_ramRet_->sensorPresence.si7021 = FALSE;
+    pt_ramRet_->sensorPresence.as6200 = FALSE;
+    pt_ramRet_->sensorPresence.bmpxxx = TRUE;
+    pt_ramRet_->sensorPresence.bmexxx = FALSE;
+    pt_ramRet_->sensorPresence.my_custom_sensor = FALSE;
+    pt_ramRet_->sensorPresence.onewire = FALSE;
+    pt_ramRet_->sensorPresence.audio_ana = TRUE;
+    pt_ramRet_->sensorPresence.audio_i2s = FALSE;
+    pt_ramRet_->sensorPresence.hx711 = TRUE;
+    pt_ramRet_->sensorPresence.ads12xx = FALSE;
+    pt_ramRet_->sensorPresence.nau7802 = FALSE;
+    //trace found sensors
+  //}
 
-#if (BMP180_ENABLE == 1)
-  bmp180_setup(pt_ramRet);
-#endif
+  /* weight info */
+  if(dataFlag_ & FLAG_WEIGHT_INFO) {
+    if(pt_ramRet_->sensorPresence.hx711) {  
+      hx711_setup(pt_ramRet_);
+    } else if(pt_ramRet_->sensorPresence.ads12xx) {
+      /* to be create */
+    } else if(pt_ramRet_->sensorPresence.nau7802) {
+      /* to be create */
+    }    
+  }  
 
-#if (HX711_ENABLE == 1)
-  hx711_setup(pt_ramRet);
-#endif
+  /* inside info */
+  if(dataFlag_ & FLAG_IN_INFO) {
+    if(pt_ramRet_->sensorPresence.onewire) {  
+      onewire_setup(pt_ramRet_);
+    } else if(pt_ramRet_->sensorPresence.sht3x) {
+      sht3x_setup(pt_ramRet_);
+    } else if(pt_ramRet_->sensorPresence.si7021) {
+      /* to be create */
+    } else if(pt_ramRet_->sensorPresence.as6200) { 
+      /* to be create */
+    }
+  }
 
-#if (ANALOG_ENABLE == 1)
-  analog_setup(pt_ramRet);
-#endif
+  /* outside info */
+  if(dataFlag_ & FLAG_OUT_INFO) {
+    if(pt_ramRet_->sensorPresence.bmpxxx) { 
+      bmp180_setup(pt_ramRet_);
+    } else if(pt_ramRet_->sensorPresence.bmexxx) {
+      /* to be create */
+    }    
+  }
+
+  uint32_t vRef = analog_getInternalVref();
+
+  /* audio info */
+  if(dataFlag_ & FLAG_AUDIO_INFO) {
+    if(pt_ramRet_->sensorPresence.audio_ana) {
+      audio_setup(pt_ramRet_, vRef);
+    } else if(pt_ramRet_->sensorPresence.audio_i2s) {
+      /* to be create */
+    }  
+  }
+
+  /* batt info */ 
+  if(dataFlag_ & FLAG_BATT_INFO) { //always present
+    analog_setup(pt_ramRet_, vRef);
+  }
+
+  /* custom info */
+  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_ramRet_->sensorPresence.my_custom_sensor) {
+    /* to be create */
+  } 
 
   return OK;
 }
@@ -187,40 +256,95 @@ int32_t sensor_setup(t_RamRet *pt_ramRet) {
  *
  ***************************************************************************************/
 int32_t sensor_getData(void) {
-   t_telemetryData telemetryData; 
+  t_telemetryData telemetryData; 
   
-#if (ONEWIRE_ENABLE == 1)    
-    onewire_getData(&telemetryData);
-#endif
+  /* inside info */
+  if(dataFlag_ & FLAG_IN_INFO) {
+    if(pt_ramRet_->sensorPresence.onewire) {  
+      onewire_getData(&telemetryData);
+    } else if(pt_ramRet_->sensorPresence.sht3x) {
+      sht3x_getData(&telemetryData);
+    } else if(pt_ramRet_->sensorPresence.si7021) {
+      /* to be create */
+    } else if(pt_ramRet_->sensorPresence.as6200) { 
+      /* to be create */
+    } 
+  }
 
-#if((ONEWIRE_ENABLE == 0) && (SHT31_ENABLE == 0)) /* outside temperature */
-  telemetryData.contentInfo.details.temperatureInsideCount = 0;
-#endif
+  /* outside info */
+  if(dataFlag_ & FLAG_OUT_INFO) {
+    if(pt_ramRet_->sensorPresence.bmpxxx) { 
+      bmp180_getData(&telemetryData);
+    } else if(pt_ramRet_->sensorPresence.bmexxx) {
+      /* to be create */
+    }   
+  }
 
-#if (BMP180_ENABLE == 1)
-    bmp180_getData(&telemetryData);
-#endif
-#if (HX711_ENABLE == 1)
-    hx711_getData(&telemetryData);
-#endif
-#if (ANALOG_ENABLE == 1)
+  /* weight info */
+  if(dataFlag_ & FLAG_WEIGHT_INFO) {
+    if(pt_ramRet_->sensorPresence.hx711) {  
+      hx711_getData(&telemetryData);
+    } else if(pt_ramRet_->sensorPresence.ads12xx) {
+      /* to be create */
+    } else if(pt_ramRet_->sensorPresence.nau7802) {
+      /* to be create */
+    }    
+  } 
+
+  /* audio info */
+  if(dataFlag_ & FLAG_AUDIO_INFO) {
+    if(pt_ramRet_->sensorPresence.audio_ana) {
+      audio_getData(&telemetryData);
+    } else if(pt_ramRet_->sensorPresence.audio_i2s) {
+      /* to be create */
+    }  
+  }
+
+  /* batt info */ 
+  if(dataFlag_ & FLAG_BATT_INFO) { //always present
     analog_getData(&telemetryData);
-#endif
+  }
 
-#if 0
-  telemetryData.humidityOutside = t_ramRet.telemetryData.humidityOutside;
-  telemetryData.humidityOutside += 1.0;
-  if(telemetryData.humidityOutside > 100.0)
-    telemetryData.humidityOutside = 0.0;
-  telemetryData.humidityInside = telemetryDataCurrent.humidityOutside;
-  TRACE_CrLf("[SIMU] enable, humidity in %0.2f rh, out %0.2f rh", telemetryData.humidityInside, telemetryData.humidityOutside);
-#else
-  telemetryData.humidityInside = 0.0;
-  telemetryData.humidityOutside = 0.0;
-  TRACE_CrLf("[SIMU] disable, humidity in %0.2f rh, out %0.2f rh", telemetryData.humidityInside, telemetryData.humidityOutside);
-#endif
+  /* custom info */
+  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_ramRet_->sensorPresence.my_custom_sensor) {
+    /* to be create */
+  }
 
   return sensor_updateContentInfo(pt_ramRet_, &telemetryData);
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sensor_getData(void) 
+ *	\brief 
+ *
+ ***************************************************************************************/
+int8_t sensor_getAudioData(uint8_t *p_data, uint8_t dataSize) {
+  FFT_RESULTS fftResult;
+  uint8_t resultCount;
+  uint8_t rawDataSize;
+  
+  if((p_data == NULL) || !dataSize)
+    return 0;
+  
+  resultCount = audio_getResultCount();
+
+  if(!resultCount)
+    return 0;
+
+  if(audio_getResult(&fftResult, 0) != OK)
+    return 0;
+
+  rawDataSize = sizeof(fftResult.binOffset) + sizeof(fftResult.binSize) + sizeof(fftResult.binCount) + (fftResult.binCount * sizeof(fftResult.values[0]));
+
+  if(rawDataSize > dataSize)
+    return 0;
+
+  //todo more result or more bins
+
+  memcpy(p_data, (uint8_t*) &fftResult, rawDataSize);
+
+  return rawDataSize;
 }
 
 /***************************************************************************************
@@ -230,19 +354,57 @@ int32_t sensor_getData(void) {
  *
  ***************************************************************************************/
 int32_t sensor_suspend(void) {
+  /* inside info */
+  if(dataFlag_ & FLAG_IN_INFO) {
+    if(pt_ramRet_->sensorPresence.onewire) {  
+      onewire_suspend();
+    } else if(pt_ramRet_->sensorPresence.sht3x) {
+      sht3x_suspend();
+    } else if(pt_ramRet_->sensorPresence.si7021) {
+      /* to be create */
+    } else if(pt_ramRet_->sensorPresence.as6200) { 
+      /* to be create */
+    } 
+  }
 
-#if (ONEWIRE_ENABLE == 1)    
-    onewire_suspend();
-#endif
-#if (BMP180_ENABLE == 1)
-    bmp180_suspend();
-#endif
-#if (HX711_ENABLE == 1)
-    hx711_suspend();
-#endif
-#if (ANALOG_ENABLE == 1)
+  /* outside info */
+  if(dataFlag_ & FLAG_OUT_INFO) {
+    if(pt_ramRet_->sensorPresence.bmpxxx) { 
+      bmp180_suspend();
+    } else if(pt_ramRet_->sensorPresence.bmexxx) {
+      /* to be create */
+    }   
+  }
+
+  /* weight info */
+  if(dataFlag_ & FLAG_WEIGHT_INFO) {
+    if(pt_ramRet_->sensorPresence.hx711) {  
+      hx711_suspend();
+    } else if(pt_ramRet_->sensorPresence.ads12xx) {
+      /* to be create */
+    } else if(pt_ramRet_->sensorPresence.nau7802) {
+      /* to be create */
+    }    
+  } 
+
+  /* audio info */
+  if(dataFlag_ & FLAG_AUDIO_INFO) {
+    if(pt_ramRet_->sensorPresence.audio_ana) {
+      audio_suspend();
+    } else if(pt_ramRet_->sensorPresence.audio_i2s) {
+      /* to be create */
+    }  
+  }
+
+  /* batt info */ 
+  if(dataFlag_ & FLAG_BATT_INFO) { //always present
     analog_suspend();
-#endif
+  }
+
+  /* custom info */
+  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_ramRet_->sensorPresence.my_custom_sensor) {
+    /* to be create */
+  }
 
   pinMode(I2C1_SCL, INPUT);
   pinMode(I2C1_SDA, INPUT);

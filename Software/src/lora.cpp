@@ -34,6 +34,17 @@
 #define MAX_EEPROM_DATA_SIZE E2END
 #define LMIC_MAGIC 0x4C4D4943 /* LMIC in ascii */
 
+#define LORA_ADR_ENABLE (1) /* beehise is not mobile */
+#define LORA_TRACE_ENABLE (0)
+
+#if (LORA_TRACE_ENABLE == 1)
+#define LORA_TRACE_CrLf TRACE_CrLf
+#define LORA_TRACE TRACE
+#else
+#define LORA_TRACE_CrLf
+#define LORA_TRACE
+#endif
+
 /***************************************************************************************/
 /* Typedef                                                                        
 /***************************************************************************************/
@@ -51,9 +62,12 @@ typedef struct t_LmicInfo_ {
 /***************************************************************************************/
 static t_LmicInfo lmicInfo;
 
-static osjob_t initjob;
-static osjob_t eventjob;
-static osjob_t sendjob;
+static osjob_t initJob;
+static osjob_t eventJob;
+#if (STANDBY_ENABLE == 0)
+  static osjob_t wakeupJob;
+#endif
+static osjob_t sendJob;
 static uint8_t payload[MAX_LEN_PAYLOAD]; //put correct value
 
 static uint32_t userUTCTime; // Seconds since the UTC epoch
@@ -69,21 +83,27 @@ const lmic_pinmap lmic_pins = {
 };
 
 static fn_lora_sendData fn_sendData_;
-static fn_lora_receiveData fn_receiveData_;
 static fn_lora_event fn_event_;
+#if (STANDBY_ENABLE == 0)
+  fn_lora_wakeup fn_wakeup_;
+#endif
 static t_RamRet *pt_ramRet_;
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
+static void lora_setAdr(bool enabled);
+#if (STANDBY_ENABLE == 0)
+  static void lora_wakeupJob(osjob_t* j);
+#endif
 static void lora_sendJob(osjob_t* j);
 static void lora_initJob(osjob_t* j);
 static void lora_requestNetworkTimeCallback(void *pVoidUserUTCTime, int flagSuccess);
 #if((LMIC_ENABLE_onEvent == 0) && (LMIC_ENABLE_user_events == 1))  
-static void lora_onReceiveEvent(void *pUserData, uint8_t port, const uint8_t *pMessage, size_t nMessage);
-static void lora_onEvent(void *pUserData, ev_t ev);
+  static void lora_onReceiveEvent(void *pUserData, uint8_t port, const uint8_t *pMessage, size_t nMessage);
+  static void lora_onEvent(void *pUserData, ev_t ev);
 #else
-void lora_onEvent(ev_t ev);
+  void lora_onEvent(ev_t ev);
 #endif
 static int32_t lora_infoSave(t_LmicInfo *pt_lmicInfo);
 static int32_t lora_infoErase(void);
@@ -100,12 +120,19 @@ void os_getDevKey (u1_t* buf) {  memcpy_P(buf, APPKEY, 16); }
  *	\brief 
  *
  ***************************************************************************************/
-int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_receiveData fn_receiveData, fn_lora_event fn_event) {
+#if (STANDBY_ENABLE == 1)
+int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_event fn_event) {
   if((pt_ramRet == NULL) || (fn_sendData == NULL) || (fn_event == NULL))
     return ERROR;
-  
+#else
+int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_event fn_event, fn_lora_wakeup fn_wakeup) {
+  if((pt_ramRet == NULL) || (fn_sendData == NULL) || (fn_event == NULL) || (fn_wakeup == NULL))
+    return ERROR;
+
+  fn_wakeup_ = fn_wakeup;
+#endif
+
   fn_sendData_ = fn_sendData;
-  fn_receiveData_ = fn_receiveData;
   fn_event_ = fn_event;
   pt_ramRet_ = pt_ramRet;
 
@@ -123,7 +150,7 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_re
   LMIC_setClockError(MAX_CLOCK_ERROR * 5 / 100); /* if use hsi 16 mHz without pll (SystemClock_Config) */
 #endif
 
-  /*LMIC_setupChannel(0, 868100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
+  LMIC_setupChannel(0, 868100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(1, 868300000, DR_RANGE_MAP(DR_SF12, DR_SF7B), BAND_CENTI);      // g-band
   LMIC_setupChannel(2, 868500000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(3, 867100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
@@ -133,13 +160,19 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_re
   LMIC_setupChannel(7, 867900000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(8, 868800000, DR_RANGE_MAP(DR_FSK,  DR_FSK),  BAND_MILLI);      // g2-band*/
 
-  //LMIC.dn2Dr = DR_SF9;
+  /* sf9 for rx2 */
+  LMIC.dn2Dr = DR_SF9;
 
-  //#ifdef TTNSTACKV3
-  // essential for TTNv3, otherwise you will get a Scheduled downlink message
-  // Rx1 delay: 5 or other number depending on the config
-  LMIC.rxDelay = 5;
-  //#endif
+#if 0  
+  if(power_isPoweredOn() || pt_ramRet_->loraSettings.waitDownlinkCounter++ > pt_ramRet_->loraSettings.waitDownlinkMaxCycle) {
+    LMIC.rxDelay = 5; // TTN V3 Rx1 delay: 5 or other number depending on the config
+    pt_ramRet_->loraSettings.waitDownlinkCounter = 0;
+  } else {
+    LMIC.rxDelay = 0; // must be check
+  }
+#else
+  LMIC.rxDelay = 5; // TTN V3 Rx1 delay: 5 or other number depending on the console config and network
+#endif
 
   // Disable link-check mode and ADR, because ADR tends to complicate testing.
   LMIC_setLinkCheckMode(0);  
@@ -153,7 +186,7 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_re
   LMIC_registerRxMessageCb(lora_onReceiveEvent, (void*) pt_ramRet);
 #endif
 
-  os_setCallback(&initjob, lora_initJob); 
+  os_setCallback(&initJob, lora_initJob); 
 
   return OK;  
 }
@@ -204,16 +237,6 @@ int32_t lora_getTime(void) {
 
 /***************************************************************************************
  *
- *	\fn		void lora_schedule(uint32_t time)
- *	\brief 
- *
- ***************************************************************************************/
-void lora_schedule(uint32_t time) {
-  os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(time), lora_sendJob);
-}
-
-/***************************************************************************************
- *
  *	\fn		static void lora_sendJob(osjob_t* j)
  *	\brief 
  *
@@ -221,6 +244,44 @@ void lora_schedule(uint32_t time) {
 //static void lora_eventJob(osjob_t* j) {
 
 //}
+
+#if (STANDBY_ENABLE == 0)
+/***************************************************************************************
+ *
+ *	\fn		void lora_schedule(uint32_t time)
+ *	\brief 
+ *
+ ***************************************************************************************/
+void lora_schedule(uint32_t time) {
+  LMIC_clrTxData();
+  
+  os_setTimedCallback(&wakeupJob, os_getTime() + sec2osticks(time), lora_wakeupJob);
+}
+
+/***************************************************************************************
+ *
+ *	\fn		static void lora_setAdr(bool enabled)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void lora_setAdr(bool enabled) {
+  LMIC_setAdrMode(enabled);
+  LMIC_setLinkCheckMode(!enabled);
+}
+
+/***************************************************************************************
+ *
+ *	\fn		static void lora_wakeupJob(osjob_t* j)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void lora_wakeupJob(osjob_t* j) {
+  if(fn_wakeup_ != NULL)
+    fn_wakeup_();
+
+  os_setCallback(&sendJob, lora_sendJob);
+}
+#endif
 
 /***************************************************************************************
  *
@@ -234,21 +295,18 @@ static void lora_sendJob(osjob_t* j) {
 
   // Check if there is not a current TX/RX job running
   if (LMIC.opmode & OP_TXRXPEND) {
-    TRACE_CrLf("[LORA] OP_TXRXPEND, not sending");
+    LORA_TRACE_CrLf("[LORA] OP_TXRXPEND, not sending");
+    //todo event 
   } else {
     if(fn_sendData_ != NULL) {
       int32_t ret = fn_sendData_(payload, sizeof(payload), &payloadSize);
 
       if(ret == DATA_NOT_CHANGED) {
         if(fn_event_ != NULL)
-          fn_event_(e_DATA_NOT_CHANGED, NULL);
-        
-        //os_setCallback(&eventjob, lora_eventJob);  
+          fn_event_(e_DATA_NOT_CHANGED, NULL, 0);
       } else if(ret == ERROR) {
         if(fn_event_ != NULL)
-          fn_event_(e_SEND_FAILED, NULL);
-
-        //os_setCallback(&eventjob, lora_eventJob); 
+          fn_event_(e_SEND_FAILED, NULL, 0);
       } else {
         if(pt_ramRet_->timeUpdated == FALSE)  
           LMIC_requestNetworkTime(lora_requestNetworkTimeCallback, &userUTCTime);
@@ -258,8 +316,11 @@ static void lora_sendJob(osjob_t* j) {
         // don't request an ack (the last parameter, if not zero, requests an ack from the network).
         // Remember, acks consume a lot of network resources; don't ask for an ack unless you really need it.     
         LMIC_setTxData2(1, payload, payloadSize, 0);
-       
-        TRACE_CrLf("[LORA] packet queued (%d bytes)", payloadSize);
+
+        LORA_TRACE_CrLf("[LORA] packet queued (%d bytes)", payloadSize);
+
+        if(fn_event_ != NULL)
+          fn_event_(e_TX_DATA_QUEUED, NULL, 0);
       }
     }
   }
@@ -276,10 +337,13 @@ static void lora_initJob(osjob_t* j) {
     if((pt_ramRet_->forceNewJoining == FALSE) && lora_infoLoad(&lmicInfo) == OK) {
       LMIC_setSession(lmicInfo.netid, lmicInfo.devaddr, lmicInfo.nwkKey, lmicInfo.artKey);
 
-      LMIC.seqnoUp = pt_ramRet_->LORA_seqnoUp;
-      LMIC.seqnoDn = pt_ramRet_->LORA_seqnoDown;
-    
-      os_setCallback(&sendjob, lora_sendJob);
+      LMIC.seqnoUp = pt_ramRet_->loraSettings.seqnoUp;
+      LMIC.seqnoDn = pt_ramRet_->loraSettings.seqnoDown;
+
+      LMIC_setAdrMode(LORA_ADR_ENABLE);
+      LMIC_setLinkCheckMode(!LORA_ADR_ENABLE);
+
+      os_setCallback(&sendJob, lora_sendJob);
       return; 
     }
 
@@ -309,16 +373,14 @@ static void lora_requestNetworkTimeCallback(void *pVoidUserUTCTime, int flagSucc
 
   lmic_time_reference_t lmicTimeReference;
 
-  TRACE("[LORA] ");
-
   if(flagSuccess != 1) {
-    TRACE_CrLf("USER CALLBACK: Not a success");
+    LORA_TRACE_CrLf("[LORA] USER CALLBACK: Not a success");
     return;
   }
 
   flagSuccess = LMIC_getNetworkTimeReference(&lmicTimeReference);
   if (flagSuccess != 1) {
-    TRACE_CrLf("USER CALLBACK: LMIC_getNetworkTimeReference didn't succeed");
+    LORA_TRACE_CrLf("[LORA] USER CALLBACK: LMIC_getNetworkTimeReference didn't succeed");
     return;
   }
 
@@ -335,7 +397,7 @@ static void lora_requestNetworkTimeCallback(void *pVoidUserUTCTime, int flagSucc
   *pUserUTCTime += requestDelaySec;
 
   if(fn_event_ != NULL)
-    fn_event_(e_RX_TIME, (void*) pUserUTCTime);
+    fn_event_(e_RX_TIME, (void*) pUserUTCTime, 0);
 }
 
 #if((LMIC_ENABLE_onEvent == 0) && (LMIC_ENABLE_user_events == 1)) 
@@ -364,22 +426,22 @@ void lora_onEvent(ev_t ev) {
 
   switch(ev) {
     case EV_SCAN_TIMEOUT:
-      TRACE_CrLf("[LORA] EV_SCAN_TIMEOUT");
+      LORA_TRACE_CrLf("[LORA] EV_SCAN_TIMEOUT");
       break;
     case EV_BEACON_FOUND:
-      TRACE_CrLf("[LORA] EV_BEACON_FOUND");
+      LORA_TRACE_CrLf("[LORA] EV_BEACON_FOUND");
       break;
     case EV_BEACON_MISSED:
-      TRACE_CrLf("[LORA] EV_BEACON_MISSED");
+      LORA_TRACE_CrLf("[LORA] EV_BEACON_MISSED");
       break;
     case EV_BEACON_TRACKED:
-      TRACE_CrLf("[LORA] EV_BEACON_TRACKED");
+      LORA_TRACE_CrLf("[LORA] EV_BEACON_TRACKED");
       break;
     case EV_JOINING:
-      TRACE_CrLf("[LORA] EV_JOINING");
+      LORA_TRACE_CrLf("[LORA] EV_JOINING");
       break;
     case EV_JOINED:
-      TRACE_CrLf("[LORA] EV_JOINED");
+      LORA_TRACE_CrLf("[LORA] EV_JOINED");
             
       LMIC_getSessionKeys(&lmicInfo.netid, &lmicInfo.devaddr, lmicInfo.nwkKey, lmicInfo.artKey);
 
@@ -389,52 +451,52 @@ void lora_onEvent(ev_t ev) {
       // during join, but because slow data rates change max TX
       // size, we don't use it in this example.
       LMIC_setLinkCheckMode(0);
+      LMIC_setAdrMode(LORA_ADR_ENABLE);
 
-      os_setCallback(&sendjob, lora_sendJob);
+      os_setCallback(&sendJob, lora_sendJob);
       break;
     case EV_JOIN_FAILED:
-      TRACE_CrLf("[LORA] EV_JOIN_FAILED");
+      LORA_TRACE_CrLf("[LORA] EV_JOIN_FAILED");
       //todo after counter erase lmic info
       break;
     case EV_REJOIN_FAILED:
-      TRACE_CrLf("[LORA] EV_REJOIN_FAILED");
+      LORA_TRACE_CrLf("[LORA] EV_REJOIN_FAILED");
       //todo after counter erase lmic info
       break;
     case EV_TXCOMPLETE:
-      TRACE_CrLf("[LORA] EV_TXCOMPLETE (includes waiting for RX windows)");
+      LORA_TRACE_CrLf("[LORA] EV_TXCOMPLETE (includes waiting for RX windows)");
       
       if (LMIC.txrxFlags & TXRX_ACK) {
-        TRACE_CrLf("[LORA] received ack");
+        if(fn_event_ != NULL)
+          fn_event_(e_TX_RX_ACK, NULL, 0);
       }
 
       if (LMIC.dataLen) {
-        //TRACE_CrLf("[LORA] received %d bytes of payload", LMIC.dataLen);
-
-        if(fn_receiveData_ != NULL)
-          fn_receiveData_(&LMIC.frame[LMIC.dataBeg] , LMIC.dataLen);
+        if(fn_event_ != NULL)
+          fn_event_(e_RX_DATA, (void*) &LMIC.frame[LMIC.dataBeg], LMIC.dataLen);
       }
 
-      pt_ramRet_->LORA_seqnoUp = LMIC.seqnoUp;
-      pt_ramRet_->LORA_seqnoDown = LMIC.seqnoDn;
+      pt_ramRet_->loraSettings.seqnoUp = LMIC.seqnoUp;
+      pt_ramRet_->loraSettings.seqnoDown = LMIC.seqnoDn;
 
       if(fn_event_ != NULL)
-        fn_event_(e_TX_COMPLETE, NULL);
+        fn_event_(e_TX_DONE, NULL, 0);
       break;
     case EV_LOST_TSYNC:
-      TRACE_CrLf("[LORA] EV_LOST_TSYNC");
+      LORA_TRACE_CrLf("[LORA] EV_LOST_TSYNC");
       break;
     case EV_RESET:
-      TRACE_CrLf("[LORA] EV_RESET");
+      LORA_TRACE_CrLf("[LORA] EV_RESET");
       break;
     case EV_RXCOMPLETE:
       // data received in ping slot
-      TRACE_CrLf("[LORA] EV_RXCOMPLETE");
+      LORA_TRACE_CrLf("[LORA] EV_RXCOMPLETE");
       break;
     case EV_LINK_DEAD:
-      TRACE_CrLf("[LORA] EV_LINK_DEAD");
+      LORA_TRACE_CrLf("[LORA] EV_LINK_DEAD");
       break;
     case EV_LINK_ALIVE:
-      TRACE_CrLf("[LORA] EV_LINK_ALIVE");
+      LORA_TRACE_CrLf("[LORA] EV_LINK_ALIVE");
       break;
     /*
       || This event is defined but not used in the code. No
@@ -445,10 +507,10 @@ void lora_onEvent(ev_t ev) {
       ||    break;
     */
     case EV_TXSTART:
-      TRACE_CrLf("[LORA] EV_TXSTART");
+      LORA_TRACE_CrLf("[LORA] EV_TXSTART");
       break;
     case EV_TXCANCELED:
-      TRACE_CrLf("[LORA] EV_TXCANCELED");
+      LORA_TRACE_CrLf("[LORA] EV_TXCANCELED");
       //todo restart dosend or after counter erase lmic info
       break;
     case EV_RXSTART:
@@ -457,12 +519,12 @@ void lora_onEvent(ev_t ev) {
       /* do not print anything -- it wrecks timing */
       break;
     case EV_JOIN_TXCOMPLETE:
-      TRACE_CrLf("[LORA] EV_JOIN_TXCOMPLETE: no JoinAccept");
+      LORA_TRACE_CrLf("[LORA] EV_JOIN_TXCOMPLETE: no JoinAccept");
       //todo after counter erase lmic info
       break;
        
     default:
-      TRACE_CrLf("[LORA] Unknown event: %d", (uint32_t) ev);
+      LORA_TRACE_CrLf("[LORA] Unknown event: %d", (uint32_t) ev);
       break;
   }
 }

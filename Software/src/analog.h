@@ -34,9 +34,10 @@ extern "C" {
 /*	Shared Functions																  
 /***************************************************************************************/  
 float analog_getVBattPercent(int32_t vbatt);
-int32_t analog_setup(t_RamRet *pt_ramRet);
+int32_t analog_setup(t_RamRet *pt_ramRet, int32_t vRef);
 int32_t analog_getData(t_telemetryData *pt_telemetryData);
 int32_t analog_suspend(void);
+int32_t analog_getInternalVref(void);
 
 #ifdef __cplusplus
 }

@@ -64,7 +64,7 @@ int32_t onewire_getData(t_telemetryData *pt_telemetryData) {
   ow.reset_search();
 
   if ( !ow.search(address)) {
-    TRACE_CrLf(" No more addresses.");
+    TRACE_CrLf(" no more addresses.");
     ow.reset_search();
     return ERROR;
   }
