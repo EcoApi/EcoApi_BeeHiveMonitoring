@@ -27,7 +27,7 @@
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
-#define DEBUG_SAMPLING_FREQUENCY      1
+#define DEBUG_SAMPLING_FREQUENCY      0
 #define FFT_USE_WINDOWING             1
 #define FFT_USE_FILTER_HIGH           0
 #define FFT_USE_FILTER_LOW            0
@@ -374,6 +374,7 @@ static void windowing (int n, const float32_t *data, e_WindowType e_windowType, 
 static void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8_t binOutputCount /* 20 max */, uint16_t binOffset /* max 512 */, uint8_t binOutputSize, uint16_t fftSize) {
   uint16_t binsOutput, binInputCurrent, i;
   float32_t binOutputSum;
+  uint16_t min = UINT16_MAX;
   bool end = FALSE;
 
   if((p_fftResult == NULL) || (p_fftValue == NULL) || !binOutputCount || (binOutputCount > AUDIO_MAX_BINS) || !fftSize)
@@ -398,11 +399,24 @@ static void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8
 
     p_fftResult->values[binsOutput] = (binOutputSum > UINT16_MAX) ? UINT16_MAX : (uint16_t) binOutputSum; // check diff on 32 bits !!!
 
+    if((p_fftResult->values[binsOutput] != 0) && (p_fftResult->values[binsOutput] < min))
+      min = p_fftResult->values[binsOutput];
+  
     if(end)
       break;
   }
 
   p_fftResult->binCount = binsOutput; //n output bin computed
+
+  TRACE_CrLf("fft ouput min %d", min);
+
+  /* noise filter */
+  for(binsOutput=0;binsOutput<p_fftResult->binCount;binsOutput++) {
+    if(p_fftResult->values[binsOutput] < min)
+      p_fftResult->values[binsOutput] = 0;
+    else
+      p_fftResult->values[binsOutput] -= min;
+  }  
 }
 
 /***************************************************************************************
