@@ -320,7 +320,7 @@ static void lora_sendJob(osjob_t* j) {
         LORA_TRACE_CrLf("[LORA] packet queued (%d bytes)", payloadSize);
 
         if(fn_event_ != NULL)
-          fn_event_(e_TX_DATA_QUEUED, NULL, 0);
+          fn_event_(e_TX_DATA_QUEUED, NULL, payloadSize);
       }
     }
   }

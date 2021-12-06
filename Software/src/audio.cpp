@@ -247,10 +247,10 @@ static void print_fft_result(FFT_RESULTS *p_fftResult) {
 
   for(i=0;i<p_fftResult->binCount;i++) {
     TRACE_CrLf("[AUDIO] %02d -> brut s_bin%f_%fHz,\t\ts_bin%04d_%04dHz = %u", i,
-                                               (float32_t) (startFrequency + ((float32_t) i * binFrequency)), //todo round
-                                               (float32_t) (startFrequency + ((float32_t) i * binFrequency) + binFrequency), //todo round 
-                                               (uint16_t) roundf((startFrequency + ((float32_t) i * binFrequency))), //todo round
-                                               (uint16_t) roundf((startFrequency + ((float32_t) i * binFrequency) + binFrequency)), //todo round
+                                               (float32_t) (startFrequency + ((float32_t) i * binFrequency)), 
+                                               (float32_t) (startFrequency + ((float32_t) i * binFrequency) + binFrequency),  
+                                               (uint16_t) roundf((startFrequency + ((float32_t) i * binFrequency))), 
+                                               (uint16_t) roundf((startFrequency + ((float32_t) i * binFrequency) + binFrequency)), 
                                                p_fftResult->values[i]);
 
 
@@ -377,8 +377,11 @@ static void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8
   uint16_t min = UINT16_MAX;
   bool end = FALSE;
 
-  if((p_fftResult == NULL) || (p_fftValue == NULL) || !binOutputCount || (binOutputCount > AUDIO_MAX_BINS) || !fftSize)
+  if((p_fftResult == NULL) || (p_fftValue == NULL) || !binOutputCount || !fftSize)
     return;
+
+  if(binOutputCount > AUDIO_MAX_BINS)
+    binOutputCount = AUDIO_MAX_BINS;
 
   p_fftResult->binOffset = binOffset; // start input bin
   p_fftResult->binSize = binOutputSize; // n input bin for one output bin
@@ -407,8 +410,6 @@ static void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8
   }
 
   p_fftResult->binCount = binsOutput; //n output bin computed
-
-  TRACE_CrLf("fft ouput min %d", min);
 
   /* noise filter */
   for(binsOutput=0;binsOutput<p_fftResult->binCount;binsOutput++) {

@@ -428,7 +428,7 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void* pv_data, uint32_t siz
     }
 
     case e_TX_DATA_QUEUED:
-      TRACE_CrLf("[LORA] data queued");
+      TRACE_CrLf("[LORA] data queued (%d bytes)", size);
 
       startDataQueuedTime = millis();
 
