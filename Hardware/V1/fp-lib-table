@@ -1,6 +1,0 @@
-(fp_lib_table
-  (lib (name RF-LORA-868-SO)(type KiCad)(uri /home/rodrigue/Téléchargements/RF-LORA-868-SO.pretty)(options "")(descr ""))
-  (lib (name Footprints)(type KiCad)(uri /home/rodrigue/Téléchargements/Kicad-STM32-master/Footprints.pretty)(options "")(descr ""))
-  (lib (name Kicad-STM32-master)(type KiCad)(uri /home/rodrigue/Téléchargements/Kicad-STM32-master.pretty)(options "")(descr ""))
-  (lib (name EcoApi_pcb)(type KiCad)(uri ${KIPRJMOD}/EcoApi_pcb.pretty)(options "")(descr ""))
-)
