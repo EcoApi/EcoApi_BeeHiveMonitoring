@@ -7,4 +7,5 @@
   (lib (name BluePillF4)(type Legacy)(uri /home/rodrigue/Téléchargements/STM32_Pill_Boards-master/Squonk42/KiCAD/BluePillF4.lib)(options "")(descr ""))
   (lib (name EcoApi_pcb)(type Legacy)(uri ${KIPRJMOD}/EcoApi_pcb.lib)(options "")(descr ""))
   (lib (name stm32f103c8t6-module-china)(type Legacy)(uri /home/rodrigue/Téléchargements/myelin-kicad-libraries-master/stm32f103c8t6-module-china.lib)(options "")(descr ""))
+  (lib (name EcoApi_pcb-rescue)(type Legacy)(uri ${KIPRJMOD}/EcoApi_pcb-rescue.lib)(options "")(descr ""))
 )

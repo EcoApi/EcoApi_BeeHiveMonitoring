@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name EcoApi_pcb)(type Legacy)(uri ${KIPRJMOD}/EcoApi_pcb.lib)(options "")(descr ""))
+  (lib (name EcoApi_pcb-rescue)(type Legacy)(uri ${KIPRJMOD}/EcoApi_pcb-rescue.lib)(options "")(descr ""))
+)

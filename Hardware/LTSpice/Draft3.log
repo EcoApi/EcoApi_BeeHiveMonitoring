@@ -1,0 +1,25 @@
+Circuit: * C:\users\rodrigue\Mes documents\PlatformIO\Projects\EcoApi_BeeHiveMonitoring\Hardware\LTSpice\Draft3.asc
+
+Limiting rise time of source v3 to 0.01
+Limiting fall time of source v3 to 0.01
+Limiting rise time of source v2 to 0.01
+Limiting fall time of source v2 to 0.01
+Direct Newton iteration for .op point succeeded.
+
+Date: Thu Jan 06 15:18:44 2022
+Total elapsed time: 0.087 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 3598
+traniter = 3570
+tranpoints = 1490
+accept = 1377
+rejected = 113
+matrix size = 21
+fillins = 8
+solver = Normal
+Matrix Compiler1: 1.40 KB object code size  0.3/0.2/[0.1]
+Matrix Compiler2: off  [0.2]/0.2/0.2
+

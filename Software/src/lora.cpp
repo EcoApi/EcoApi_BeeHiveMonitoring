@@ -35,7 +35,7 @@
 #define LMIC_MAGIC 0x4C4D4943 /* LMIC in ascii */
 
 #define LORA_ADR_ENABLE (1) /* beehise is not mobile */
-#define LORA_TRACE_ENABLE (0)
+#define LORA_TRACE_ENABLE (1)
 
 #if (LORA_TRACE_ENABLE == 1)
 #define LORA_TRACE_CrLf TRACE_CrLf
@@ -150,6 +150,7 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_ev
   LMIC_setClockError(MAX_CLOCK_ERROR * 5 / 100); /* if use hsi 16 mHz without pll (SystemClock_Config) */
 #endif
 
+#if 1
   LMIC_setupChannel(0, 868100000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(1, 868300000, DR_RANGE_MAP(DR_SF12, DR_SF7B), BAND_CENTI);      // g-band
   LMIC_setupChannel(2, 868500000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
@@ -159,6 +160,7 @@ int32_t lora_setup(t_RamRet *pt_ramRet, fn_lora_sendData fn_sendData, fn_lora_ev
   LMIC_setupChannel(6, 867700000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(7, 867900000, DR_RANGE_MAP(DR_SF12, DR_SF7),  BAND_CENTI);      // g-band
   LMIC_setupChannel(8, 868800000, DR_RANGE_MAP(DR_FSK,  DR_FSK),  BAND_MILLI);      // g2-band*/
+#endif
 
   /* sf9 for rx2 */
   LMIC.dn2Dr = DR_SF9;

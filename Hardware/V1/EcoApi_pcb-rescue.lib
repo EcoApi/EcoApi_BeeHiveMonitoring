@@ -1,0 +1,18 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# +3V3-BluePillF4
+#
+DEF +3V3-BluePillF4 #SUPPLY 0 40 N N 1 L P
+F0 "#SUPPLY" 0 0 45 H I L BNN
+F1 "+3V3-BluePillF4" 0 150 45 H V L BNN
+F2 "" 0 0 60 H I C CNN
+F3 "" 0 0 60 H I C CNN
+DRAW
+P 2 1 0 0 -50 100 50 100 N
+P 2 1 0 0 0 0 0 100 N
+X +3V3 ~ 0 0 100 U 40 40 1 1 W N
+ENDDRAW
+ENDDEF
+#
+#End Library

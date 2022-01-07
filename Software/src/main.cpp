@@ -183,11 +183,13 @@ void setup(void) {
 #endif
 
   pinMode(LED_INFO, INPUT_ANALOG);
+  //pinMode(LED_BUILTIN, OUTPUT);
 
   int i = 10;
   while(i--) {
     delay(1000);
     TRACE_CrLf("[RTC] timestamp: %d", rtc_read());
+    //digitalToggle(LED_BUILTIN);
   };
 
   Serial.end();
