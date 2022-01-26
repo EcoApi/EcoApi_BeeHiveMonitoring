@@ -15,8 +15,6 @@ Comment4 ""
 $EndDescr
 Text GLabel 2600 1350 2    50   Input ~ 0
 LOADCELL_E+
-Text GLabel 2600 1450 2    50   Input ~ 0
-LOADCELL_E-
 Text GLabel 2600 1550 2    50   Input ~ 0
 LOADCELL_A-
 Text GLabel 2600 1650 2    50   Input ~ 0
@@ -65,8 +63,6 @@ Wire Wire Line
 	1650 4450 2200 4450
 NoConn ~ 1650 4750
 NoConn ~ 1650 4850
-Text GLabel 2600 1750 2    50   Input ~ 0
-LOADCELL_SHIELD
 Text Notes 1100 1750 0    50   ~ 0
 E+ Red\nE- Black\nA- White\nA+ Green / Blue\nSh Yellow 
 $Comp
@@ -191,30 +187,10 @@ F 3 "" H 10650 2250 50  0001 C CNN
 	1    10650 2250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	10650 2250 10650 2100
 Text GLabel 10550 1500 0    50   Output ~ 0
 BTN_PWR
-$Comp
-L EcoApi_pcb:SW_PUSH S?
-U 1 1 61E97F11
-P 10650 1800
-AR Path="/61E97F11" Ref="S?"  Part="1" 
-AR Path="/62EA3721/61E97F11" Ref="S?"  Part="1" 
-AR Path="/61B961C0/61E97F11" Ref="S4"  Part="1" 
-AR Path="/62CC297B/61E97F11" Ref="S?"  Part="1" 
-F 0 "S4" V 10604 1912 50  0000 L CNN
-F 1 "POWER" V 10695 1912 50  0000 L CNN
-F 2 "EcoApi_pcb:SW_PUSH" H 10650 1800 50  0001 L BNN
-F 3 "" H 10650 1800 50  0001 L BNN
-F 4 "Compliant" H 10650 1800 50  0001 L BNN "EU_RoHS_Compliance"
-F 5 "1571527-1" H 10650 1800 50  0001 L BNN "Comment"
-	1    10650 1800
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	10550 1500 10650 1500
-Connection ~ 10650 1500
 Text GLabel 10550 1000 0    50   Input ~ 0
 VBAT
 $Comp
@@ -302,32 +278,6 @@ Wire Wire Line
 Wire Wire Line
 	8150 850  8150 1000
 $Comp
-L Connector:Conn_01x01_Male J?
-U 1 1 61E97F3E
-P 8600 2000
-AR Path="/62CC297B/61E97F3E" Ref="J?"  Part="1" 
-AR Path="/61B961C0/61E97F3E" Ref="J10"  Part="1" 
-F 0 "J10" H 8708 2181 50  0000 C CNN
-F 1 "TILT_OUT" H 8708 2090 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical" H 8600 2000 50  0001 C CNN
-F 3 "~" H 8600 2000 50  0001 C CNN
-	1    8600 2000
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x01_Male J?
-U 1 1 61E97F44
-P 8600 2200
-AR Path="/62CC297B/61E97F44" Ref="J?"  Part="1" 
-AR Path="/61B961C0/61E97F44" Ref="J11"  Part="1" 
-F 0 "J11" H 8708 2381 50  0000 C CNN
-F 1 "TILT IN" H 8708 2290 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical" H 8600 2200 50  0001 C CNN
-F 3 "~" H 8600 2200 50  0001 C CNN
-	1    8600 2200
-	-1   0    0    1   
-$EndComp
-$Comp
 L Device:C C?
 U 1 1 61E97F4A
 P 7900 2250
@@ -390,8 +340,6 @@ Wire Wire Line
 	7900 2000 7750 2000
 Wire Wire Line
 	8400 2000 7900 2000
-Wire Wire Line
-	8400 2200 8400 2500
 Text GLabel 1350 5700 2    50   Output ~ 0
 SW_CLK
 Text GLabel 1350 5500 2    50   BiDi ~ 0
@@ -447,8 +395,8 @@ P 9150 3950
 AR Path="/62CC297B/61ED3104" Ref="D?"  Part="1" 
 AR Path="/61B961C0/61ED3104" Ref="D7"  Part="1" 
 F 0 "D7" H 9150 4100 50  0000 C CNN
-F 1 "LED_0805" H 9150 4200 50  0000 C CNN
-F 2 "" H 9150 3950 50  0001 C CNN
+F 1 "LED_0603_BLUE" H 9150 4200 50  0000 C CNN
+F 2 "LED_SMD:LED_0603_1608Metric" H 9150 3950 50  0001 C CNN
 F 3 "~" H 9150 3950 50  0001 C CNN
 	1    9150 3950
 	1    0    0    -1  
@@ -469,73 +417,8 @@ F 3 "" H 9300 4250 60  0001 C CNN
 $EndComp
 Text GLabel 9900 3950 2    50   Input ~ 0
 LED_INFO
-$Comp
-L Device:R R?
-U 1 1 61F17383
-P 9400 3150
-AR Path="/61F17383" Ref="R?"  Part="1" 
-AR Path="/62CC297B/61F17383" Ref="R?"  Part="1" 
-AR Path="/61B961C0/61F17383" Ref="R70"  Part="1" 
-F 0 "R70" H 9470 3196 50  0000 L CNN
-F 1 "1.5K" H 9470 3105 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 9330 3150 50  0001 C CNN
-F 3 "~" H 9400 3150 50  0001 C CNN
-	1    9400 3150
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:LED_ALT D?
-U 1 1 61F17389
-P 9800 3150
-AR Path="/62CC297B/61F17389" Ref="D?"  Part="1" 
-AR Path="/61B961C0/61F17389" Ref="D8"  Part="1" 
-F 0 "D8" H 9800 3300 50  0000 C CNN
-F 1 "LED_0805" H 9800 3400 50  0000 C CNN
-F 2 "" H 9800 3150 50  0001 C CNN
-F 3 "~" H 9800 3150 50  0001 C CNN
-	1    9800 3150
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	9150 3150 9250 3150
-$Comp
-L Connector:Conn_01x02_Male J?
-U 1 1 61F17391
-P 10100 3350
-AR Path="/61F17391" Ref="J?"  Part="1" 
-AR Path="/62EA3721/61F17391" Ref="J?"  Part="1" 
-AR Path="/61B961C0/61F17391" Ref="J12"  Part="1" 
-F 0 "J12" V 10200 3550 50  0000 R CNN
-F 1 "LED EN" V 10000 3600 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 10100 3350 50  0001 C CNN
-F 3 "~" H 10100 3350 50  0001 C CNN
-	1    10100 3350
-	0    -1   -1   0   
-$EndComp
-Text GLabel 10350 3150 2    50   Input ~ 0
-LED_INFO
-$Comp
-L EcoApi_pcb-rescue:+3V3-BluePillF4 #SUPPLY?
-U 1 1 61F2426A
-P 9150 3150
-AR Path="/61F2426A" Ref="#SUPPLY?"  Part="1" 
-AR Path="/62EA3721/61F2426A" Ref="#SUPPLY?"  Part="1" 
-AR Path="/61B961C0/61F2426A" Ref="#SUPPLY0125"  Part="1" 
-F 0 "#SUPPLY0125" H 9150 3150 45  0001 L BNN
-F 1 "+3V3" H 9150 3321 45  0000 C CNN
-F 2 "" H 9150 3150 60  0001 C CNN
-F 3 "" H 9150 3150 60  0001 C CNN
-	1    9150 3150
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	9550 3150 9650 3150
-Wire Wire Line
-	9950 3150 10100 3150
 Wire Wire Line
 	9400 3950 9300 3950
-Wire Wire Line
-	10200 3150 10350 3150
 $Comp
 L EcoApi_pcb:+3V3-Ext #SUPPLY0126
 U 1 1 61FA5C05
@@ -637,11 +520,11 @@ Wire Wire Line
 	9900 3950 9700 3950
 Text Notes 7150 6250 0    50   ~ 0
 DSHP06TSGET\n1/12 : boot0 enable\n2/11 : Led info enable\n3/10 : Trace enable\n4/9 : Scale type (full or half)\n5/8 : Wdg delay 1\n6/7 : Wdg delay 2
-Text GLabel 2600 2850 2    50   Output ~ 0
+Text GLabel 2600 2750 2    50   Output ~ 0
 I2S_CK-MIC_GAIN
-Text GLabel 2600 2950 2    50   Input ~ 0
+Text GLabel 2600 2850 2    50   Input ~ 0
 I2S_WS
-Text GLabel 2600 2750 2    50   Input ~ 0
+Text GLabel 2600 2950 2    50   Input ~ 0
 I2S_SD-MIC_ANA
 $Comp
 L Device:C C?
@@ -730,7 +613,7 @@ U 1 1 63C29548
 P 7450 4500
 F 0 "S2" H 8050 4765 50  0000 C CNN
 F 1 "DSHP06TSGET" H 8050 4674 50  0000 C CNN
-F 2 "" H 8500 4600 50  0001 L CNN
+F 2 "EcoApi_pcb:DSHP06TSGET" H 8500 4600 50  0001 L CNN
 F 3 "https://datasheet.lcsc.com/szlcsc/1810191313_Dongguan-Guangzhu-Industrial-DSHP06TSGET_C40737.pdf" H 8500 4500 50  0001 L CNN
 F 4 "SPST 6 1.27mm, Half Slide (Standard) Black SMD DIP Switches" H 8500 4400 50  0001 L CNN "Description"
 F 5 "2.6" H 8500 4300 50  0001 L CNN "Height"
@@ -868,7 +751,7 @@ U 1 1 61E1EB4D
 P 1150 5600
 F 0 "J5" H 1258 5981 50  0000 C CNN
 F 1 "DBG" H 1258 5890 50  0000 C CNN
-F 2 "" H 1150 5600 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 1150 5600 50  0001 C CNN
 F 3 "~" H 1150 5600 50  0001 C CNN
 	1    1150 5600
 	1    0    0    -1  
@@ -883,7 +766,7 @@ U 1 1 61E4F280
 P 1150 6450
 F 0 "J6" H 1258 6731 50  0000 C CNN
 F 1 "TRACE" H 1258 6640 50  0000 C CNN
-F 2 "" H 1150 6450 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 1150 6450 50  0001 C CNN
 F 3 "~" H 1150 6450 50  0001 C CNN
 	1    1150 6450
 	1    0    0    -1  
@@ -912,7 +795,7 @@ U 1 1 61F018A0
 P 2600 1750
 F 0 "J8" H 2892 1085 50  0000 C CNN
 F 1 "B5B-XH-A__LF__SN_" H 2892 1176 50  0000 C CNN
-F 2 "" H 3250 1850 50  0001 L CNN
+F 2 "EcoApi_pcb:SHDR5W64P0X250_1X5_1490X575X700P" H 3250 1850 50  0001 L CNN
 F 3 "http://www.farnell.com/datasheets/1684882.pdf" H 3250 1750 50  0001 L CNN
 F 4 "Shrouded hdr,XH,2.5mm pitch,straight,5w JST XH Series, 2.5mm Pitch 5 Way 1 Row Straight PCB Header, Solder Termination, 3A" H 3250 1650 50  0001 L CNN "Description"
 F 5 "7" H 3250 1550 50  0001 L CNN "Height"
@@ -931,7 +814,7 @@ U 1 1 61F02CAF
 P 2600 3350
 F 0 "J9" H 2892 2385 50  0000 C CNN
 F 1 "B8B-XH-A_LF__SN_" H 2892 2476 50  0000 C CNN
-F 2 "" H 3250 3450 50  0001 L CNN
+F 2 "EcoApi_pcb:SHDR8W64P0X250_1X8_2240X575X700P" H 3250 3450 50  0001 L CNN
 F 3 "https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/45bda73f655da0a850bf2ea3e93b2e86.pdf" H 3250 3350 50  0001 L CNN
 F 4 "XH-2.5mm Header top entry 8 way JST XH Series, Series Number B8B, 2.5mm Pitch 8 Way 1 Row Straight PCB Header, Solder Termination, 3A" H 3250 3250 50  0001 L CNN "Description"
 F 5 "7" H 3250 3150 50  0001 L CNN "Height"
@@ -967,4 +850,65 @@ Text GLabel 6450 2000 0    50   BiDi ~ 0
 EN_AVBATT-BTN_TARE
 Wire Wire Line
 	6550 850  6550 1000
+$Comp
+L Connector:Conn_01x02_Male J?
+U 1 1 63C32D33
+P 10850 1800
+AR Path="/63C32D33" Ref="J?"  Part="1" 
+AR Path="/62D38F6A/63C32D33" Ref="J?"  Part="1" 
+AR Path="/62CC297B/63C32D33" Ref="J?"  Part="1" 
+AR Path="/61B961C0/63C32D33" Ref="J12"  Part="1" 
+F 0 "J12" V 10950 2000 50  0000 R CNN
+F 1 "POWER ON" V 10750 2050 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 10850 1800 50  0001 C CNN
+F 3 "~" H 10850 1800 50  0001 C CNN
+	1    10850 1800
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10650 1800 10650 2250
+Wire Wire Line
+	10650 1500 10650 1700
+Connection ~ 10650 1500
+$Comp
+L Connector:Conn_01x02_Male J?
+U 1 1 63DDD3C1
+P 8600 2100
+AR Path="/63DDD3C1" Ref="J?"  Part="1" 
+AR Path="/62D38F6A/63DDD3C1" Ref="J?"  Part="1" 
+AR Path="/62CC297B/63DDD3C1" Ref="J?"  Part="1" 
+AR Path="/61B961C0/63DDD3C1" Ref="J10"  Part="1" 
+F 0 "J10" V 8700 2300 50  0000 R CNN
+F 1 "TILT" V 8500 2350 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 8600 2100 50  0001 C CNN
+F 3 "~" H 8600 2100 50  0001 C CNN
+	1    8600 2100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8400 2100 8400 2500
+$Comp
+L power:GND #PWR?
+U 1 1 63E19E1A
+P 3250 1800
+AR Path="/63E19E1A" Ref="#PWR?"  Part="1" 
+AR Path="/62D38F6A/63E19E1A" Ref="#PWR?"  Part="1" 
+AR Path="/62EA3721/63E19E1A" Ref="#PWR?"  Part="1" 
+AR Path="/61B961C0/63E19E1A" Ref="#PWR0188"  Part="1" 
+F 0 "#PWR0188" H 3250 1550 50  0001 C CNN
+F 1 "GND" H 3255 1627 50  0000 C CNN
+F 2 "" H 3250 1800 50  0001 C CNN
+F 3 "" H 3250 1800 50  0001 C CNN
+	1    3250 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2600 1750 3250 1750
+Wire Wire Line
+	3250 1750 3250 1800
+Wire Wire Line
+	2600 1450 3250 1450
+Wire Wire Line
+	3250 1450 3250 1750
+Connection ~ 3250 1750
 $EndSCHEMATC

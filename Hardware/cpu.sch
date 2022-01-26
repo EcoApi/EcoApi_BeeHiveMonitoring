@@ -16,28 +16,28 @@ $EndDescr
 $Comp
 L Mechanical:MountingHole_Pad H?
 U 1 1 62BA86F0
-P 4050 6750
+P 4050 6700
 AR Path="/62BA86F0" Ref="H?"  Part="1" 
 AR Path="/62B8145A/62BA86F0" Ref="H2"  Part="1" 
-F 0 "H2" H 4150 6799 50  0000 L CNN
-F 1 "MountingHole_Pad" H 4150 6708 50  0000 L CNN
-F 2 "MountingHole:MountingHole_2.7mm" H 4050 6750 50  0001 C CNN
-F 3 "~" H 4050 6750 50  0001 C CNN
-	1    4050 6750
+F 0 "H2" H 4150 6749 50  0000 L CNN
+F 1 "MountingHole_Pad" H 4150 6658 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 4050 6700 50  0001 C CNN
+F 3 "~" H 4050 6700 50  0001 C CNN
+	1    4050 6700
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole_Pad H?
 U 1 1 62BA86F6
-P 3100 6750
+P 4050 7000
 AR Path="/62BA86F6" Ref="H?"  Part="1" 
 AR Path="/62B8145A/62BA86F6" Ref="H1"  Part="1" 
-F 0 "H1" H 3200 6799 50  0000 L CNN
-F 1 "MountingHole_Pad" H 3200 6708 50  0000 L CNN
-F 2 "MountingHole:MountingHole_2.7mm" H 3100 6750 50  0001 C CNN
-F 3 "~" H 3100 6750 50  0001 C CNN
-	1    3100 6750
-	1    0    0    -1  
+F 0 "H1" H 4150 7049 50  0000 L CNN
+F 1 "MountingHole_Pad" H 4150 6958 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 4050 7000 50  0001 C CNN
+F 3 "~" H 4050 7000 50  0001 C CNN
+	1    4050 7000
+	-1   0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR?
@@ -53,12 +53,7 @@ F 3 "" H 4600 6900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3100 6850 4050 6850
-Wire Wire Line
 	4600 6850 4600 6900
-Connection ~ 4050 6850
-Wire Wire Line
-	4050 6850 4600 6850
 Text Notes 6650 5750 0    50   ~ 0
 Check vbatt usage\n
 $Comp
@@ -69,7 +64,7 @@ AR Path="/62BA8733" Ref="C?"  Part="1"
 AR Path="/62B8145A/62BA8733" Ref="C39"  Part="1" 
 F 0 "C39" V 10000 4950 50  0000 L CNN
 F 1 "4.7uF" V 9900 4900 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 9888 5000 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 9888 5000 50  0001 C CNN
 F 3 "~" H 9850 5150 50  0001 C CNN
 	1    9850 5150
 	0    1    -1   0   
@@ -93,7 +88,7 @@ U 2 1 622E2A95
 P 7750 4750
 F 0 "U13" H 8550 5137 60  0000 C CNN
 F 1 "STM32F411CEU6" H 8550 5031 60  0000 C CNN
-F 2 "" H 8550 4990 60  0001 C CNN
+F 2 "EcoApi_pcb:STM32F411CEU6" H 8550 4990 60  0001 C CNN
 F 3 "" H 7750 4750 60  0000 C CNN
 	2    7750 4750
 	1    0    0    -1  
@@ -108,7 +103,7 @@ AR Path="/62EA3721/6270CB96" Ref="C?"  Part="1"
 AR Path="/62B8145A/6270CB96" Ref="C41"  Part="1" 
 F 0 "C41" V 10050 3350 50  0000 L CNN
 F 1 "0.1uF" V 9950 3300 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 9938 3400 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3400 50  0001 C CNN
 F 3 "~" H 9900 3550 50  0001 C CNN
 	1    9900 3550
 	0    1    -1   0   
@@ -123,7 +118,7 @@ AR Path="/62EA3721/6270CB9C" Ref="C?"  Part="1"
 AR Path="/62B8145A/6270CB9C" Ref="C42"  Part="1" 
 F 0 "C42" V 10050 3600 50  0000 L CNN
 F 1 "0.1uF" V 9950 3550 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 9938 3650 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3650 50  0001 C CNN
 F 3 "~" H 9900 3800 50  0001 C CNN
 	1    9900 3800
 	0    1    -1   0   
@@ -138,7 +133,7 @@ AR Path="/62EA3721/6270CBA2" Ref="C?"  Part="1"
 AR Path="/62B8145A/6270CBA2" Ref="C43"  Part="1" 
 F 0 "C43" V 10050 3850 50  0000 L CNN
 F 1 "0.1uF" V 9950 3800 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 9938 3900 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3900 50  0001 C CNN
 F 3 "~" H 9900 4050 50  0001 C CNN
 	1    9900 4050
 	0    1    -1   0   
@@ -175,7 +170,7 @@ AR Path="/62EA3721/62BA87FA" Ref="C?"  Part="1"
 AR Path="/62B8145A/62BA87FA" Ref="C37"  Part="1" 
 F 0 "C37" V 7700 3500 50  0000 L CNN
 F 1 "1uF" V 7600 3450 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7588 3550 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 7588 3550 50  0001 C CNN
 F 3 "~" H 7550 3700 50  0001 C CNN
 	1    7550 3700
 	1    0    0    1   
@@ -190,7 +185,7 @@ AR Path="/62EA3721/62BA87F4" Ref="C?"  Part="1"
 AR Path="/62B8145A/62BA87F4" Ref="C38"  Part="1" 
 F 0 "C38" V 7950 3500 50  0000 L CNN
 F 1 "0.1uF" V 7850 3450 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7838 3550 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 7838 3550 50  0001 C CNN
 F 3 "~" H 7800 3700 50  0001 C CNN
 	1    7800 3700
 	1    0    0    1   
@@ -229,7 +224,7 @@ AR Path="/62EA3721/62A51A13" Ref="C?"  Part="1"
 AR Path="/62B8145A/62A51A13" Ref="C40"  Part="1" 
 F 0 "C40" V 10050 3100 50  0000 L CNN
 F 1 "4.7uF" V 9950 3050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 9938 3150 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3150 50  0001 C CNN
 F 3 "~" H 9900 3300 50  0001 C CNN
 	1    9900 3300
 	0    1    -1   0   
@@ -294,7 +289,6 @@ Wire Wire Line
 Connection ~ 7800 3550
 Wire Wire Line
 	7800 3550 7550 3550
-Connection ~ 7550 3550
 Text Notes 7900 5950 0    50   ~ 0
 Capa C0402 le plus proche du µC
 Text GLabel 7750 5550 0    50   Input ~ 0
@@ -360,7 +354,7 @@ AR Path="/623CA958" Ref="Y?"  Part="1"
 AR Path="/62B8145A/623CA958" Ref="Y3"  Part="1" 
 F 0 "Y3" H 7244 2046 50  0000 L CNN
 F 1 "Crystal_GND24" H 7244 1955 50  0000 L CNN
-F 2 "" H 7050 2000 50  0001 C CNN
+F 2 "EcoApi_pcb:X322525MMB4SI" H 7050 2000 50  0001 C CNN
 F 3 "~" H 7050 2000 50  0001 C CNN
 	1    7050 2000
 	0    1    -1   0   
@@ -390,7 +384,7 @@ AR Path="/623CA94A" Ref="C?"  Part="1"
 AR Path="/62B8145A/623CA94A" Ref="C35"  Part="1" 
 F 0 "C35" V 7550 1550 50  0000 L CNN
 F 1 "10u" V 7450 1550 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7438 1600 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 7438 1600 50  0001 C CNN
 F 3 "~" H 7400 1750 50  0001 C CNN
 	1    7400 1750
 	0    -1   -1   0   
@@ -403,7 +397,7 @@ AR Path="/623CA944" Ref="C?"  Part="1"
 AR Path="/62B8145A/623CA944" Ref="C36"  Part="1" 
 F 0 "C36" V 7550 2050 50  0000 L CNN
 F 1 "10u" V 7450 2050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7438 2100 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 7438 2100 50  0001 C CNN
 F 3 "~" H 7400 2250 50  0001 C CNN
 	1    7400 2250
 	0    -1   -1   0   
@@ -416,7 +410,7 @@ AR Path="/623CA93C" Ref="R?"  Part="1"
 AR Path="/62B8145A/623CA93C" Ref="R75"  Part="1" 
 F 0 "R75" H 6720 2296 50  0000 L CNN
 F 1 "?k" H 6720 2205 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 6580 2250 50  0001 C CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" V 6580 2250 50  0001 C CNN
 F 3 "~" H 6650 2250 50  0001 C CNN
 	1    6650 2250
 	0    1    -1   0   
@@ -429,7 +423,7 @@ AR Path="/623CA936" Ref="R?"  Part="1"
 AR Path="/62B8145A/623CA936" Ref="R74"  Part="1" 
 F 0 "R74" H 6420 2046 50  0000 L CNN
 F 1 "1M" H 6420 1955 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 6280 2000 50  0001 C CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" V 6280 2000 50  0001 C CNN
 F 3 "~" H 6350 2000 50  0001 C CNN
 	1    6350 2000
 	-1   0    0    -1  
@@ -457,7 +451,7 @@ AR Path="/62365F90" Ref="Y?"  Part="1"
 AR Path="/62B8145A/62365F90" Ref="Y2"  Part="1" 
 F 0 "Y2" H 6350 1575 50  0000 C CNN
 F 1 "Crystal_Small" H 6350 1484 50  0000 C CNN
-F 2 "" H 6350 1350 50  0001 C CNN
+F 2 "EcoApi_pcb:XTAL_ABS07-120-32.768KHZ-T" H 6350 1350 50  0001 C CNN
 F 3 "~" H 6350 1350 50  0001 C CNN
 	1    6350 1350
 	0    1    -1   0   
@@ -478,7 +472,7 @@ U 1 1 622D733B
 P 2550 1350
 F 0 "U13" H 3850 1737 60  0000 C CNN
 F 1 "STM32F411CEU6" H 3850 1631 60  0000 C CNN
-F 2 "" H 3350 1590 60  0001 C CNN
+F 2 "EcoApi_pcb:STM32F411CEU6" H 3350 1590 60  0001 C CNN
 F 3 "" H 2550 1350 60  0000 C CNN
 	1    2550 1350
 	1    0    0    -1  
@@ -600,7 +594,7 @@ Text Notes 6750 2600 0    50   ~ 0
 Text Notes 6750 3050 0    50   ~ 0
 4MHz\nCSTCR4M00G53-R0\nCSTCR4M00G55B-R0\nASFL1-4.000MHZ-EK-T\nABLS-4.000MHZ-D-3-Y-T
 Text Notes 6000 850  0    50   ~ 0
-SC-32S32.768kHz20PPM7pF\n
+SC-32S32.768kHz20PPM7pF\nABS07-120-32.768KHZ
 Text Notes 7750 1650 0    50   ~ 0
 definir capa et R ext
 Text GLabel 5150 1350 2    50   Output ~ 0
@@ -655,7 +649,7 @@ AR Path="/62365FCD" Ref="C?"  Part="1"
 AR Path="/62B8145A/62365FCD" Ref="C34"  Part="1" 
 F 0 "C34" V 7250 1350 50  0000 L CNN
 F 1 "1.5pF" V 7150 1350 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7138 1400 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 7138 1400 50  0001 C CNN
 F 3 "~" H 7100 1550 50  0001 C CNN
 	1    7100 1550
 	0    -1   -1   0   
@@ -668,7 +662,7 @@ AR Path="/62365FC7" Ref="C?"  Part="1"
 AR Path="/62B8145A/62365FC7" Ref="C33"  Part="1" 
 F 0 "C33" V 7250 950 50  0000 L CNN
 F 1 "1.5pF" V 7150 950 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7138 1000 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0201_0603Metric" H 7138 1000 50  0001 C CNN
 F 3 "~" H 7100 1150 50  0001 C CNN
 	1    7100 1150
 	0    -1   -1   0   
@@ -677,6 +671,69 @@ Text GLabel 2550 1350 0    50   Input ~ 0
 WAKEUP
 Text Notes 7000 3350 0    50   ~ 0
 1kh_100MHz
+Text Notes 7900 3100 0    50   ~ 0
+25mHz (SMD3225)\nX1E0000210621\nS3225000081040\nX322525MMB4SI\n\n
+$Comp
+L Mechanical:MountingHole_Pad H?
+U 1 1 63B128D4
+P 3450 6700
+AR Path="/63B128D4" Ref="H?"  Part="1" 
+AR Path="/62B8145A/63B128D4" Ref="H3"  Part="1" 
+F 0 "H3" H 3550 6749 50  0000 L CNN
+F 1 "MountingHole_Pad" H 3550 6658 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 3450 6700 50  0001 C CNN
+F 3 "~" H 3450 6700 50  0001 C CNN
+	1    3450 6700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H?
+U 1 1 63B14935
+P 3750 6700
+AR Path="/63B14935" Ref="H?"  Part="1" 
+AR Path="/62B8145A/63B14935" Ref="H5"  Part="1" 
+F 0 "H5" H 3850 6749 50  0000 L CNN
+F 1 "MountingHole_Pad" H 3850 6658 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 3750 6700 50  0001 C CNN
+F 3 "~" H 3750 6700 50  0001 C CNN
+	1    3750 6700
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	6800 3550 7550 3550
+	3450 6850 3750 6850
+Wire Wire Line
+	4050 6800 4050 6850
+Connection ~ 4050 6850
+Wire Wire Line
+	4050 6850 4600 6850
+Wire Wire Line
+	4050 6850 4050 6900
+Wire Wire Line
+	3750 6800 3750 6850
+Connection ~ 3750 6850
+Wire Wire Line
+	3750 6850 4050 6850
+Wire Wire Line
+	3450 6800 3450 6850
+$Comp
+L Device:L L?
+U 1 1 63D4FB09
+P 7200 3550
+AR Path="/62CC297B/63D4FB09" Ref="L?"  Part="1" 
+AR Path="/62EA3721/63D4FB09" Ref="L?"  Part="1" 
+AR Path="/62B8145A/63D4FB09" Ref="L3"  Part="1" 
+F 0 "L3" V 7390 3550 50  0000 C CNN
+F 1 "3.3uH_0603" V 7299 3550 50  0000 C CNN
+F 2 "Inductor_SMD:L_0402_1005Metric" H 7200 3550 50  0001 C CNN
+F 3 "~" H 7200 3550 50  0001 C CNN
+	1    7200 3550
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7050 3550 6800 3550
+Text Notes 6950 3700 0    50   ~ 0
+utile ?
+Wire Wire Line
+	7350 3550 7550 3550
+Connection ~ 7550 3550
 $EndSCHEMATC

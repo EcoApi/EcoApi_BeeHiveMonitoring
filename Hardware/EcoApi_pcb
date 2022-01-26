@@ -1,0 +1,211 @@
+Source,/home/rodrigue/Documents/PlatformIO/Projects/EcoApi_BeeHiveMonitoring/Hardware/EcoApi_pcb.sch
+Kicad Rev,Eeschema 5.1.5+dfsg1-2build2
+Generated Date,mer. 19 janv. 2022 16:27:36
+
+Title,Not Set
+Company,Not Set
+Revision,Not Set
+Date Issue,Not Set
+
+Reference,Value,MF,PARTREV,STANDARD,automotive,category,data polarity,device class L1,device class L2,device class L3,interface,ipc land pattern name,library id,manufacturer,max supply voltage,min supply voltage,number of channels,number of converters,package,resolution,sampling rate,temperature range high,temperature range low,MANUFACTURER,MAXIMUM_PACKAGE_HEIGHT,Arrow Part Number,Arrow Price/Stock,Description,Height,Manufacturer_Name,Manufacturer_Part_Number,Mouser Part Number,Mouser Price/Stock,DESCRIPTION,MOUSER,MPN,Comment,EU_RoHS_Compliance,Library,Library Ref
+TP5,TestPoint,Connector,TestPoint
+TP7,TestPoint,Connector,TestPoint
+TP9,TestPoint,Connector,TestPoint
+TP11,TestPoint,Connector,TestPoint
+TP13,TestPoint,Connector,TestPoint
+TP6,TestPoint,Connector,TestPoint
+TP8,TestPoint,Connector,TestPoint
+TP10,TestPoint,Connector,TestPoint
+TP12,TestPoint,Connector,TestPoint
+U5,RFM95W-868S2,EcoApi_pcb,RFM95W-868S2
+C8,100n,Device,C
+J1,UFL,I-PEX,21,Manufacturer Recommendations,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,EcoApi_pcb,20279-001E-01
+C9,10u,Device,C
+R26,4.7k,Device,R
+R28,4.7k,Device,R
+R29,4.7k,Device,R
+R32,4.7k,Device,R
+U2,HX711,,,,No,IC,Differential,Integrated Circuits (ICs),Data Converter ICs,Analog to Digital Converters (ADCs),Other,SOP127P600X140-16,eec6f1a771faf13e,Avia Semiconductor,5.5V,2.6V,2,1,SOP-16L,24bits,10/80sps,+85°C,-40°C,,,,,,,,,,,,,,,,EcoApi_pcb,HX711
+C7,100nF 0402,Device,C
+R4,100R,Device,R
+R5,100R,Device,R
+R22,20k,Device,R
+R21,22k,Device,R
+C4,10uF 0402 6.3V,Device,C
+C5,100nF 0402,Device,C
+TP4,TestPoint,Connector,TestPoint
+L1,3.3uH_0603,Device,L
+C6,100nF 0402,Device,C
+C10,0.1uF 0402 6.3V,Device,C
+C11,0.1uF 0402,Device,C
+C12,10uF 0402,Device,C
+U4,MB85RC16PNF-G-JNE1,EcoApi_pcb,MB85RC16PNF-G-JNE1
+U7,24LC02B_SN,EcoApi_pcb,24LC02B_SN
+U6,W25Q32JVSS,Memory_Flash,W25Q32JVSS
+C14,100n,Device,C
+C15,100n,Device,C
+C13,100n,Device,C
+U1,PCF8563T,Timer_RTC,PCF8563T
+R13,0R,Device,R
+R12,0R,Device,R
+R7,0R,Device,R
+R10,0R,Device,R
+TP1,TestPoint,Connector,TestPoint
+TP2,TestPoint,Connector,TestPoint
+R23,0R,Device,R
+R25,0R,Device,R
+Y1,Crystal_Small,Device,Crystal_Small
+C3,22pF,Device,C
+R20,0R,Device,R
+R19,0R,Device,R
+R18,0R,Device,R
+R30,0R,Device,R
+R33,0R,Device,R
+R31,0R,Device,R
+R27,0R,Device,R
+R24,0R,Device,R
+TP14,TestPoint,Connector,TestPoint
+TP18,TestPoint,Connector,TestPoint
+TP17,TestPoint,Connector,TestPoint
+TP16,TestPoint,Connector,TestPoint
+TP15,TestPoint,Connector,TestPoint
+TP3,TestPoint,Connector,TestPoint
+U3,TPL5110,Timer,TPL5110
+C1,10uF,Device,C
+R14,0R,Device,R
+R15,0R,Device,R
+R1,0R,Device,R
+R17,0R,Device,R
+R16,10K,Device,R
+R6,221K,Device,R
+R9,287K,Device,R
+R11,0R,Device,R
+R8,0R,Device,R
+C2,0.1uF,Device,C
+R2,182K,Device,R
+R3,187K,Device,R
+Q1,MMBT4403*,EcoApi_pcb,MMBT4403*
+C18,EEE-FK0J102GP,EcoApi_pcb,EEE-FK0J102GP
+J4,POWER ON,Connector,Conn_01x02_Male
+BT1,18650_HOLDER,,,,,,,,,,,,,,,,,,,,,,,KEYSTONE,,,,,,,,,,,,,,,EcoApi_pcb,18650_keystone_battery_holder
+U11,SiP32431DR3,Power_Management,SiP32431DR3
+C25,1u,Device,C
+C28,0.1u,Device,C
+U10,TPS63900DSKR,EcoApi_pcb,TPS63900DSKR
+C23,10uF 6.3V X5R,Device,C
+C24,22uF 6.3V x5R,Device,C
+R52,36k5,Device,R
+R54,0R,Device,R
+R55,0R,Device,R
+TP20,TestPoint,Connector,TestPoint
+TP29,TestPoint,Connector,TestPoint
+TP26,TestPoint,Connector,TestPoint
+TP21,TestPoint,Connector,TestPoint
+TP19,TestPoint,Connector,TestPoint
+U9,USBLC6-2SC6,Power_Protection,USBLC6-2SC6
+U8,TP4056,,,IPC 7351B,,,,,,,,,,,,,,,,,,,,NanJing Top Power ASIC Corp.,1.75mm,,,,,,,,,,,,,,EcoApi_pcb,TP4056
+R39,10K,Device,R
+R37,330R,Device,R
+R36,330R,Device,R
+C16,10uF,Device,C
+D1,LED_0603_RED,Device,LED_ALT
+D2,LED_0603_GREEN,Device,LED_ALT
+R35,0.5R_2W_2512,Device,R
+C21,10uF,Device,C
+Q4,BSS138,Transistor_FET,BSS138
+R50,100K,Device,R
+R42,0R,Device,R
+Q3,IRLML6244TRPBF,,10/12/2012,IPC 7351B,,,,,,,,,,,,,,,,,,,,International Rectifier,1.12 mm,,,,,,,,,,,,,,EcoApi_pcb,IRLML6244TRPBF
+R43,0R,Device,R
+R61,1M,Device,R
+R57,100K,Device,R
+Q6,IRLML6244TRPBF,,10/12/2012,IPC 7351B,,,,,,,,,,,,,,,,,,,,International Rectifier,1.12 mm,,,,,,,,,,,,,,EcoApi_pcb,IRLML6244TRPBF
+R56,1M,Device,R
+R62,1M,Device,R
+C27,0.01uF,Device,C
+R47,1M,Device,R
+R46,0R,Device,R
+R45,0R,Device,R
+U12,SiP32431DR3,Power_Management,SiP32431DR3
+C26,1u,Device,C
+C29,0.1u,Device,C
+TP30,TestPoint,Connector,TestPoint
+R59,0R,Device,R
+R58,0R,Device,R
+TP22,TestPoint,Connector,TestPoint
+TP25,TestPoint,Connector,TestPoint
+TP28,TestPoint,Connector,TestPoint
+R60,0R,Device,R
+TP23,TestPoint,Connector,TestPoint
+R44,100K,Device,R
+R48,1M,Device,R
+R53,1M,Device,R
+TP24,TestPoint,Connector,TestPoint
+TP27,TestPoint,Connector,TestPoint
+J2,USB_B_Micro,Connector,USB_B_Micro
+R38,100K,Device,R
+C19,10nF,Device,C
+C20,4.7uF,Device,C
+R40,22R,Device,R
+R41,22R,Device,R
+C22,100nF,Device,C
+R34,1M,Device,R
+C17,4.7uF,Device,C
+FB2,BLM18PG221SN1D,,,,,,,,,,,,,,,,,,,,,,,,,BLM18PG221SN1D,https://www.arrow.com/en/products/blm18pg221sn1d/murata-manufacturing?region=nac,BL Chip Ferrite Bead 0603,0.95,Murata Electronics,BLM18PG221SN1D,81-BLM18PG221SN1D,https://www.mouser.co.uk/ProductDetail/Murata-Electronics/BLM18PG221SN1D?qs=uSeJpk%2F8In3JS43lpC2ejg%3D%3D,,,,,,EcoApi_pcb,BLM18PG221SN1D
+FB1,BLM18PG221SN1D,,,,,,,,,,,,,,,,,,,,,,,,,BLM18PG221SN1D,https://www.arrow.com/en/products/blm18pg221sn1d/murata-manufacturing?region=nac,BL Chip Ferrite Bead 0603,0.95,Murata Electronics,BLM18PG221SN1D,81-BLM18PG221SN1D,https://www.mouser.co.uk/ProductDetail/Murata-Electronics/BLM18PG221SN1D?qs=uSeJpk%2F8In3JS43lpC2ejg%3D%3D,,,,,,EcoApi_pcb,BLM18PG221SN1D
+F1,MF-FSMF050X-2,Bourns Inc,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Resetable FUSE PPTC 500MA  0603, 6VDC,0.727,MF-FSMF050X-2,,,EcoApi_pcb,MF-FSMF050X-2
+F2,MF-FSMF050X-2,Bourns Inc,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Resetable FUSE PPTC 500MA  0603, 6VDC,0.727,MF-FSMF050X-2,,,EcoApi_pcb,MF-FSMF050X-2
+R49,0R,Device,R
+J3,B2B-XH-A,,,,,,,,,,,,,,,,,,,,,,,,,,,Wire-board; socket; male; XH; 2.5mm; PIN:2; THT; 250V; 3A; -2585C,7,JST (JAPAN SOLDERLESS TERMINALS),B2B-XH-A,,,,,,,,EcoApi_pcb,B2B-XH-A
+Q5,BSS138,Transistor_FET,BSS138
+R51,1M,Device,R
+Q2,FDC638P,EcoApi_pcb,FDC638P
+Q7,FDC638P,EcoApi_pcb,FDC638P
+D6,1N4148WT,ON Semiconductor,A2,IPC-7351B,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,EcoApi_pcb,1N4148WT
+D3,1N4148WT,ON Semiconductor,A2,IPC-7351B,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,EcoApi_pcb,1N4148WT
+D4,1N4148WT,ON Semiconductor,A2,IPC-7351B,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,EcoApi_pcb,1N4148WT
+D5,1N4148WT,ON Semiconductor,A2,IPC-7351B,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,EcoApi_pcb,1N4148WT
+L2,DFE252012P-2R2M=P2,EcoApi_pcb,DFE252012P-2R2M=P2
+J7,I2C INTERNAL,Connector_Generic,Conn_01x06
+R63,0R,Device,R
+S1,TARE,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1571527-1,Compliant,EcoApi_pcb,SW_PUSH
+S3,RESET,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1571527-1,Compliant,EcoApi_pcb,SW_PUSH
+R68,10k,Device,R
+S4,POWER,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,1571527-1,Compliant,EcoApi_pcb,SW_PUSH
+R73,10k,Device,R
+R64,0R,Device,R
+R66,0R,Device,R
+J10,TILT_OUT,Connector,Conn_01x01_Male
+J11,TILT IN,Connector,Conn_01x01_Male
+C30,100nF,Device,C
+R65,1M,Device,R
+R72,1.5K,Device,R
+D7,LED_0603_BLUE,Device,LED_ALT
+C31,100nF,Device,C
+R67,10k,Device,R
+C32,100nF,Device,C
+R71,10k,Device,R
+S2,DSHP06TSGET,,,,,,,,,,,,,,,,,,,,,,,,,,,SPST 6 1.27mm, Half Slide (Standard) Black SMD DIP Switches,2.6,Dongguan Guangzhu Industrial,DSHP06TSGET,,,,,,,,EcoApi_pcb,DSHP06TSGET
+R69,10k,Device,R
+J5,DBG,Connector,Conn_01x05_Male
+J6,TRACE,Connector,Conn_01x03_Male
+J8,B5B-XH-A__LF__SN_,,,,,,,,,,,,,,,,,,,,,,,,,,,Shrouded hdr,XH,2.5mm pitch,straight,5w JST XH Series, 2.5mm Pitch 5 Way 1 Row Straight PCB Header, Solder Termination, 3A,7,JST (JAPAN SOLDERLESS TERMINALS),B5B-XH-A (LF)(SN),,,,,,,,EcoApi_pcb,B5B-XH-A__LF__SN_
+J9,B8B-XH-A_LF__SN_,,,,,,,,,,,,,,,,,,,,,,,,,B8B-XH-A(LF)(SN),https://www.arrow.com/en/products/b8b-xh-a-lf-sn/jst-manufacturing,XH-2.5mm Header top entry 8 way JST XH Series, Series Number B8B, 2.5mm Pitch 8 Way 1 Row Straight PCB Header, Solder Termination, 3A,7,JST (JAPAN SOLDERLESS TERMINALS),B8B-XH-A(LF)(SN),,,,,,,,EcoApi_pcb,B8B-XH-A_LF__SN_
+H2,MountingHole_Pad,Mechanical,MountingHole_Pad
+H1,MountingHole_Pad,Mechanical,MountingHole_Pad
+C39,4.7uF,Device,C
+U13,STM32F411CEU6,EcoApi_pcb,STM32F411CEU6
+C41,0.1uF,Device,C
+C42,0.1uF,Device,C
+C43,0.1uF,Device,C
+C37,1uF,Device,C
+C38,0.1uF,Device,C
+C40,4.7uF,Device,C
+Y3,Crystal_GND24,Device,Crystal_GND24
+C35,10u,Device,C
+C36,10u,Device,C
+R75,?k,Device,R
+R74,1M,Device,R
+Y2,Crystal_Small,Device,Crystal_Small
+C34,1.5pF,Device,C
+C33,1.5pF,Device,C
