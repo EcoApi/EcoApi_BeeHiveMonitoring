@@ -1319,8 +1319,6 @@ Wire Wire Line
 	7850 4350 7850 4400
 Text Notes 8500 6400 0    50   ~ 0
 Serie protection resistor ?
-Text Notes 1800 2650 0    50   ~ 0
-nrst !!! if rtc not mount
 Text Notes -2000 4250 0    50   ~ 0
 32.768kHz (smd3215-2p)\nfor pcf8563x (ESR 100K, Load C 12.5pF, C trim 5-25pf)\nSC-32S32.768kHz20PPM12.5pF\n\nfor DS1337C, DS1339C (ESR 50K, Load C 6pF)\nSC-32S32.768kHz20PPM6pF\n\nfor DS1372U (ESR  50K, Load C 12.5pF)\nSC-32S32.768kHz20PPM12.5pF\n\n
 Text Notes -2000 3350 0    50   ~ 0
@@ -1408,31 +1406,17 @@ F 3 "~" H 1800 1750 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L Device:R R?
-U 1 1 637DE7C1
-P 1600 2000
-AR Path="/637DE7C1" Ref="R?"  Part="1" 
-AR Path="/62D38F6A/637DE7C1" Ref="R?"  Part="1" 
-AR Path="/62EA3721/637DE7C1" Ref="R16"  Part="1" 
-F 0 "R16" H 1670 2046 50  0000 L CNN
-F 1 "10K" H 1670 1955 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1530 2000 50  0001 C CNN
-F 3 "~" H 1600 2000 50  0001 C CNN
-	1    1600 2000
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 637E960E
-P 1600 2450
+P 1050 2450
 AR Path="/637E960E" Ref="#PWR?"  Part="1" 
 AR Path="/62D38F6A/637E960E" Ref="#PWR?"  Part="1" 
 AR Path="/62EA3721/637E960E" Ref="#PWR0165"  Part="1" 
-F 0 "#PWR0165" H 1600 2200 50  0001 C CNN
-F 1 "GND" H 1605 2277 50  0000 C CNN
-F 2 "" H 1600 2450 50  0001 C CNN
-F 3 "" H 1600 2450 50  0001 C CNN
-	1    1600 2450
+F 0 "#PWR0165" H 1050 2200 50  0001 C CNN
+F 1 "GND" H 1055 2277 50  0000 C CNN
+F 2 "" H 1050 2450 50  0001 C CNN
+F 3 "" H 1050 2450 50  0001 C CNN
+	1    1050 2450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1855,7 +1839,7 @@ Connection ~ 3600 3850
 Wire Wire Line
 	3050 4150 3050 4200
 Wire Wire Line
-	3500 1350 3900 1350
+	3500 1350 3650 1350
 Wire Wire Line
 	3900 1100 3900 1200
 Wire Wire Line
@@ -1871,7 +1855,7 @@ Wire Wire Line
 Wire Wire Line
 	3900 2350 3500 2350
 Connection ~ 3900 2350
-Text GLabel 1900 2000 3    50   Output ~ 0
+Text GLabel 1700 2350 0    50   Output ~ 0
 WDG_ALARM
 Wire Wire Line
 	1550 1300 1600 1300
@@ -1907,17 +1891,11 @@ Wire Wire Line
 Wire Wire Line
 	2050 650  2050 850 
 Connection ~ 2050 850 
-Wire Wire Line
-	1600 2150 1600 2450
-Wire Wire Line
-	1600 1850 1600 1750
 Connection ~ 1600 1750
 Wire Wire Line
 	1600 1750 1650 1750
 Wire Wire Line
 	2100 1950 1900 1950
-Wire Wire Line
-	1900 1950 1900 2000
 NoConn ~ 2100 2150
 Wire Wire Line
 	2550 7450 2700 7450
@@ -1949,4 +1927,56 @@ F 3 "" H 8800 5550 50  0001 C CNN
 	1    8800 5550
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	1600 1750 1600 1950
+Wire Wire Line
+	1200 1950 1050 1950
+Wire Wire Line
+	1050 1950 1050 2450
+Wire Wire Line
+	1700 2350 1900 2350
+Wire Wire Line
+	1900 1950 1900 2350
+Connection ~ 1900 2350
+Connection ~ 3650 1350
+Wire Wire Line
+	3650 1350 3900 1350
+Wire Wire Line
+	1600 1950 1500 1950
+$Comp
+L Device:R R?
+U 1 1 637DE7C1
+P 1350 1950
+AR Path="/637DE7C1" Ref="R?"  Part="1" 
+AR Path="/62D38F6A/637DE7C1" Ref="R?"  Part="1" 
+AR Path="/62EA3721/637DE7C1" Ref="R16"  Part="1" 
+F 0 "R16" H 1420 1996 50  0000 L CNN
+F 1 "10K" H 1420 1905 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 1280 1950 50  0001 C CNN
+F 3 "~" H 1350 1950 50  0001 C CNN
+	1    1350 1950
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 620F7DE3
+P 2100 2650
+AR Path="/620F7DE3" Ref="R?"  Part="1" 
+AR Path="/62D38F6A/620F7DE3" Ref="R?"  Part="1" 
+AR Path="/62EA3721/620F7DE3" Ref="R58"  Part="1" 
+F 0 "R58" H 2170 2696 50  0000 L CNN
+F 1 "10K" H 2170 2605 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2030 2650 50  0001 C CNN
+F 3 "~" H 2100 2650 50  0001 C CNN
+	1    2100 2650
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1900 2650 1950 2650
+Wire Wire Line
+	1900 2350 1900 2650
+Wire Wire Line
+	2250 2650 3650 2650
+Wire Wire Line
+	3650 1350 3650 2650
 $EndSCHEMATC
