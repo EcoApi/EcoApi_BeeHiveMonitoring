@@ -23,6 +23,7 @@ F 0 "H2" H 4150 6749 50  0000 L CNN
 F 1 "MountingHole_Pad" H 4150 6658 50  0000 L CNN
 F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 4050 6700 50  0001 C CNN
 F 3 "~" H 4050 6700 50  0001 C CNN
+F 4 "no" H 4050 6700 50  0001 C CNN "Populate"
 	1    4050 6700
 	1    0    0    -1  
 $EndComp
@@ -36,6 +37,7 @@ F 0 "H1" H 4150 7049 50  0000 L CNN
 F 1 "MountingHole_Pad" H 4150 6958 50  0000 L CNN
 F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 4050 7000 50  0001 C CNN
 F 3 "~" H 4050 7000 50  0001 C CNN
+F 4 "no" H 4050 7000 50  0001 C CNN "Populate"
 	1    4050 7000
 	-1   0    0    1   
 $EndComp
@@ -66,6 +68,9 @@ F 0 "C39" V 10000 4950 50  0000 L CNN
 F 1 "4.7uF" V 9900 4900 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 9888 5000 50  0001 C CNN
 F 3 "~" H 9850 5150 50  0001 C CNN
+F 4 "yes" H 9850 5150 50  0001 C CNN "Populate"
+F 5 "0201" H 9850 5150 50  0001 C CNN "Size Inch"
+F 6 "0603" H 9850 5150 50  0001 C CNN "Size Metric"
 	1    9850 5150
 	0    1    -1   0   
 $EndComp
@@ -90,6 +95,7 @@ F 0 "U13" H 8550 5137 60  0000 C CNN
 F 1 "STM32F411CEU6" H 8550 5031 60  0000 C CNN
 F 2 "EcoApi_pcb:STM32F411CEU6" H 8550 4990 60  0001 C CNN
 F 3 "" H 7750 4750 60  0000 C CNN
+F 4 "yes" H 7750 4750 50  0001 C CNN "Populate"
 	2    7750 4750
 	1    0    0    -1  
 $EndComp
@@ -105,6 +111,9 @@ F 0 "C41" V 10050 3350 50  0000 L CNN
 F 1 "0.1uF" V 9950 3300 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3400 50  0001 C CNN
 F 3 "~" H 9900 3550 50  0001 C CNN
+F 4 "yes" H 9900 3550 50  0001 C CNN "Populate"
+F 5 "0201" H 9900 3550 50  0001 C CNN "Size Inch"
+F 6 "0603" H 9900 3550 50  0001 C CNN "Size Metric"
 	1    9900 3550
 	0    1    -1   0   
 $EndComp
@@ -120,6 +129,9 @@ F 0 "C42" V 10050 3600 50  0000 L CNN
 F 1 "0.1uF" V 9950 3550 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3650 50  0001 C CNN
 F 3 "~" H 9900 3800 50  0001 C CNN
+F 4 "yes" H 9900 3800 50  0001 C CNN "Populate"
+F 5 "0201" H 9900 3800 50  0001 C CNN "Size Inch"
+F 6 "0603" H 9900 3800 50  0001 C CNN "Size Metric"
 	1    9900 3800
 	0    1    -1   0   
 $EndComp
@@ -135,6 +147,9 @@ F 0 "C43" V 10050 3850 50  0000 L CNN
 F 1 "0.1uF" V 9950 3800 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3900 50  0001 C CNN
 F 3 "~" H 9900 4050 50  0001 C CNN
+F 4 "yes" H 9900 4050 50  0001 C CNN "Populate"
+F 5 "0201" H 9900 4050 50  0001 C CNN "Size Inch"
+F 6 "0603" H 9900 4050 50  0001 C CNN "Size Metric"
 	1    9900 4050
 	0    1    -1   0   
 $EndComp
@@ -172,6 +187,9 @@ F 0 "C37" V 7700 3500 50  0000 L CNN
 F 1 "1uF" V 7600 3450 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 7588 3550 50  0001 C CNN
 F 3 "~" H 7550 3700 50  0001 C CNN
+F 4 "yes" H 7550 3700 50  0001 C CNN "Populate"
+F 5 "0201" H 7550 3700 50  0001 C CNN "Size Inch"
+F 6 "0603" H 7550 3700 50  0001 C CNN "Size Metric"
 	1    7550 3700
 	1    0    0    1   
 $EndComp
@@ -187,6 +205,9 @@ F 0 "C38" V 7950 3500 50  0000 L CNN
 F 1 "0.1uF" V 7850 3450 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 7838 3550 50  0001 C CNN
 F 3 "~" H 7800 3700 50  0001 C CNN
+F 4 "yes" H 7800 3700 50  0001 C CNN "Populate"
+F 5 "0201" H 7800 3700 50  0001 C CNN "Size Inch"
+F 6 "0603" H 7800 3700 50  0001 C CNN "Size Metric"
 	1    7800 3700
 	1    0    0    1   
 $EndComp
@@ -226,6 +247,9 @@ F 0 "C40" V 10050 3100 50  0000 L CNN
 F 1 "4.7uF" V 9950 3050 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 9938 3150 50  0001 C CNN
 F 3 "~" H 9900 3300 50  0001 C CNN
+F 4 "yes" H 9900 3300 50  0001 C CNN "Populate"
+F 5 "0201" H 9900 3300 50  0001 C CNN "Size Inch"
+F 6 "0603" H 9900 3300 50  0001 C CNN "Size Metric"
 	1    9900 3300
 	0    1    -1   0   
 $EndComp
@@ -297,11 +321,11 @@ Text GLabel 2550 4250 0    50   Output ~ 0
 I2S_CK-MIC_GAIN
 Text GLabel 2550 4150 0    50   Input ~ 0
 I2S_WS
-Text GLabel 2550 3350 0    50   Output ~ 0
+Text GLabel 2550 3450 0    50   Output ~ 0
 EN_3V3_EXT
 Text GLabel 2550 3550 0    50   Output ~ 0
 HX711_RATE
-Text GLabel 2550 3450 0    50   Output ~ 0
+Text GLabel 2550 3350 0    50   Output ~ 0
 EN_3V3_INT
 Text GLabel 2550 3750 0    50   Output ~ 0
 HX711_CK
@@ -336,14 +360,14 @@ Wire Wire Line
 $Comp
 L power:GND #PWR?
 U 1 1 623CA95E
-P 6750 2000
+P 6850 2000
 AR Path="/623CA95E" Ref="#PWR?"  Part="1" 
 AR Path="/62B8145A/623CA95E" Ref="#PWR0181"  Part="1" 
-F 0 "#PWR0181" H 6750 1750 50  0001 C CNN
-F 1 "GND" H 6755 1827 50  0000 C CNN
-F 2 "" H 6750 2000 50  0001 C CNN
-F 3 "" H 6750 2000 50  0001 C CNN
-	1    6750 2000
+F 0 "#PWR0181" H 6850 1750 50  0001 C CNN
+F 1 "GND" H 6855 1827 50  0000 C CNN
+F 2 "" H 6850 2000 50  0001 C CNN
+F 3 "" H 6850 2000 50  0001 C CNN
+	1    6850 2000
 	0    1    -1   0   
 $EndComp
 $Comp
@@ -356,6 +380,7 @@ F 0 "Y3" H 7244 2046 50  0000 L CNN
 F 1 "Crystal_GND24" H 7244 1955 50  0000 L CNN
 F 2 "EcoApi_pcb:X322525MMB4SI" H 7050 2000 50  0001 C CNN
 F 3 "~" H 7050 2000 50  0001 C CNN
+F 4 "yes" H 7050 2000 50  0001 C CNN "Populate"
 	1    7050 2000
 	0    1    -1   0   
 $EndComp
@@ -383,9 +408,12 @@ P 7400 1750
 AR Path="/623CA94A" Ref="C?"  Part="1" 
 AR Path="/62B8145A/623CA94A" Ref="C35"  Part="1" 
 F 0 "C35" V 7550 1550 50  0000 L CNN
-F 1 "10u" V 7450 1550 50  0000 L CNN
+F 1 "10uF" V 7450 1550 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 7438 1600 50  0001 C CNN
 F 3 "~" H 7400 1750 50  0001 C CNN
+F 4 "yes" H 7400 1750 50  0001 C CNN "Populate"
+F 5 "0201" H 7400 1750 50  0001 C CNN "Size Inch"
+F 6 "0603" H 7400 1750 50  0001 C CNN "Size Metric"
 	1    7400 1750
 	0    -1   -1   0   
 $EndComp
@@ -396,44 +424,36 @@ P 7400 2250
 AR Path="/623CA944" Ref="C?"  Part="1" 
 AR Path="/62B8145A/623CA944" Ref="C36"  Part="1" 
 F 0 "C36" V 7550 2050 50  0000 L CNN
-F 1 "10u" V 7450 2050 50  0000 L CNN
+F 1 "10uF" V 7450 2050 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 7438 2100 50  0001 C CNN
 F 3 "~" H 7400 2250 50  0001 C CNN
+F 4 "yes" H 7400 2250 50  0001 C CNN "Populate"
+F 5 "0201" H 7400 2250 50  0001 C CNN "Size Inch"
+F 6 "0603" H 7400 2250 50  0001 C CNN "Size Metric"
 	1    7400 2250
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 623CA93C
-P 6650 2250
+P 6450 2250
 AR Path="/623CA93C" Ref="R?"  Part="1" 
 AR Path="/62B8145A/623CA93C" Ref="R75"  Part="1" 
-F 0 "R75" H 6720 2296 50  0000 L CNN
-F 1 "?k" H 6720 2205 50  0000 L CNN
-F 2 "Resistor_SMD:R_0201_0603Metric" V 6580 2250 50  0001 C CNN
-F 3 "~" H 6650 2250 50  0001 C CNN
-	1    6650 2250
+F 0 "R75" H 6520 2296 50  0000 L CNN
+F 1 "?k" H 6520 2205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0201_0603Metric" V 6380 2250 50  0001 C CNN
+F 3 "~" H 6450 2250 50  0001 C CNN
+F 4 "yes" H 6450 2250 50  0001 C CNN "Populate"
+F 5 "0201" H 6450 2250 50  0001 C CNN "Size Inch"
+F 6 "0603" H 6450 2250 50  0001 C CNN "Size Metric"
+F 7 "1%" H 6450 2250 50  0001 C CNN "Tolerance"
+	1    6450 2250
 	0    1    -1   0   
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 623CA936
-P 6350 2000
-AR Path="/623CA936" Ref="R?"  Part="1" 
-AR Path="/62B8145A/623CA936" Ref="R74"  Part="1" 
-F 0 "R74" H 6420 2046 50  0000 L CNN
-F 1 "1M" H 6420 1955 50  0000 L CNN
-F 2 "Resistor_SMD:R_0201_0603Metric" V 6280 2000 50  0001 C CNN
-F 3 "~" H 6350 2000 50  0001 C CNN
-	1    6350 2000
-	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	7250 1750 7050 1750
 Wire Wire Line
 	7250 2250 7050 2250
-Wire Wire Line
-	6850 2000 6750 2000
 Wire Wire Line
 	7700 2000 7550 2000
 Wire Wire Line
@@ -453,6 +473,7 @@ F 0 "Y2" H 6350 1575 50  0000 C CNN
 F 1 "Crystal_Small" H 6350 1484 50  0000 C CNN
 F 2 "EcoApi_pcb:XTAL_ABS07-120-32.768KHZ-T" H 6350 1350 50  0001 C CNN
 F 3 "~" H 6350 1350 50  0001 C CNN
+F 4 "yes" H 6350 1350 50  0001 C CNN "Populate"
 	1    6350 1350
 	0    1    -1   0   
 $EndComp
@@ -474,6 +495,7 @@ F 0 "U13" H 3850 1737 60  0000 C CNN
 F 1 "STM32F411CEU6" H 3850 1631 60  0000 C CNN
 F 2 "EcoApi_pcb:STM32F411CEU6" H 3350 1590 60  0001 C CNN
 F 3 "" H 2550 1350 60  0000 C CNN
+F 4 "yes" H 2550 1350 50  0001 C CNN "Populate"
 	1    2550 1350
 	1    0    0    -1  
 $EndComp
@@ -603,24 +625,7 @@ Wire Wire Line
 	6000 1850 6000 2250
 Wire Wire Line
 	6000 1850 5150 1850
-Wire Wire Line
-	5150 1750 6350 1750
-Wire Wire Line
-	6000 2250 6350 2250
-Wire Wire Line
-	6350 1850 6350 1750
-Wire Wire Line
-	6350 2150 6350 2250
-Wire Wire Line
-	6500 2250 6350 2250
-Connection ~ 6350 2250
-Wire Wire Line
-	7050 1750 6350 1750
 Connection ~ 7050 1750
-Connection ~ 6350 1750
-Wire Wire Line
-	6800 2250 7050 2250
-Connection ~ 7050 2250
 Wire Wire Line
 	7250 1350 7250 1550
 Connection ~ 7250 1350
@@ -651,6 +656,9 @@ F 0 "C34" V 7250 1350 50  0000 L CNN
 F 1 "1.5pF" V 7150 1350 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 7138 1400 50  0001 C CNN
 F 3 "~" H 7100 1550 50  0001 C CNN
+F 4 "yes" H 7100 1550 50  0001 C CNN "Populate"
+F 5 "0201" H 7100 1550 50  0001 C CNN "Size Inch"
+F 6 "0603" H 7100 1550 50  0001 C CNN "Size Metric"
 	1    7100 1550
 	0    -1   -1   0   
 $EndComp
@@ -664,6 +672,9 @@ F 0 "C33" V 7250 950 50  0000 L CNN
 F 1 "1.5pF" V 7150 950 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0201_0603Metric" H 7138 1000 50  0001 C CNN
 F 3 "~" H 7100 1150 50  0001 C CNN
+F 4 "yes" H 7100 1150 50  0001 C CNN "Populate"
+F 5 "0201" H 7100 1150 50  0001 C CNN "Size Inch"
+F 6 "0603" H 7100 1150 50  0001 C CNN "Size Metric"
 	1    7100 1150
 	0    -1   -1   0   
 $EndComp
@@ -683,6 +694,7 @@ F 0 "H3" H 3550 6749 50  0000 L CNN
 F 1 "MountingHole_Pad" H 3550 6658 50  0000 L CNN
 F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 3450 6700 50  0001 C CNN
 F 3 "~" H 3450 6700 50  0001 C CNN
+F 4 "no" H 3450 6700 50  0001 C CNN "Populate"
 	1    3450 6700
 	1    0    0    -1  
 $EndComp
@@ -696,6 +708,7 @@ F 0 "H5" H 3850 6749 50  0000 L CNN
 F 1 "MountingHole_Pad" H 3850 6658 50  0000 L CNN
 F 2 "MountingHole:MountingHole_2.7mm_M2.5_Pad_Via" H 3750 6700 50  0001 C CNN
 F 3 "~" H 3750 6700 50  0001 C CNN
+F 4 "no" H 3750 6700 50  0001 C CNN "Populate"
 	1    3750 6700
 	1    0    0    -1  
 $EndComp
@@ -723,9 +736,10 @@ AR Path="/62CC297B/63D4FB09" Ref="L?"  Part="1"
 AR Path="/62EA3721/63D4FB09" Ref="L?"  Part="1" 
 AR Path="/62B8145A/63D4FB09" Ref="L3"  Part="1" 
 F 0 "L3" V 7390 3550 50  0000 C CNN
-F 1 "3.3uH_0603" V 7299 3550 50  0000 C CNN
+F 1 "3.3uH" V 7299 3550 50  0000 C CNN
 F 2 "Inductor_SMD:L_0402_1005Metric" H 7200 3550 50  0001 C CNN
 F 3 "~" H 7200 3550 50  0001 C CNN
+F 4 "yes" H 7200 3550 50  0001 C CNN "Populate"
 	1    7200 3550
 	0    -1   -1   0   
 $EndComp
@@ -736,4 +750,11 @@ utile ?
 Wire Wire Line
 	7350 3550 7550 3550
 Connection ~ 7550 3550
+Wire Wire Line
+	5150 1750 7050 1750
+Wire Wire Line
+	7050 2250 6600 2250
+Connection ~ 7050 2250
+Wire Wire Line
+	6000 2250 6300 2250
 $EndSCHEMATC

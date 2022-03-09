@@ -13,104 +13,110 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text GLabel 2600 1350 2    50   Input ~ 0
+Text GLabel 2300 6750 2    50   Input ~ 0
 LOADCELL_E+
-Text GLabel 2600 1550 2    50   Input ~ 0
+Text GLabel 2300 6950 2    50   Input ~ 0
 LOADCELL_A-
-Text GLabel 2600 1650 2    50   Input ~ 0
+Text GLabel 2300 7050 2    50   Input ~ 0
 LOADCELL_A+
-Text GLabel 2600 3150 2    50   Input ~ 0
+Text GLabel 4000 6950 2    50   Input ~ 0
 I2C1_SDA
-Text GLabel 2600 3250 2    50   Input ~ 0
+Text GLabel 4000 7050 2    50   Input ~ 0
 I2C1_SCL
 $Comp
 L Connector_Generic:Conn_01x06 J?
 U 1 1 61BB1CF1
-P 1450 4650
+P 3300 4900
 AR Path="/61BB1CF1" Ref="J?"  Part="1" 
 AR Path="/62D38F6A/61BB1CF1" Ref="J?"  Part="1" 
 AR Path="/62EA3721/61BB1CF1" Ref="J?"  Part="1" 
 AR Path="/61B961C0/61BB1CF1" Ref="J7"  Part="1" 
-F 0 "J7" H 1368 4125 50  0000 C CNN
-F 1 "I2C INTERNAL" H 1368 4216 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical" H 1450 4650 50  0001 C CNN
-F 3 "~" H 1450 4650 50  0001 C CNN
-	1    1450 4650
+F 0 "J7" H 3218 4375 50  0000 C CNN
+F 1 "I2C INTERNAL" H 3218 4466 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical" H 3300 4900 50  0001 C CNN
+F 3 "~" H 3300 4900 50  0001 C CNN
+F 4 "no" H 3300 4900 50  0001 C CNN "Populate"
+	1    3300 4900
 	-1   0    0    1   
 $EndComp
-Text GLabel 1650 4550 2    50   Input ~ 0
+Text GLabel 3500 4800 2    50   Input ~ 0
 I2C1_SCL
-Text GLabel 1650 4650 2    50   Input ~ 0
+Text GLabel 3500 4900 2    50   Input ~ 0
 I2C1_SDA
 $Comp
 L power:GND #PWR?
 U 1 1 61BB1CFF
-P 2200 4450
+P 4050 4700
 AR Path="/61BB1CFF" Ref="#PWR?"  Part="1" 
 AR Path="/62D38F6A/61BB1CFF" Ref="#PWR?"  Part="1" 
 AR Path="/62EA3721/61BB1CFF" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61BB1CFF" Ref="#PWR0154"  Part="1" 
-F 0 "#PWR0154" H 2200 4200 50  0001 C CNN
-F 1 "GND" H 2205 4277 50  0000 C CNN
-F 2 "" H 2200 4450 50  0001 C CNN
-F 3 "" H 2200 4450 50  0001 C CNN
-	1    2200 4450
+F 0 "#PWR0154" H 4050 4450 50  0001 C CNN
+F 1 "GND" H 4055 4527 50  0000 C CNN
+F 2 "" H 4050 4700 50  0001 C CNN
+F 3 "" H 4050 4700 50  0001 C CNN
+	1    4050 4700
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2200 4350 1650 4350
+	4050 4600 3500 4600
 Wire Wire Line
-	1650 4450 2200 4450
-NoConn ~ 1650 4750
-NoConn ~ 1650 4850
-Text Notes 1100 1750 0    50   ~ 0
+	3500 4700 4050 4700
+NoConn ~ 3500 5000
+NoConn ~ 3500 5100
+Text Notes 800  7150 0    50   ~ 0
 E+ Red\nE- Black\nA- White\nA+ Green / Blue\nSh Yellow 
 $Comp
 L Device:R R?
 U 1 1 61C32D6F
-P 6550 1150
+P 6500 1300
 AR Path="/61C32D6F" Ref="R?"  Part="1" 
 AR Path="/62EA3721/61C32D6F" Ref="R?"  Part="1" 
 AR Path="/61B961C0/61C32D6F" Ref="R63"  Part="1" 
-F 0 "R63" H 6620 1196 50  0000 L CNN
-F 1 "0R" H 6620 1105 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 6480 1150 50  0001 C CNN
-F 3 "~" H 6550 1150 50  0001 C CNN
-	1    6550 1150
+F 0 "R63" H 6570 1346 50  0000 L CNN
+F 1 "0R" H 6570 1255 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6430 1300 50  0001 C CNN
+F 3 "~" H 6500 1300 50  0001 C CNN
+F 4 "yes" H 6500 1300 50  0001 C CNN "Populate"
+F 5 "0603" H 6500 1300 50  0001 C CNN "Size Inch"
+F 6 "1608" H 6500 1300 50  0001 C CNN "Size Metric"
+F 7 "1%" H 6500 1300 50  0001 C CNN "Tolerance"
+	1    6500 1300
 	1    0    0    -1  
 $EndComp
 $Comp
 L EcoApi_pcb-rescue:+3V3-BluePillF4 #SUPPLY?
 U 1 1 61C32D75
-P 6550 850
+P 6500 1000
 AR Path="/61C32D75" Ref="#SUPPLY?"  Part="1" 
 AR Path="/62EA3721/61C32D75" Ref="#SUPPLY?"  Part="1" 
 AR Path="/61B961C0/61C32D75" Ref="#SUPPLY0120"  Part="1" 
-F 0 "#SUPPLY0120" H 6550 850 45  0001 L BNN
-F 1 "+3V3" H 6550 1021 45  0000 C CNN
-F 2 "" H 6550 850 60  0001 C CNN
-F 3 "" H 6550 850 60  0001 C CNN
-	1    6550 850 
+F 0 "#SUPPLY0120" H 6500 1000 45  0001 L BNN
+F 1 "+3V3" H 6500 1171 45  0000 C CNN
+F 2 "" H 6500 1000 60  0001 C CNN
+F 3 "" H 6500 1000 60  0001 C CNN
+	1    6500 1000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6450 2000 6550 2000
+	6400 2150 6500 2150
 Wire Wire Line
-	6550 1400 6550 1300
+	6500 1550 6500 1450
 $Comp
 L EcoApi_pcb:SW_PUSH S?
 U 1 1 61C32D87
-P 6550 1700
+P 6500 1850
 AR Path="/61C32D87" Ref="S?"  Part="1" 
 AR Path="/62EA3721/61C32D87" Ref="S?"  Part="1" 
 AR Path="/61B961C0/61C32D87" Ref="S1"  Part="1" 
-F 0 "S1" V 6504 1812 50  0000 L CNN
-F 1 "TARE" V 6595 1812 50  0000 L CNN
-F 2 "EcoApi_pcb:SW_PUSH" H 6550 1700 50  0001 L BNN
-F 3 "" H 6550 1700 50  0001 L BNN
-F 4 "Compliant" H 6550 1700 50  0001 L BNN "EU_RoHS_Compliance"
-F 5 "1571527-1" H 6550 1700 50  0001 L BNN "Comment"
-	1    6550 1700
+F 0 "S1" V 6454 1962 50  0000 L CNN
+F 1 "TARE" V 6545 1962 50  0000 L CNN
+F 2 "EcoApi_pcb:SW_PUSH" H 6500 1850 50  0001 L BNN
+F 3 "" H 6500 1850 50  0001 L BNN
+F 4 "Compliant" H 6500 1850 50  0001 L BNN "EU_RoHS_Compliance"
+F 5 "1571527-1" H 6500 1850 50  0001 L BNN "Comment"
+F 6 "no" H 6500 1850 50  0001 C CNN "Populate"
+	1    6500 1850
 	0    1    1    0   
 $EndComp
 $Comp
@@ -144,6 +150,7 @@ F 2 "EcoApi_pcb:SW_PUSH" H 9800 1800 50  0001 L BNN
 F 3 "" H 9800 1800 50  0001 L BNN
 F 4 "Compliant" H 9800 1800 50  0001 L BNN "EU_RoHS_Compliance"
 F 5 "1571527-1" H 9800 1800 50  0001 L BNN "Comment"
+F 6 "no" H 9800 1800 50  0001 C CNN "Populate"
 	1    9800 1800
 	0    1    1    0   
 $EndComp
@@ -157,9 +164,13 @@ AR Path="/61C32DDA" Ref="R?"  Part="1"
 AR Path="/62EA3721/61C32DDA" Ref="R?"  Part="1" 
 AR Path="/61B961C0/61C32DDA" Ref="R68"  Part="1" 
 F 0 "R68" H 9370 4496 50  0000 L CNN
-F 1 "10k" H 9370 4405 50  0000 L CNN
+F 1 "10K" H 9370 4405 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 9230 4450 50  0001 C CNN
 F 3 "~" H 9300 4450 50  0001 C CNN
+F 4 "yes" H 9300 4450 50  0001 C CNN "Populate"
+F 5 "0603" H 9300 4450 50  0001 C CNN "Size Inch"
+F 6 "1608" H 9300 4450 50  0001 C CNN "Size Metric"
+F 7 "1%" H 9300 4450 50  0001 C CNN "Tolerance"
 	1    9300 4450
 	1    0    0    -1  
 $EndComp
@@ -191,8 +202,6 @@ Text GLabel 10550 1500 0    50   Output ~ 0
 BTN_PWR
 Wire Wire Line
 	10550 1500 10650 1500
-Text GLabel 10550 1000 0    50   Input ~ 0
-VBAT
 $Comp
 L Device:R R?
 U 1 1 61E97F1A
@@ -202,176 +211,124 @@ AR Path="/62EA3721/61E97F1A" Ref="R?"  Part="1"
 AR Path="/61B961C0/61E97F1A" Ref="R73"  Part="1" 
 AR Path="/62CC297B/61E97F1A" Ref="R?"  Part="1" 
 F 0 "R73" H 10720 1296 50  0000 L CNN
-F 1 "10k" H 10720 1205 50  0000 L CNN
+F 1 "10K" H 10720 1205 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 10580 1250 50  0001 C CNN
 F 3 "~" H 10650 1250 50  0001 C CNN
+F 4 "yes" H 10650 1250 50  0001 C CNN "Populate"
+F 5 "0603" H 10650 1250 50  0001 C CNN "Size Inch"
+F 6 "1608" H 10650 1250 50  0001 C CNN "Size Metric"
+F 7 "1%" H 10650 1250 50  0001 C CNN "Tolerance"
 	1    10650 1250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	10550 1000 10650 1000
 Wire Wire Line
 	10650 1000 10650 1100
 $Comp
 L power:GND #PWR?
 U 1 1 61E97F22
-P 7900 2500
+P 7900 2250
 AR Path="/61E97F22" Ref="#PWR?"  Part="1" 
 AR Path="/62EA3721/61E97F22" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61E97F22" Ref="#PWR0159"  Part="1" 
 AR Path="/62CC297B/61E97F22" Ref="#PWR?"  Part="1" 
-F 0 "#PWR0159" H 7900 2250 50  0001 C CNN
-F 1 "GND" H 7905 2327 50  0000 C CNN
-F 2 "" H 7900 2500 50  0001 C CNN
-F 3 "" H 7900 2500 50  0001 C CNN
-	1    7900 2500
+F 0 "#PWR0159" H 7900 2000 50  0001 C CNN
+F 1 "GND" H 7905 2077 50  0000 C CNN
+F 2 "" H 7900 2250 50  0001 C CNN
+F 3 "" H 7900 2250 50  0001 C CNN
+	1    7900 2250
 	1    0    0    -1  
 $EndComp
-Text GLabel 7900 950  1    50   Input ~ 0
-VBAT
-$Comp
-L EcoApi_pcb-rescue:+3V3-BluePillF4 #SUPPLY?
-U 1 1 61E97F29
-P 8150 850
-AR Path="/61E97F29" Ref="#SUPPLY?"  Part="1" 
-AR Path="/62CC297B/61E97F29" Ref="#SUPPLY?"  Part="1" 
-AR Path="/61B961C0/61E97F29" Ref="#SUPPLY0123"  Part="1" 
-F 0 "#SUPPLY0123" H 8150 850 45  0001 L BNN
-F 1 "+3V3" H 8150 1020 45  0000 C CNN
-F 2 "" H 8150 850 60  0001 C CNN
-F 3 "" H 8150 850 60  0001 C CNN
-	1    8150 850 
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 61E97F2F
-P 7900 1150
-AR Path="/61E97F2F" Ref="R?"  Part="1" 
-AR Path="/62CC297B/61E97F2F" Ref="R?"  Part="1" 
-AR Path="/61B961C0/61E97F2F" Ref="R64"  Part="1" 
-F 0 "R64" H 7970 1196 50  0000 L CNN
-F 1 "0R" H 7970 1105 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 7830 1150 50  0001 C CNN
-F 3 "~" H 7900 1150 50  0001 C CNN
-	1    7900 1150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 61E97F35
-P 8150 1150
-AR Path="/61E97F35" Ref="R?"  Part="1" 
-AR Path="/62CC297B/61E97F35" Ref="R?"  Part="1" 
-AR Path="/61B961C0/61E97F35" Ref="R66"  Part="1" 
-F 0 "R66" H 8220 1196 50  0000 L CNN
-F 1 "0R" H 8220 1105 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8080 1150 50  0001 C CNN
-F 3 "~" H 8150 1150 50  0001 C CNN
-	1    8150 1150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7900 950  7900 1000
-Wire Wire Line
-	8150 1300 8150 1450
-Wire Wire Line
-	8150 850  8150 1000
 $Comp
 L Device:C C?
 U 1 1 61E97F4A
-P 7900 2250
+P 7900 1800
 AR Path="/61E97F4A" Ref="C?"  Part="1" 
 AR Path="/62CC297B/61E97F4A" Ref="C?"  Part="1" 
 AR Path="/61B961C0/61E97F4A" Ref="C30"  Part="1" 
-F 0 "C30" V 8050 2050 50  0000 L CNN
-F 1 "100nF" V 7950 2050 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 7938 2100 50  0001 C CNN
-F 3 "~" H 7900 2250 50  0001 C CNN
-	1    7900 2250
+F 0 "C30" V 8050 1600 50  0000 L CNN
+F 1 "0.1uF" V 7950 1600 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 7938 1650 50  0001 C CNN
+F 3 "~" H 7900 1800 50  0001 C CNN
+F 4 "yes" H 7900 1800 50  0001 C CNN "Populate"
+F 5 "0603" H 7900 1800 50  0001 C CNN "Size Inch"
+F 6 "1608" H 7900 1800 50  0001 C CNN "Size Metric"
+	1    7900 1800
 	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 61E97F50
-P 7900 1750
+P 7900 1250
 AR Path="/61E97F50" Ref="R?"  Part="1" 
 AR Path="/62CC297B/61E97F50" Ref="R?"  Part="1" 
 AR Path="/61B961C0/61E97F50" Ref="R65"  Part="1" 
-F 0 "R65" H 7970 1796 50  0000 L CNN
-F 1 "1M" H 7970 1705 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 7830 1750 50  0001 C CNN
-F 3 "~" H 7900 1750 50  0001 C CNN
-	1    7900 1750
+F 0 "R65" H 7970 1296 50  0000 L CNN
+F 1 "1M" H 7970 1205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 7830 1250 50  0001 C CNN
+F 3 "~" H 7900 1250 50  0001 C CNN
+F 4 "yes" H 7900 1250 50  0001 C CNN "Populate"
+F 5 "0603" H 7900 1250 50  0001 C CNN "Size Inch"
+F 6 "1608" H 7900 1250 50  0001 C CNN "Size Metric"
+F 7 "1%" H 7900 1250 50  0001 C CNN "Tolerance"
+	1    7900 1250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7900 1300 7900 1450
-Wire Wire Line
-	7900 1450 8150 1450
-Text GLabel 7750 2000 0    50   Output ~ 0
+Text GLabel 7750 1500 0    50   Output ~ 0
 MOTION_ALARM
 Wire Wire Line
-	7900 1450 7900 1600
-Connection ~ 7900 1450
-Wire Wire Line
-	7900 1900 7900 2000
-Wire Wire Line
-	7900 2400 7900 2500
+	7900 1400 7900 1500
 $Comp
 L power:GND #PWR?
 U 1 1 61E97F5D
-P 8400 2500
+P 8400 2250
 AR Path="/61E97F5D" Ref="#PWR?"  Part="1" 
 AR Path="/62EA3721/61E97F5D" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61E97F5D" Ref="#PWR0160"  Part="1" 
 AR Path="/62CC297B/61E97F5D" Ref="#PWR?"  Part="1" 
-F 0 "#PWR0160" H 8400 2250 50  0001 C CNN
-F 1 "GND" H 8405 2327 50  0000 C CNN
-F 2 "" H 8400 2500 50  0001 C CNN
-F 3 "" H 8400 2500 50  0001 C CNN
-	1    8400 2500
+F 0 "#PWR0160" H 8400 2000 50  0001 C CNN
+F 1 "GND" H 8405 2077 50  0000 C CNN
+F 2 "" H 8400 2250 50  0001 C CNN
+F 3 "" H 8400 2250 50  0001 C CNN
+	1    8400 2250
 	1    0    0    -1  
 $EndComp
-Connection ~ 7900 2000
+Connection ~ 7900 1500
 Wire Wire Line
-	7900 2000 7900 2100
+	7900 1500 7750 1500
 Wire Wire Line
-	7900 2000 7750 2000
-Wire Wire Line
-	8400 2000 7900 2000
-Text GLabel 1350 5700 2    50   Output ~ 0
+	8400 1500 7900 1500
+Text GLabel 1700 4950 2    50   Output ~ 0
 SW_CLK
-Text GLabel 1350 5500 2    50   BiDi ~ 0
+Text GLabel 1700 5150 2    50   BiDi ~ 0
 SW_DIO
-Text GLabel 1350 5400 2    50   Output ~ 0
+Text GLabel 1700 4850 2    50   Output ~ 0
 NRST
 $Comp
 L power:+3.3V #PWR?
 U 1 1 61EC6DFB
-P 1700 5800
+P 2050 5250
 AR Path="/61EC6DFB" Ref="#PWR?"  Part="1" 
 AR Path="/62B8145A/61EC6DFB" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61EC6DFB" Ref="#PWR0161"  Part="1" 
-F 0 "#PWR0161" H 1700 5650 50  0001 C CNN
-F 1 "+3.3V" H 1715 5973 50  0000 C CNN
-F 2 "" H 1700 5800 50  0001 C CNN
-F 3 "" H 1700 5800 50  0001 C CNN
-	1    1700 5800
+F 0 "#PWR0161" H 2050 5100 50  0001 C CNN
+F 1 "+3.3V" H 2065 5423 50  0000 C CNN
+F 2 "" H 2050 5250 50  0001 C CNN
+F 3 "" H 2050 5250 50  0001 C CNN
+	1    2050 5250
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 61EC6E02
-P 1700 5600
+P 2050 5050
 AR Path="/61EC6E02" Ref="#PWR?"  Part="1" 
 AR Path="/62B8145A/61EC6E02" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61EC6E02" Ref="#PWR0162"  Part="1" 
-F 0 "#PWR0162" H 1700 5350 50  0001 C CNN
-F 1 "GND" H 1705 5427 50  0000 C CNN
-F 2 "" H 1700 5600 50  0001 C CNN
-F 3 "" H 1700 5600 50  0001 C CNN
-	1    1700 5600
+F 0 "#PWR0162" H 2050 4800 50  0001 C CNN
+F 1 "GND" H 2055 4877 50  0000 C CNN
+F 2 "" H 2050 5050 50  0001 C CNN
+F 3 "" H 2050 5050 50  0001 C CNN
+	1    2050 5050
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -385,6 +342,10 @@ F 0 "R72" H 9620 3996 50  0000 L CNN
 F 1 "1.5K" H 9620 3905 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 9480 3950 50  0001 C CNN
 F 3 "~" H 9550 3950 50  0001 C CNN
+F 4 "yes" H 9550 3950 50  0001 C CNN "Populate"
+F 5 "0603" H 9550 3950 50  0001 C CNN "Size Inch"
+F 6 "1608" H 9550 3950 50  0001 C CNN "Size Metric"
+F 7 "1%" H 9550 3950 50  0001 C CNN "Tolerance"
 	1    9550 3950
 	0    -1   -1   0   
 $EndComp
@@ -395,9 +356,12 @@ P 9150 3950
 AR Path="/62CC297B/61ED3104" Ref="D?"  Part="1" 
 AR Path="/61B961C0/61ED3104" Ref="D7"  Part="1" 
 F 0 "D7" H 9150 4100 50  0000 C CNN
-F 1 "LED_0603_BLUE" H 9150 4200 50  0000 C CNN
+F 1 "BLUE" H 9150 4200 50  0000 C CNN
 F 2 "LED_SMD:LED_0603_1608Metric" H 9150 3950 50  0001 C CNN
 F 3 "~" H 9150 3950 50  0001 C CNN
+F 4 "yes" H 9150 3950 50  0001 C CNN "Populate"
+F 5 "0603" H 9150 3950 50  0001 C CNN "Size Inch"
+F 6 "1608" H 9150 3950 50  0001 C CNN "Size Metric"
 	1    9150 3950
 	1    0    0    -1  
 $EndComp
@@ -422,23 +386,23 @@ Wire Wire Line
 $Comp
 L EcoApi_pcb:+3V3-Ext #SUPPLY0126
 U 1 1 61FA5C05
-P 3250 2650
-F 0 "#SUPPLY0126" H 3250 2650 45  0001 L BNN
-F 1 "+3V3-Ext" H 3250 2821 45  0000 C CNN
-F 2 "" H 3250 2650 60  0001 C CNN
-F 3 "" H 3250 2650 60  0001 C CNN
-	1    3250 2650
+P 4650 6450
+F 0 "#SUPPLY0126" H 4650 6450 45  0001 L BNN
+F 1 "+3V3-Ext" H 4650 6621 45  0000 C CNN
+F 2 "" H 4650 6450 60  0001 C CNN
+F 3 "" H 4650 6450 60  0001 C CNN
+	1    4650 6450
 	0    1    1    0   
 $EndComp
 $Comp
 L EcoApi_pcb:+3V3-Int #SUPPLY0129
 U 1 1 6228415A
-P 2200 4350
-F 0 "#SUPPLY0129" H 2200 4350 45  0001 L BNN
-F 1 "+3V3-Int" H 2200 4521 45  0000 C CNN
-F 2 "" H 2200 4350 60  0001 C CNN
-F 3 "" H 2200 4350 60  0001 C CNN
-	1    2200 4350
+P 4050 4600
+F 0 "#SUPPLY0129" H 4050 4600 45  0001 L BNN
+F 1 "+3V3-Int" H 4050 4771 45  0000 C CNN
+F 2 "" H 4050 4600 60  0001 C CNN
+F 3 "" H 4050 4600 60  0001 C CNN
+	1    4050 4600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -477,9 +441,12 @@ AR Path="/621F0FF4" Ref="C?"  Part="1"
 AR Path="/62CC297B/621F0FF4" Ref="C?"  Part="1" 
 AR Path="/61B961C0/621F0FF4" Ref="C31"  Part="1" 
 F 0 "C31" V 8550 3950 50  0000 L CNN
-F 1 "100nF" V 8450 3950 50  0000 L CNN
+F 1 "0.1uF" V 8450 3950 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric" H 8438 4000 50  0001 C CNN
 F 3 "~" H 8400 4150 50  0001 C CNN
+F 4 "yes" H 8400 4150 50  0001 C CNN "Populate"
+F 5 "0603" H 8400 4150 50  0001 C CNN "Size Inch"
+F 6 "1608" H 8400 4150 50  0001 C CNN "Size Metric"
 	1    8400 4150
 	0    1    -1   0   
 $EndComp
@@ -509,9 +476,13 @@ AR Path="/621DB7B2" Ref="R?"  Part="1"
 AR Path="/62B8145A/621DB7B2" Ref="R?"  Part="1" 
 AR Path="/61B961C0/621DB7B2" Ref="R67"  Part="1" 
 F 0 "R67" H 8470 3846 50  0000 L CNN
-F 1 "10k" H 8470 3755 50  0000 L CNN
+F 1 "10K" H 8470 3755 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 8330 3800 50  0001 C CNN
 F 3 "~" H 8400 3800 50  0001 C CNN
+F 4 "yes" H 8400 3800 50  0001 C CNN "Populate"
+F 5 "0603" H 8400 3800 50  0001 C CNN "Size Inch"
+F 6 "1608" H 8400 3800 50  0001 C CNN "Size Metric"
+F 7 "1%" H 8400 3800 50  0001 C CNN "Tolerance"
 	1    8400 3800
 	0    -1   -1   0   
 $EndComp
@@ -520,11 +491,11 @@ Wire Wire Line
 	9900 3950 9700 3950
 Text Notes 7150 6250 0    50   ~ 0
 DSHP06TSGET\n1/12 : boot0 enable\n2/11 : Led info enable\n3/10 : Trace enable\n4/9 : Scale type (full or half)\n5/8 : Wdg delay 1\n6/7 : Wdg delay 2
-Text GLabel 2600 2750 2    50   Output ~ 0
+Text GLabel 4000 6550 2    50   Output ~ 0
 I2S_CK-MIC_GAIN
-Text GLabel 2600 2850 2    50   Input ~ 0
+Text GLabel 4000 6650 2    50   Input ~ 0
 I2S_WS
-Text GLabel 2600 2950 2    50   Input ~ 0
+Text GLabel 4000 6750 2    50   Input ~ 0
 I2S_SD-MIC_ANA
 $Comp
 L Device:C C?
@@ -534,9 +505,12 @@ AR Path="/629B6680" Ref="C?"  Part="1"
 AR Path="/62CC297B/629B6680" Ref="C?"  Part="1" 
 AR Path="/61B961C0/629B6680" Ref="C32"  Part="1" 
 F 0 "C32" V 9650 1600 50  0000 L CNN
-F 1 "100nF" V 9550 1600 50  0000 L CNN
+F 1 "0.1uF" V 9550 1600 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric" H 9538 1650 50  0001 C CNN
 F 3 "~" H 9500 1800 50  0001 C CNN
+F 4 "yes" H 9500 1800 50  0001 C CNN "Populate"
+F 5 "0603" H 9500 1800 50  0001 C CNN "Size Inch"
+F 6 "1608" H 9500 1800 50  0001 C CNN "Size Metric"
 	1    9500 1800
 	-1   0    0    -1  
 $EndComp
@@ -571,9 +545,13 @@ AR Path="/629CC3FC" Ref="R?"  Part="1"
 AR Path="/62EA3721/629CC3FC" Ref="R?"  Part="1" 
 AR Path="/61B961C0/629CC3FC" Ref="R71"  Part="1" 
 F 0 "R71" H 9570 1296 50  0000 L CNN
-F 1 "10k" H 9570 1205 50  0000 L CNN
+F 1 "10K" H 9570 1205 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 9430 1250 50  0001 C CNN
 F 3 "~" H 9500 1250 50  0001 C CNN
+F 4 "yes" H 9500 1250 50  0001 C CNN "Populate"
+F 5 "0603" H 9500 1250 50  0001 C CNN "Size Inch"
+F 6 "1608" H 9500 1250 50  0001 C CNN "Size Metric"
+F 7 "1%" H 9500 1250 50  0001 C CNN "Tolerance"
 	1    9500 1250
 	1    0    0    -1  
 $EndComp
@@ -623,6 +601,7 @@ F 8 "" H 8500 4000 50  0001 L CNN "Mouser Part Number"
 F 9 "" H 8500 3900 50  0001 L CNN "Mouser Price/Stock"
 F 10 "" H 8500 3800 50  0001 L CNN "Arrow Part Number"
 F 11 "" H 8500 3700 50  0001 L CNN "Arrow Price/Stock"
+F 12 "yes" H 7450 4500 50  0001 C CNN "Populate"
 	1    7450 4500
 	1    0    0    -1  
 $EndComp
@@ -692,9 +671,13 @@ AR Path="/63E4E2A3" Ref="R?"  Part="1"
 AR Path="/62EA3721/63E4E2A3" Ref="R?"  Part="1" 
 AR Path="/61B961C0/63E4E2A3" Ref="R69"  Part="1" 
 F 0 "R69" H 9370 5296 50  0000 L CNN
-F 1 "10k" H 9370 5205 50  0000 L CNN
+F 1 "10K" H 9370 5205 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 9230 5250 50  0001 C CNN
 F 3 "~" H 9300 5250 50  0001 C CNN
+F 4 "yes" H 9300 5250 50  0001 C CNN "Populate"
+F 5 "0603" H 9300 5250 50  0001 C CNN "Size Inch"
+F 6 "1608" H 9300 5250 50  0001 C CNN "Size Metric"
+F 7 "1%" H 9300 5250 50  0001 C CNN "Tolerance"
 	1    9300 5250
 	1    0    0    -1  
 $EndComp
@@ -727,129 +710,105 @@ Wire Wire Line
 	8700 5900 9400 5900
 Wire Wire Line
 	8700 5000 8700 5900
-Text GLabel 1350 6350 2    50   Input ~ 0
-UART_TX
-Text GLabel 1350 6450 2    50   Output ~ 0
-UART_RX
 $Comp
 L power:GND #PWR?
 U 1 1 61E16B9F
-P 1700 6550
+P 2050 5550
 AR Path="/61E16B9F" Ref="#PWR?"  Part="1" 
 AR Path="/62B8145A/61E16B9F" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61E16B9F" Ref="#PWR0178"  Part="1" 
-F 0 "#PWR0178" H 1700 6300 50  0001 C CNN
-F 1 "GND" H 1705 6377 50  0000 C CNN
-F 2 "" H 1700 6550 50  0001 C CNN
-F 3 "" H 1700 6550 50  0001 C CNN
-	1    1700 6550
+F 0 "#PWR0178" H 2050 5300 50  0001 C CNN
+F 1 "GND" H 2055 5377 50  0000 C CNN
+F 2 "" H 2050 5550 50  0001 C CNN
+F 3 "" H 2050 5550 50  0001 C CNN
+	1    2050 5550
 	0    -1   -1   0   
 $EndComp
-$Comp
-L Connector:Conn_01x05_Male J5
-U 1 1 61E1EB4D
-P 1150 5600
-F 0 "J5" H 1258 5981 50  0000 C CNN
-F 1 "DBG" H 1258 5890 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 1150 5600 50  0001 C CNN
-F 3 "~" H 1150 5600 50  0001 C CNN
-	1    1150 5600
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	1700 5600 1350 5600
+	2050 5050 1700 5050
 Wire Wire Line
-	1700 5800 1350 5800
-$Comp
-L Connector:Conn_01x03_Male J6
-U 1 1 61E4F280
-P 1150 6450
-F 0 "J6" H 1258 6731 50  0000 C CNN
-F 1 "TRACE" H 1258 6640 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 1150 6450 50  0001 C CNN
-F 3 "~" H 1150 6450 50  0001 C CNN
-	1    1150 6450
-	1    0    0    -1  
-$EndComp
+	2050 5250 1700 5250
 Wire Wire Line
-	1350 6550 1700 6550
+	1700 5550 2050 5550
 $Comp
 L EcoApi_pcb-rescue:+3V3-BluePillF4 #SUPPLY?
 U 1 1 61E938BC
-P 3250 3350
+P 4650 7150
 AR Path="/61E938BC" Ref="#SUPPLY?"  Part="1" 
 AR Path="/62CC297B/61E938BC" Ref="#SUPPLY?"  Part="1" 
 AR Path="/61B961C0/61E938BC" Ref="#SUPPLY0128"  Part="1" 
-F 0 "#SUPPLY0128" H 3250 3350 45  0001 L BNN
-F 1 "+3V3" H 3250 3520 45  0000 C CNN
-F 2 "" H 3250 3350 60  0001 C CNN
-F 3 "" H 3250 3350 60  0001 C CNN
-	1    3250 3350
+F 0 "#SUPPLY0128" H 4650 7150 45  0001 L BNN
+F 1 "+3V3" H 4650 7320 45  0000 C CNN
+F 2 "" H 4650 7150 60  0001 C CNN
+F 3 "" H 4650 7150 60  0001 C CNN
+	1    4650 7150
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2600 2650 3250 2650
+	4000 6450 4650 6450
 $Comp
 L EcoApi_pcb:B5B-XH-A__LF__SN_ J8
 U 1 1 61F018A0
-P 2600 1750
-F 0 "J8" H 2892 1085 50  0000 C CNN
-F 1 "B5B-XH-A__LF__SN_" H 2892 1176 50  0000 C CNN
-F 2 "EcoApi_pcb:SHDR5W64P0X250_1X5_1490X575X700P" H 3250 1850 50  0001 L CNN
-F 3 "http://www.farnell.com/datasheets/1684882.pdf" H 3250 1750 50  0001 L CNN
-F 4 "Shrouded hdr,XH,2.5mm pitch,straight,5w JST XH Series, 2.5mm Pitch 5 Way 1 Row Straight PCB Header, Solder Termination, 3A" H 3250 1650 50  0001 L CNN "Description"
-F 5 "7" H 3250 1550 50  0001 L CNN "Height"
-F 6 "JST (JAPAN SOLDERLESS TERMINALS)" H 3250 1450 50  0001 L CNN "Manufacturer_Name"
-F 7 "B5B-XH-A (LF)(SN)" H 3250 1350 50  0001 L CNN "Manufacturer_Part_Number"
-F 8 "" H 3250 1250 50  0001 L CNN "Mouser Part Number"
-F 9 "" H 3250 1150 50  0001 L CNN "Mouser Price/Stock"
-F 10 "" H 3250 1050 50  0001 L CNN "Arrow Part Number"
-F 11 "" H 3250 950 50  0001 L CNN "Arrow Price/Stock"
-	1    2600 1750
+P 2300 7150
+F 0 "J8" H 2592 6485 50  0000 C CNN
+F 1 "B5B-XH-A__LF__SN_" H 2592 6576 50  0000 C CNN
+F 2 "EcoApi_pcb:SHDR5W64P0X250_1X5_1490X575X700P" H 2950 7250 50  0001 L CNN
+F 3 "http://www.farnell.com/datasheets/1684882.pdf" H 2950 7150 50  0001 L CNN
+F 4 "Shrouded hdr,XH,2.5mm pitch,straight,5w JST XH Series, 2.5mm Pitch 5 Way 1 Row Straight PCB Header, Solder Termination, 3A" H 2950 7050 50  0001 L CNN "Description"
+F 5 "7" H 2950 6950 50  0001 L CNN "Height"
+F 6 "JST (JAPAN SOLDERLESS TERMINALS)" H 2950 6850 50  0001 L CNN "Manufacturer_Name"
+F 7 "B5B-XH-A (LF)(SN)" H 2950 6750 50  0001 L CNN "Manufacturer_Part_Number"
+F 8 "" H 2950 6650 50  0001 L CNN "Mouser Part Number"
+F 9 "" H 2950 6550 50  0001 L CNN "Mouser Price/Stock"
+F 10 "" H 2950 6450 50  0001 L CNN "Arrow Part Number"
+F 11 "" H 2950 6350 50  0001 L CNN "Arrow Price/Stock"
+F 12 "no" H 2300 7150 50  0001 C CNN "Populate"
+	1    2300 7150
 	-1   0    0    1   
 $EndComp
 $Comp
 L EcoApi_pcb:B8B-XH-A_LF__SN_ J9
 U 1 1 61F02CAF
-P 2600 3350
-F 0 "J9" H 2892 2385 50  0000 C CNN
-F 1 "B8B-XH-A_LF__SN_" H 2892 2476 50  0000 C CNN
-F 2 "EcoApi_pcb:SHDR8W64P0X250_1X8_2240X575X700P" H 3250 3450 50  0001 L CNN
-F 3 "https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/45bda73f655da0a850bf2ea3e93b2e86.pdf" H 3250 3350 50  0001 L CNN
-F 4 "XH-2.5mm Header top entry 8 way JST XH Series, Series Number B8B, 2.5mm Pitch 8 Way 1 Row Straight PCB Header, Solder Termination, 3A" H 3250 3250 50  0001 L CNN "Description"
-F 5 "7" H 3250 3150 50  0001 L CNN "Height"
-F 6 "JST (JAPAN SOLDERLESS TERMINALS)" H 3250 3050 50  0001 L CNN "Manufacturer_Name"
-F 7 "B8B-XH-A(LF)(SN)" H 3250 2950 50  0001 L CNN "Manufacturer_Part_Number"
-F 8 "" H 3250 2850 50  0001 L CNN "Mouser Part Number"
-F 9 "" H 3250 2750 50  0001 L CNN "Mouser Price/Stock"
-F 10 "B8B-XH-A(LF)(SN)" H 3250 2650 50  0001 L CNN "Arrow Part Number"
-F 11 "https://www.arrow.com/en/products/b8b-xh-a-lf-sn/jst-manufacturing" H 3250 2550 50  0001 L CNN "Arrow Price/Stock"
-	1    2600 3350
+P 4000 7150
+F 0 "J9" H 4292 6185 50  0000 C CNN
+F 1 "B8B-XH-A_LF__SN_" H 4292 6276 50  0000 C CNN
+F 2 "EcoApi_pcb:SHDR8W64P0X250_1X8_2240X575X700P" H 4650 7250 50  0001 L CNN
+F 3 "https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/45bda73f655da0a850bf2ea3e93b2e86.pdf" H 4650 7150 50  0001 L CNN
+F 4 "XH-2.5mm Header top entry 8 way JST XH Series, Series Number B8B, 2.5mm Pitch 8 Way 1 Row Straight PCB Header, Solder Termination, 3A" H 4650 7050 50  0001 L CNN "Description"
+F 5 "7" H 4650 6950 50  0001 L CNN "Height"
+F 6 "JST (JAPAN SOLDERLESS TERMINALS)" H 4650 6850 50  0001 L CNN "Manufacturer_Name"
+F 7 "B8B-XH-A(LF)(SN)" H 4650 6750 50  0001 L CNN "Manufacturer_Part_Number"
+F 8 "" H 4650 6650 50  0001 L CNN "Mouser Part Number"
+F 9 "" H 4650 6550 50  0001 L CNN "Mouser Price/Stock"
+F 10 "B8B-XH-A(LF)(SN)" H 4650 6450 50  0001 L CNN "Arrow Part Number"
+F 11 "https://www.arrow.com/en/products/b8b-xh-a-lf-sn/jst-manufacturing" H 4650 6350 50  0001 L CNN "Arrow Price/Stock"
+F 12 "no" H 4000 7150 50  0001 C CNN "Populate"
+	1    4000 7150
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 61BB1D09
-P 3300 3050
+P 4700 6850
 AR Path="/61BB1D09" Ref="#PWR?"  Part="1" 
 AR Path="/62D38F6A/61BB1D09" Ref="#PWR?"  Part="1" 
 AR Path="/62EA3721/61BB1D09" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/61BB1D09" Ref="#PWR0155"  Part="1" 
-F 0 "#PWR0155" H 3300 2800 50  0001 C CNN
-F 1 "GND" H 3305 2877 50  0000 C CNN
-F 2 "" H 3300 3050 50  0001 C CNN
-F 3 "" H 3300 3050 50  0001 C CNN
-	1    3300 3050
+F 0 "#PWR0155" H 4700 6600 50  0001 C CNN
+F 1 "GND" H 4705 6677 50  0000 C CNN
+F 2 "" H 4700 6850 50  0001 C CNN
+F 3 "" H 4700 6850 50  0001 C CNN
+	1    4700 6850
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	2600 3350 3250 3350
+	4000 7150 4650 7150
 Wire Wire Line
-	2600 3050 3300 3050
-Text GLabel 6450 2000 0    50   BiDi ~ 0
+	4000 6850 4700 6850
+Text GLabel 6400 2150 0    50   BiDi ~ 0
 EN_AVBATT-BTN_TARE
 Wire Wire Line
-	6550 850  6550 1000
+	6500 1000 6500 1150
 $Comp
 L Connector:Conn_01x02_Male J?
 U 1 1 63C32D33
@@ -862,6 +821,7 @@ F 0 "J12" V 10950 2000 50  0000 R CNN
 F 1 "POWER ON" V 10750 2050 50  0000 R CNN
 F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 10850 1800 50  0001 C CNN
 F 3 "~" H 10850 1800 50  0001 C CNN
+F 4 "no" H 10850 1800 50  0001 C CNN "Populate"
 	1    10850 1800
 	-1   0    0    1   
 $EndComp
@@ -873,42 +833,521 @@ Connection ~ 10650 1500
 $Comp
 L Connector:Conn_01x02_Male J?
 U 1 1 63DDD3C1
-P 8600 2100
+P 8600 1850
 AR Path="/63DDD3C1" Ref="J?"  Part="1" 
 AR Path="/62D38F6A/63DDD3C1" Ref="J?"  Part="1" 
 AR Path="/62CC297B/63DDD3C1" Ref="J?"  Part="1" 
 AR Path="/61B961C0/63DDD3C1" Ref="J10"  Part="1" 
-F 0 "J10" V 8700 2300 50  0000 R CNN
-F 1 "TILT" V 8500 2350 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 8600 2100 50  0001 C CNN
-F 3 "~" H 8600 2100 50  0001 C CNN
-	1    8600 2100
+F 0 "J10" V 8700 2050 50  0000 R CNN
+F 1 "TILT" V 8500 2100 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 8600 1850 50  0001 C CNN
+F 3 "~" H 8600 1850 50  0001 C CNN
+F 4 "no" H 8600 1850 50  0001 C CNN "Populate"
+	1    8600 1850
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	8400 2100 8400 2500
+	8400 1850 8400 2250
 $Comp
 L power:GND #PWR?
 U 1 1 63E19E1A
-P 3250 1800
+P 2950 7200
 AR Path="/63E19E1A" Ref="#PWR?"  Part="1" 
 AR Path="/62D38F6A/63E19E1A" Ref="#PWR?"  Part="1" 
 AR Path="/62EA3721/63E19E1A" Ref="#PWR?"  Part="1" 
 AR Path="/61B961C0/63E19E1A" Ref="#PWR0188"  Part="1" 
-F 0 "#PWR0188" H 3250 1550 50  0001 C CNN
-F 1 "GND" H 3255 1627 50  0000 C CNN
-F 2 "" H 3250 1800 50  0001 C CNN
-F 3 "" H 3250 1800 50  0001 C CNN
-	1    3250 1800
+F 0 "#PWR0188" H 2950 6950 50  0001 C CNN
+F 1 "GND" H 2955 7027 50  0000 C CNN
+F 2 "" H 2950 7200 50  0001 C CNN
+F 3 "" H 2950 7200 50  0001 C CNN
+	1    2950 7200
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2600 1750 3250 1750
+	2300 7150 2950 7150
 Wire Wire Line
-	3250 1750 3250 1800
+	2950 7150 2950 7200
 Wire Wire Line
-	2600 1450 3250 1450
+	2300 6850 2950 6850
 Wire Wire Line
-	3250 1450 3250 1750
-Connection ~ 3250 1750
+	2950 6850 2950 7150
+Connection ~ 2950 7150
+$Comp
+L EcoApi_pcb:MSS-102559-14A-D S4
+U 1 1 621E4A78
+P 5450 4800
+F 0 "S4" V 5496 4624 50  0000 R CNN
+F 1 "MSS-102559-14A-D" V 5800 4500 50  0001 R CNN
+F 2 "EcoApi_pcb:SW_MSS-102559-14A-D" H 5450 4800 50  0001 L BNN
+F 3 "" H 5450 4800 50  0001 L BNN
+F 4 "1.0" H 5450 4800 50  0001 L BNN "PARTREV"
+F 5 "CUI Devices" H 5450 4800 50  0001 L BNN "MANUFACTURER"
+F 6 "6.5 mm" H 5450 4800 50  0001 L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F 7 "Manufacturer Recommendations" H 5450 4800 50  0001 L BNN "STANDARD"
+	1    5450 4800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L EcoApi_pcb:VBATT #SUPPLY0137
+U 1 1 621E55E9
+P 5050 4300
+F 0 "#SUPPLY0137" H 5050 4300 45  0001 L BNN
+F 1 "VBATT" H 5050 4471 45  0000 C CNN
+F 2 "" H 5050 4300 60  0001 C CNN
+F 3 "" H 5050 4300 60  0001 C CNN
+	1    5050 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L EcoApi_pcb:V_WKUP #SUPPLY0138
+U 1 1 621E5E97
+P 5450 5300
+F 0 "#SUPPLY0138" H 5450 5300 45  0001 L BNN
+F 1 "V_WKUP" H 5450 5470 45  0000 C CNN
+F 2 "" H 5450 5300 60  0001 C CNN
+F 3 "" H 5450 5300 60  0001 C CNN
+	1    5450 5300
+	-1   0    0    1   
+$EndComp
+$Comp
+L EcoApi_pcb-rescue:+3V3-BluePillF4 #SUPPLY?
+U 1 1 621E89A0
+P 5850 4300
+AR Path="/621E89A0" Ref="#SUPPLY?"  Part="1" 
+AR Path="/62B8145A/621E89A0" Ref="#SUPPLY?"  Part="1" 
+AR Path="/61B961C0/621E89A0" Ref="#SUPPLY0139"  Part="1" 
+F 0 "#SUPPLY0139" H 5850 4300 45  0001 L BNN
+F 1 "+3V3" H 5850 4471 45  0000 C CNN
+F 2 "" H 5850 4300 60  0001 C CNN
+F 3 "" H 5850 4300 60  0001 C CNN
+	1    5850 4300
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	5050 4300 5050 4400
+Wire Wire Line
+	5450 5100 5450 5200
+$Comp
+L EcoApi_pcb:V_WKUP #SUPPLY0140
+U 1 1 621FC1CC
+P 7900 1000
+F 0 "#SUPPLY0140" H 7900 1000 45  0001 L BNN
+F 1 "V_WKUP" H 7900 1170 45  0000 C CNN
+F 2 "" H 7900 1000 60  0001 C CNN
+F 3 "" H 7900 1000 60  0001 C CNN
+	1    7900 1000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7900 1950 7900 2250
+Wire Wire Line
+	8400 1750 8400 1500
+Wire Wire Line
+	7900 1500 7900 1650
+Wire Wire Line
+	7900 1100 7900 1000
+$Comp
+L Device:R R?
+U 1 1 62278A46
+P 5050 4850
+AR Path="/62278A46" Ref="R?"  Part="1" 
+AR Path="/62EA3721/62278A46" Ref="R?"  Part="1" 
+AR Path="/61B961C0/62278A46" Ref="R46"  Part="1" 
+F 0 "R46" H 5120 4896 50  0000 L CNN
+F 1 "0R" H 5120 4805 50  0000 L CNN
+F 2 "Resistor_SMD:R_1206_3216Metric" V 4980 4850 50  0001 C CNN
+F 3 "~" H 5050 4850 50  0001 C CNN
+F 4 "no" H 5050 4850 50  0001 C CNN "Populate"
+F 5 "0603" H 5050 4850 50  0001 C CNN "Size Inch"
+F 6 "1608" H 5050 4850 50  0001 C CNN "Size Metric"
+F 7 "1%" H 5050 4850 50  0001 C CNN "Tolerance"
+	1    5050 4850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 6227B089
+P 5850 4850
+AR Path="/6227B089" Ref="R?"  Part="1" 
+AR Path="/62EA3721/6227B089" Ref="R?"  Part="1" 
+AR Path="/61B961C0/6227B089" Ref="R56"  Part="1" 
+F 0 "R56" H 5920 4896 50  0000 L CNN
+F 1 "0R" H 5920 4805 50  0000 L CNN
+F 2 "Resistor_SMD:R_1206_3216Metric" V 5780 4850 50  0001 C CNN
+F 3 "~" H 5850 4850 50  0001 C CNN
+F 4 "no" H 5850 4850 50  0001 C CNN "Populate"
+F 5 "0603" H 5850 4850 50  0001 C CNN "Size Inch"
+F 6 "1608" H 5850 4850 50  0001 C CNN "Size Metric"
+F 7 "1%" H 5850 4850 50  0001 C CNN "Tolerance"
+	1    5850 4850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5550 4400 5850 4400
+Wire Wire Line
+	5850 4400 5850 4700
+Wire Wire Line
+	5550 4400 5550 4500
+Wire Wire Line
+	5350 4400 5050 4400
+Wire Wire Line
+	5050 4400 5050 4700
+Wire Wire Line
+	5350 4400 5350 4500
+Wire Wire Line
+	5850 5000 5850 5200
+Wire Wire Line
+	5850 5200 5450 5200
+Connection ~ 5450 5200
+Wire Wire Line
+	5450 5200 5450 5300
+Wire Wire Line
+	5050 5000 5050 5200
+Wire Wire Line
+	5050 5200 5450 5200
+Text Notes 6000 4600 0    50   ~ 0
+size with best power
+Text GLabel 3750 2000 2    50   Output ~ 0
+ANA_VBATT
+$Comp
+L power:GND #PWR?
+U 1 1 62762A00
+P 2200 2650
+AR Path="/62762A00" Ref="#PWR?"  Part="1" 
+AR Path="/62D38F6A/62762A00" Ref="#PWR?"  Part="1" 
+AR Path="/62CC297B/62762A00" Ref="#PWR?"  Part="1" 
+AR Path="/61B961C0/62762A00" Ref="#PWR0147"  Part="1" 
+F 0 "#PWR0147" H 2200 2400 50  0001 C CNN
+F 1 "GND" H 2205 2477 50  0000 C CNN
+F 2 "" H 2200 2650 50  0001 C CNN
+F 3 "" H 2200 2650 50  0001 C CNN
+	1    2200 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 62762A0A
+P 3400 1650
+AR Path="/62762A0A" Ref="R?"  Part="1" 
+AR Path="/62CC297B/62762A0A" Ref="R?"  Part="1" 
+AR Path="/61B961C0/62762A0A" Ref="R42"  Part="1" 
+F 0 "R42" H 3470 1696 50  0000 L CNN
+F 1 "1M" H 3470 1605 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3330 1650 50  0001 C CNN
+F 3 "~" H 3400 1650 50  0001 C CNN
+F 4 "yes" H 3400 1650 50  0001 C CNN "Populate"
+F 5 "0603" H 3400 1650 50  0001 C CNN "Size Inch"
+F 6 "1608" H 3400 1650 50  0001 C CNN "Size Metric"
+F 7 "1%" H 3400 1650 50  0001 C CNN "Tolerance"
+	1    3400 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 62762A14
+P 2200 2400
+AR Path="/62762A14" Ref="R?"  Part="1" 
+AR Path="/62CC297B/62762A14" Ref="R?"  Part="1" 
+AR Path="/61B961C0/62762A14" Ref="R23"  Part="1" 
+F 0 "R23" H 2270 2446 50  0000 L CNN
+F 1 "100K" H 2270 2355 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2130 2400 50  0001 C CNN
+F 3 "~" H 2200 2400 50  0001 C CNN
+F 4 "yes" H 2200 2400 50  0001 C CNN "Populate"
+F 5 "0603" H 2200 2400 50  0001 C CNN "Size Inch"
+F 6 "1608" H 2200 2400 50  0001 C CNN "Size Metric"
+F 7 "1%" H 2200 2400 50  0001 C CNN "Tolerance"
+	1    2200 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 2200 2200 2200
+Wire Wire Line
+	2200 2200 2200 2250
+Wire Wire Line
+	2100 2200 2200 2200
+Connection ~ 2200 2200
+Wire Wire Line
+	2200 2550 2200 2650
+$Comp
+L EcoApi_pcb:IRLML6244TRPBF Q?
+U 1 1 62762A27
+P 2450 2100
+AR Path="/62CC297B/62762A27" Ref="Q?"  Part="1" 
+AR Path="/61B961C0/62762A27" Ref="Q6"  Part="1" 
+F 0 "Q6" H 2658 2146 50  0000 L CNN
+F 1 "IRLML6244TRPBF" H 2658 2055 50  0000 L CNN
+F 2 "EcoApi_pcb:SOT95P237X112-3N" H 2450 2100 50  0001 L BNN
+F 3 "" H 2450 2100 50  0001 L BNN
+F 4 "1.12 mm" H 2450 2100 50  0001 L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F 5 "10/12/2012" H 2450 2100 50  0001 L BNN "PARTREV"
+F 6 "IPC 7351B" H 2450 2100 50  0001 L BNN "STANDARD"
+F 7 "International Rectifier" H 2450 2100 50  0001 L BNN "MANUFACTURER"
+F 8 "yes" H 2450 2100 50  0001 C CNN "Populate"
+F 9 "Infineon	" H 2450 2100 50  0001 C CNN "Manufacturer_Name"
+F 10 "IRLML6244TRPBF" H 2450 2100 50  0001 C CNN "Manufacturer_Part_Number"
+F 11 "SOT-23-3" H 2450 2100 50  0001 C CNN "package"
+	1    2450 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 62762A2D
+P 2550 2650
+AR Path="/62762A2D" Ref="#PWR?"  Part="1" 
+AR Path="/62D38F6A/62762A2D" Ref="#PWR?"  Part="1" 
+AR Path="/62CC297B/62762A2D" Ref="#PWR?"  Part="1" 
+AR Path="/61B961C0/62762A2D" Ref="#PWR0148"  Part="1" 
+F 0 "#PWR0148" H 2550 2400 50  0001 C CNN
+F 1 "GND" H 2555 2477 50  0000 C CNN
+F 2 "" H 2550 2650 50  0001 C CNN
+F 3 "" H 2550 2650 50  0001 C CNN
+	1    2550 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 62762A37
+P 2200 1650
+AR Path="/62762A37" Ref="R?"  Part="1" 
+AR Path="/62CC297B/62762A37" Ref="R?"  Part="1" 
+AR Path="/61B961C0/62762A37" Ref="R15"  Part="1" 
+F 0 "R15" H 2270 1696 50  0000 L CNN
+F 1 "1M" H 2270 1605 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2130 1650 50  0001 C CNN
+F 3 "~" H 2200 1650 50  0001 C CNN
+F 4 "yes" H 2200 1650 50  0001 C CNN "Populate"
+F 5 "0603" H 2200 1650 50  0001 C CNN "Size Inch"
+F 6 "1608" H 2200 1650 50  0001 C CNN "Size Metric"
+F 7 "1%" H 2200 1650 50  0001 C CNN "Tolerance"
+	1    2200 1650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2200 1500 2200 1400
+Wire Wire Line
+	2550 2300 2550 2650
+Connection ~ 2200 1400
+$Comp
+L Device:R R?
+U 1 1 62762A44
+P 3400 2400
+AR Path="/62762A44" Ref="R?"  Part="1" 
+AR Path="/62CC297B/62762A44" Ref="R?"  Part="1" 
+AR Path="/61B961C0/62762A44" Ref="R45"  Part="1" 
+F 0 "R45" H 3470 2446 50  0000 L CNN
+F 1 "1M" H 3470 2355 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3330 2400 50  0001 C CNN
+F 3 "~" H 3400 2400 50  0001 C CNN
+F 4 "yes" H 3400 2400 50  0001 C CNN "Populate"
+F 5 "0603" H 3400 2400 50  0001 C CNN "Size Inch"
+F 6 "1608" H 3400 2400 50  0001 C CNN "Size Metric"
+F 7 "1%" H 3400 2400 50  0001 C CNN "Tolerance"
+	1    3400 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3400 1800 3400 2000
+$Comp
+L power:GND #PWR?
+U 1 1 62762A4B
+P 3400 2650
+AR Path="/62762A4B" Ref="#PWR?"  Part="1" 
+AR Path="/62D38F6A/62762A4B" Ref="#PWR?"  Part="1" 
+AR Path="/62CC297B/62762A4B" Ref="#PWR?"  Part="1" 
+AR Path="/61B961C0/62762A4B" Ref="#PWR0149"  Part="1" 
+F 0 "#PWR0149" H 3400 2400 50  0001 C CNN
+F 1 "GND" H 3405 2477 50  0000 C CNN
+F 2 "" H 3400 2650 50  0001 C CNN
+F 3 "" H 3400 2650 50  0001 C CNN
+	1    3400 2650
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	3400 2550 3400 2650
+Connection ~ 3400 2000
+Wire Wire Line
+	3400 2000 3400 2250
+$Comp
+L Device:C C?
+U 1 1 62762A57
+P 3700 2400
+AR Path="/62762A57" Ref="C?"  Part="1" 
+AR Path="/62CC297B/62762A57" Ref="C?"  Part="1" 
+AR Path="/61B961C0/62762A57" Ref="C46"  Part="1" 
+F 0 "C46" V 3850 2200 50  0000 L CNN
+F 1 "10nF" V 3750 2200 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 3738 2250 50  0001 C CNN
+F 3 "~" H 3700 2400 50  0001 C CNN
+F 4 "yes" H 3700 2400 50  0001 C CNN "Populate"
+F 5 "0603" H 3700 2400 50  0001 C CNN "Size Inch"
+F 6 "1608" H 3700 2400 50  0001 C CNN "Size Metric"
+	1    3700 2400
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	3400 2000 3700 2000
+Wire Wire Line
+	3700 2250 3700 2000
+Connection ~ 3700 2000
+Wire Wire Line
+	3700 2000 3750 2000
+$Comp
+L power:GND #PWR?
+U 1 1 62762A61
+P 3700 2650
+AR Path="/62762A61" Ref="#PWR?"  Part="1" 
+AR Path="/62D38F6A/62762A61" Ref="#PWR?"  Part="1" 
+AR Path="/62CC297B/62762A61" Ref="#PWR?"  Part="1" 
+AR Path="/61B961C0/62762A61" Ref="#PWR0156"  Part="1" 
+F 0 "#PWR0156" H 3700 2400 50  0001 C CNN
+F 1 "GND" H 3705 2477 50  0000 C CNN
+F 2 "" H 3700 2650 50  0001 C CNN
+F 3 "" H 3700 2650 50  0001 C CNN
+	1    3700 2650
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 2550 3700 2650
+Connection ~ 2550 1850
+Wire Wire Line
+	2550 1850 2550 1900
+$Comp
+L Connector:TestPoint TP?
+U 1 1 62762A6B
+P 3400 2000
+AR Path="/62762A6B" Ref="TP?"  Part="1" 
+AR Path="/62D38F6A/62762A6B" Ref="TP?"  Part="1" 
+AR Path="/62EA3721/62762A6B" Ref="TP?"  Part="1" 
+AR Path="/62CC297B/62762A6B" Ref="TP?"  Part="1" 
+AR Path="/61B961C0/62762A6B" Ref="TP3"  Part="1" 
+F 0 "TP3" H 3350 2250 50  0000 L CNN
+F 1 "TestPoint" H 3458 2027 50  0001 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3600 2000 50  0001 C CNN
+F 3 "~" H 3600 2000 50  0001 C CNN
+F 4 "yes" H 3400 2000 50  0001 C CNN "Populate"
+	1    3400 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 62762A75
+P 3050 1100
+AR Path="/62762A75" Ref="R?"  Part="1" 
+AR Path="/62CC297B/62762A75" Ref="R?"  Part="1" 
+AR Path="/61B961C0/62762A75" Ref="R25"  Part="1" 
+F 0 "R25" H 3120 1146 50  0000 L CNN
+F 1 "0R" H 3120 1055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 2980 1100 50  0001 C CNN
+F 3 "~" H 3050 1100 50  0001 C CNN
+F 4 "no" H 3050 1100 50  0001 C CNN "Populate"
+F 5 "0603" H 3050 1100 50  0001 C CNN "Size Inch"
+F 6 "1608" H 3050 1100 50  0001 C CNN "Size Metric"
+F 7 "1%" H 3050 1100 50  0001 C CNN "Tolerance"
+	1    3050 1100
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2200 1100 2200 1400
+Text Notes 1850 1700 0    50   ~ 0
+100K ?
+Text GLabel 2100 2200 0    50   BiDi ~ 0
+EN_AVBATT-BTN_TARE
+Wire Wire Line
+	3200 1100 3400 1100
+Wire Wire Line
+	2200 1850 2200 1800
+Wire Wire Line
+	2200 1100 2900 1100
+Wire Wire Line
+	2200 1850 2550 1850
+$Comp
+L EcoApi_pcb:FDC638P Q?
+U 1 1 62762A85
+P 2650 1400
+AR Path="/62CC297B/62762A85" Ref="Q?"  Part="1" 
+AR Path="/61B961C0/62762A85" Ref="Q7"  Part="1" 
+F 0 "Q7" V 3031 1450 50  0000 C CNN
+F 1 "FDC638P" V 2940 1450 50  0000 C CNN
+F 2 "EcoApi_pcb:SSOT-6" H 2650 1400 50  0001 L BNN
+F 3 "" H 2650 1400 50  0001 L BNN
+F 4 "yes" H 2650 1400 50  0001 C CNN "Populate"
+F 5 "FDC638P" H 2650 1400 50  0001 C CNN "Manufacturer_Part_Number"
+F 6 "SSOT-6" H 2650 1400 50  0001 C CNN "package"
+	1    2650 1400
+	0    1    -1   0   
+$EndComp
+Wire Wire Line
+	2550 1600 2550 1850
+Wire Wire Line
+	2200 1400 2450 1400
+Wire Wire Line
+	2950 1200 3000 1200
+Wire Wire Line
+	3000 1200 3000 1300
+Wire Wire Line
+	3000 1500 2950 1500
+Wire Wire Line
+	2950 1300 3000 1300
+Connection ~ 3000 1300
+Wire Wire Line
+	3000 1300 3000 1400
+Wire Wire Line
+	3400 1100 3400 1400
+Wire Wire Line
+	2950 1400 3000 1400
+Connection ~ 3000 1400
+Wire Wire Line
+	3000 1400 3000 1500
+Wire Wire Line
+	3000 1400 3400 1400
+Connection ~ 3400 1400
+Wire Wire Line
+	3400 1400 3400 1500
+$Comp
+L EcoApi_pcb:VBATT #SUPPLY?
+U 1 1 62762A9A
+P 2200 1000
+AR Path="/62CC297B/62762A9A" Ref="#SUPPLY?"  Part="1" 
+AR Path="/61B961C0/62762A9A" Ref="#SUPPLY0141"  Part="1" 
+F 0 "#SUPPLY0141" H 2200 1000 45  0001 L BNN
+F 1 "VBATT" H 2200 1171 45  0000 C CNN
+F 2 "" H 2200 1000 60  0001 C CNN
+F 3 "" H 2200 1000 60  0001 C CNN
+	1    2200 1000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2200 1000 2200 1100
+Connection ~ 2200 1100
+Connection ~ 5050 4400
+Wire Wire Line
+	5850 4300 5850 4400
+Connection ~ 5850 4400
+$Comp
+L EcoApi_pcb:V_WKUP #SUPPLY0142
+U 1 1 62D85887
+P 10650 1000
+F 0 "#SUPPLY0142" H 10650 1000 45  0001 L BNN
+F 1 "V_WKUP" H 10650 1170 45  0000 C CNN
+F 2 "" H 10650 1000 60  0001 C CNN
+F 3 "" H 10650 1000 60  0001 C CNN
+	1    10650 1000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x08_Male J5
+U 1 1 62D9B65E
+P 1500 5150
+F 0 "J5" H 1608 5631 50  0000 C CNN
+F 1 "Debug" H 1608 5540 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical" H 1500 5150 50  0001 C CNN
+F 3 "~" H 1500 5150 50  0001 C CNN
+	1    1500 5150
+	1    0    0    -1  
+$EndComp
+Text GLabel 1700 5350 2    50   Output ~ 0
+UART_RX
+Text GLabel 1700 5450 2    50   Input ~ 0
+UART_TX
 $EndSCHEMATC

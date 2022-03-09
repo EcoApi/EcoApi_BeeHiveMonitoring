@@ -25,6 +25,11 @@ D MMBT4403
 F https://www.fairchildsemi.com/datasheets/2N/2N4403.pdf
 $ENDCMP
 #
+$CMP NCP161ASN330T1G
+D ON SEMICONDUCTOR - NCP161ASN330T1G - Fixed LDO Voltage Regulator, 1.9V to 5.5V, 225mV drop, 3.3V/450mA out, SOT-23-5
+F https://componentsearchengine.com/Datasheets/2/NCP161ASN330T1G.pdf
+$ENDCMP
+#
 $CMP PCF8563T_5,518
 D Real Time Clock
 F http://www.nxp.com/docs/en/data-sheet/PCF8563.pdf
