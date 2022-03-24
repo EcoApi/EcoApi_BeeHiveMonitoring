@@ -101,6 +101,13 @@ F 3 "~" H 5400 850 50  0001 C CNN
 F 4 "yes" H 5400 850 50  0001 C CNN "Populate"
 F 5 "0603" H 5400 850 50  0001 C CNN "Size Inch"
 F 6 "1608" H 5400 850 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 5400 850 50  0001 C CNN "Dielectric"
+F 8 "0603" H 5400 850 50  0001 C CNN "JLC"
+F 9 "C1591" H 5400 850 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 5400 850 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 5400 850 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 5400 850 50  0001 C CNN "Tolerance"
+F 13 "50V" H 5400 850 50  0001 C CNN "Voltage"
 	1    5400 850 
 	0    1    -1   0   
 $EndComp
@@ -157,6 +164,13 @@ F 3 "~" H 5400 1100 50  0001 C CNN
 F 4 "yes" H 5400 1100 50  0001 C CNN "Populate"
 F 5 "0603" H 5400 1100 50  0001 C CNN "Size Inch"
 F 6 "1608" H 5400 1100 50  0001 C CNN "Size Metric"
+F 7 "X5R" H 5400 1100 50  0001 C CNN "Dielectric"
+F 8 "0603" H 5400 1100 50  0001 C CNN "JLC"
+F 9 "C19702" H 5400 1100 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 5400 1100 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10A106KP8NNNC" H 5400 1100 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 5400 1100 50  0001 C CNN "Tolerance"
+F 13 "10V" H 5400 1100 50  0001 C CNN "Voltage"
 	1    5400 1100
 	0    1    -1   0   
 $EndComp
@@ -191,6 +205,12 @@ F 4 "yes" H 8000 5800 50  0001 C CNN "Populate"
 F 5 "0603" H 8000 5800 50  0001 C CNN "Size Inch"
 F 6 "1608" H 8000 5800 50  0001 C CNN "Size Metric"
 F 7 "1%" H 8000 5800 50  0001 C CNN "Tolerance"
+F 8 "0603" H 8000 5800 50  0001 C CNN "JLC"
+F 9 "C23162" H 8000 5800 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 8000 5800 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF4701T5E" H 8000 5800 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 8000 5800 50  0001 C CNN "Power Rating"
+F 13 "75V" H 8000 5800 50  0001 C CNN "Voltage"
 	1    8000 5800
 	1    0    0    -1  
 $EndComp
@@ -209,6 +229,12 @@ F 4 "yes" H 8800 5800 50  0001 C CNN "Populate"
 F 5 "0603" H 8800 5800 50  0001 C CNN "Size Inch"
 F 6 "1608" H 8800 5800 50  0001 C CNN "Size Metric"
 F 7 "1%" H 8800 5800 50  0001 C CNN "Tolerance"
+F 8 "0603" H 8800 5800 50  0001 C CNN "JLC"
+F 9 "C23162" H 8800 5800 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 8800 5800 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF4701T5E" H 8800 5800 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 8800 5800 50  0001 C CNN "Power Rating"
+F 13 "75V" H 8800 5800 50  0001 C CNN "Voltage"
 	1    8800 5800
 	1    0    0    -1  
 $EndComp
@@ -237,6 +263,12 @@ F 4 "yes" H 9650 5800 50  0001 C CNN "Populate"
 F 5 "0603" H 9650 5800 50  0001 C CNN "Size Inch"
 F 6 "1608" H 9650 5800 50  0001 C CNN "Size Metric"
 F 7 "1%" H 9650 5800 50  0001 C CNN "Tolerance"
+F 8 "0603" H 9650 5800 50  0001 C CNN "JLC"
+F 9 "C23162" H 9650 5800 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 9650 5800 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF4701T5E" H 9650 5800 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 9650 5800 50  0001 C CNN "Power Rating"
+F 13 "75V" H 9650 5800 50  0001 C CNN "Voltage"
 	1    9650 5800
 	1    0    0    -1  
 $EndComp
@@ -255,6 +287,12 @@ F 4 "yes" H 10450 5800 50  0001 C CNN "Populate"
 F 5 "0603" H 10450 5800 50  0001 C CNN "Size Inch"
 F 6 "1608" H 10450 5800 50  0001 C CNN "Size Metric"
 F 7 "1%" H 10450 5800 50  0001 C CNN "Tolerance"
+F 8 "0603" H 10450 5800 50  0001 C CNN "JLC"
+F 9 "C23162" H 10450 5800 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 10450 5800 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF4701T5E" H 10450 5800 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 10450 5800 50  0001 C CNN "Power Rating"
+F 13 "75V" H 10450 5800 50  0001 C CNN "Voltage"
 	1    10450 5800
 	1    0    0    -1  
 $EndComp
@@ -304,6 +342,10 @@ F 20 "10/80sps" H 2600 7950 50  0001 L CNN "sampling rate"
 F 21 "+85°C" H 2600 8050 50  0001 L CNN "temperature range high"
 F 22 "-40°C" H 2600 8150 50  0001 L CNN "temperature range low"
 F 23 "yes" H 2600 5750 50  0001 C CNN "Populate"
+F 24 "SOP-16" H 2600 5750 50  0001 C CNN "JLC"
+F 25 "C43656" H 2600 5750 50  0001 C CNN "LCSC"
+F 26 "Avia Semicon (Xiamen)" H 2600 5750 50  0001 C CNN "Manufacturer_Name"
+F 27 "HX711Copy" H 2600 5750 50  0001 C CNN "Manufacturer_Part_Number"
 	1    2600 5750
 	1    0    0    -1  
 $EndComp
@@ -343,6 +385,13 @@ F 3 "~" H 2300 6250 50  0001 C CNN
 F 4 "yes" H 2300 6250 50  0001 C CNN "Populate"
 F 5 "0603" H 2300 6250 50  0001 C CNN "Size Inch"
 F 6 "1608" H 2300 6250 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 2300 6250 50  0001 C CNN "Dielectric"
+F 8 "0603" H 2300 6250 50  0001 C CNN "JLC"
+F 9 "C1591" H 2300 6250 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 2300 6250 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 2300 6250 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 2300 6250 50  0001 C CNN "Tolerance"
+F 13 "50V" H 2300 6250 50  0001 C CNN "Voltage"
 	1    2300 6250
 	0    1    -1   0   
 $EndComp
@@ -392,7 +441,13 @@ F 3 "~" H 1600 6750 50  0001 C CNN
 F 4 "yes" H 1600 6750 50  0001 C CNN "Populate"
 F 5 "0603" H 1600 6750 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1600 6750 50  0001 C CNN "Size Metric"
-F 7 "1%" H 1600 6750 50  0001 C CNN "Tolerance"
+F 7 "0.1%" H 1600 6750 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1600 6750 50  0001 C CNN "JLC"
+F 9 "C54021" H 1600 6750 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1600 6750 50  0001 C CNN "Manufacturer_Name"
+F 11 "TC0325B1000T5E" H 1600 6750 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/16W" H 1600 6750 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1600 6750 50  0001 C CNN "Voltage"
 	1    1600 6750
 	0    -1   -1   0   
 $EndComp
@@ -410,7 +465,13 @@ F 3 "~" H 1600 7250 50  0001 C CNN
 F 4 "yes" H 1600 7250 50  0001 C CNN "Populate"
 F 5 "0603" H 1600 7250 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1600 7250 50  0001 C CNN "Size Metric"
-F 7 "1%" H 1600 7250 50  0001 C CNN "Tolerance"
+F 7 "0.1%" H 1600 7250 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1600 7250 50  0001 C CNN "JLC"
+F 9 "C54021" H 1600 7250 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1600 7250 50  0001 C CNN "Manufacturer_Name"
+F 11 "TC0325B1000T5E" H 1600 7250 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/16W" H 1600 7250 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1600 7250 50  0001 C CNN "Voltage"
 	1    1600 7250
 	0    -1   -1   0   
 $EndComp
@@ -468,6 +529,12 @@ F 4 "yes" H 4750 6450 50  0001 C CNN "Populate"
 F 5 "0603" H 4750 6450 50  0001 C CNN "Size Inch"
 F 6 "1608" H 4750 6450 50  0001 C CNN "Size Metric"
 F 7 "1%" H 4750 6450 50  0001 C CNN "Tolerance"
+F 8 "0603" H 4750 6450 50  0001 C CNN "JLC"
+F 9 "C4184" H 4750 6450 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 4750 6450 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF2002T5E" H 4750 6450 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 4750 6450 50  0001 C CNN "Power Rating"
+F 13 "75V" H 4750 6450 50  0001 C CNN "Voltage"
 	1    4750 6450
 	1    0    0    -1  
 $EndComp
@@ -486,6 +553,12 @@ F 4 "yes" H 4750 6050 50  0001 C CNN "Populate"
 F 5 "0603" H 4750 6050 50  0001 C CNN "Size Inch"
 F 6 "1608" H 4750 6050 50  0001 C CNN "Size Metric"
 F 7 "1%" H 4750 6050 50  0001 C CNN "Tolerance"
+F 8 "0603" H 4750 6050 50  0001 C CNN "JLC"
+F 9 "C31850" H 4750 6050 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 4750 6050 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF2202T5E" H 4750 6050 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 4750 6050 50  0001 C CNN "Power Rating"
+F 13 "75V" H 4750 6050 50  0001 C CNN "Voltage"
 	1    4750 6050
 	1    0    0    -1  
 $EndComp
@@ -503,7 +576,13 @@ F 3 "~" H 1500 5650 50  0001 C CNN
 F 4 "yes" H 1500 5650 50  0001 C CNN "Populate"
 F 5 "0603" H 1500 5650 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1500 5650 50  0001 C CNN "Size Metric"
-F 7 "6.3V" H 1500 5650 50  0001 C CNN "Voltage"
+F 7 "10V" H 1500 5650 50  0001 C CNN "Voltage"
+F 8 "X5R" H 1500 5650 50  0001 C CNN "Dielectric"
+F 9 "0603" H 1500 5650 50  0001 C CNN "JLC"
+F 10 "C19702" H 1500 5650 50  0001 C CNN "LCSC"
+F 11 "Samsung Electro-Mechanics" H 1500 5650 50  0001 C CNN "Manufacturer_Name"
+F 12 "CL10A106KP8NNNC" H 1500 5650 50  0001 C CNN "Manufacturer_Part_Number"
+F 13 "10%" H 1500 5650 50  0001 C CNN "Tolerance"
 	1    1500 5650
 	-1   0    0    -1  
 $EndComp
@@ -521,6 +600,13 @@ F 3 "~" H 1750 5650 50  0001 C CNN
 F 4 "yes" H 1750 5650 50  0001 C CNN "Populate"
 F 5 "0603" H 1750 5650 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1750 5650 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 1750 5650 50  0001 C CNN "Dielectric"
+F 8 "0603" H 1750 5650 50  0001 C CNN "JLC"
+F 9 "C1591" H 1750 5650 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 1750 5650 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 1750 5650 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 1750 5650 50  0001 C CNN "Tolerance"
+F 13 "50V" H 1750 5650 50  0001 C CNN "Voltage"
 	1    1750 5650
 	-1   0    0    -1  
 $EndComp
@@ -605,8 +691,6 @@ Wire Wire Line
 	1750 6000 1750 5800
 Wire Wire Line
 	1500 6000 1500 5800
-Text Notes 950  5150 0    50   ~ 0
-diodes protection ?
 Text Notes 550  6900 0    50   ~ 0
 diodes protection ?
 $Comp
@@ -646,9 +730,13 @@ F 0 "L1" V 2340 5400 50  0000 C CNN
 F 1 "3.3uH" V 2249 5400 50  0000 C CNN
 F 2 "Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2150 5400 50  0001 C CNN
 F 3 "~" H 2150 5400 50  0001 C CNN
-F 4 "yes" H 2150 5400 50  0001 C CNN "Populate"
+F 4 "no" H 2150 5400 50  0001 C CNN "Populate"
 F 5 "0603" H 2150 5400 50  0001 C CNN "Size Inch"
 F 6 "1608" H 2150 5400 50  0001 C CNN "Size Metric"
+F 7 "0603" H 2150 5400 50  0001 C CNN "JLC"
+F 8 "C21189" H 2150 5400 50  0001 C CNN "LCSC"
+F 9 "UNI-ROYAL(Uniroyal Elec)" H 2150 5400 50  0001 C CNN "Manufacturer_Name"
+F 10 "0603WAF0000T5E" H 2150 5400 50  0001 C CNN "Manufacturer_Part_Number"
 	1    2150 5400
 	0    -1   -1   0   
 $EndComp
@@ -671,6 +759,13 @@ F 3 "~" H 1900 6950 50  0001 C CNN
 F 4 "yes" H 1900 6950 50  0001 C CNN "Populate"
 F 5 "0603" H 1900 6950 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1900 6950 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 1900 6950 50  0001 C CNN "Dielectric"
+F 8 "0603" H 1900 6950 50  0001 C CNN "JLC"
+F 9 "C1591" H 1900 6950 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 1900 6950 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 1900 6950 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 1900 6950 50  0001 C CNN "Tolerance"
+F 13 "50V" H 1900 6950 50  0001 C CNN "Voltage"
 	1    1900 6950
 	-1   0    0    -1  
 $EndComp
@@ -708,7 +803,13 @@ F 3 "~" H 5600 6500 50  0001 C CNN
 F 4 "yes" H 5600 6500 50  0001 C CNN "Populate"
 F 5 "0603" H 5600 6500 50  0001 C CNN "Size Inch"
 F 6 "1608" H 5600 6500 50  0001 C CNN "Size Metric"
-F 7 "6.3V" H 5600 6500 50  0001 C CNN "Voltage"
+F 7 "50V" H 5600 6500 50  0001 C CNN "Voltage"
+F 8 "X7R" H 5600 6500 50  0001 C CNN "Dielectric"
+F 9 "0603" H 5600 6500 50  0001 C CNN "JLC"
+F 10 "C1591" H 5600 6500 50  0001 C CNN "LCSC"
+F 11 "Samsung Electro-Mechanics" H 5600 6500 50  0001 C CNN "Manufacturer_Name"
+F 12 "CL10B104KB8NNNC" H 5600 6500 50  0001 C CNN "Manufacturer_Part_Number"
+F 13 "10%" H 5600 6500 50  0001 C CNN "Tolerance"
 	1    5600 6500
 	-1   0    0    -1  
 $EndComp
@@ -726,6 +827,13 @@ F 3 "~" H 6000 6500 50  0001 C CNN
 F 4 "yes" H 6000 6500 50  0001 C CNN "Populate"
 F 5 "0603" H 6000 6500 50  0001 C CNN "Size Inch"
 F 6 "1608" H 6000 6500 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 6000 6500 50  0001 C CNN "Dielectric"
+F 8 "0603" H 6000 6500 50  0001 C CNN "JLC"
+F 9 "C1591" H 6000 6500 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 6000 6500 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 6000 6500 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 6000 6500 50  0001 C CNN "Tolerance"
+F 13 "50V" H 6000 6500 50  0001 C CNN "Voltage"
 	1    6000 6500
 	-1   0    0    -1  
 $EndComp
@@ -743,6 +851,13 @@ F 3 "~" H 6250 6500 50  0001 C CNN
 F 4 "yes" H 6250 6500 50  0001 C CNN "Populate"
 F 5 "0603" H 6250 6500 50  0001 C CNN "Size Inch"
 F 6 "1608" H 6250 6500 50  0001 C CNN "Size Metric"
+F 7 "X5R" H 6250 6500 50  0001 C CNN "Dielectric"
+F 8 "0603" H 6250 6500 50  0001 C CNN "JLC"
+F 9 "C19702" H 6250 6500 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 6250 6500 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10A106KP8NNNC" H 6250 6500 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 6250 6500 50  0001 C CNN "Tolerance"
+F 13 "10V" H 6250 6500 50  0001 C CNN "Voltage"
 	1    6250 6500
 	-1   0    0    -1  
 $EndComp
@@ -837,8 +952,8 @@ Wire Wire Line
 	6250 6200 6250 6350
 Wire Wire Line
 	6000 6200 6000 6350
-Text Notes 1400 5350 0    50   ~ 0
-utile ? Filtre LC voir frequence de coupue
+Text Notes 900  5150 0    50   ~ 0
+LC Filter( voir frequence de coupure)
 $Comp
 L EcoApi_pcb:MB85RC16PNF-G-JNE1 U4
 U 1 1 6242D86C
@@ -851,6 +966,8 @@ F 4 "yes" H 4850 3350 50  0001 C CNN "Populate"
 F 5 "Fujitsu Semiconductor" H 4850 3350 50  0001 C CNN "Manufacturer_Name"
 F 6 "MB85RC04VPNF-G-JNERE1" H 4850 3350 50  0001 C CNN "Manufacturer_Part_Number"
 F 7 "SOP-8" H 4850 3350 50  0001 C CNN "package"
+F 8 "SOIC-8" H 4850 3350 50  0001 C CNN "JLC"
+F 9 "C8738" H 4850 3350 50  0001 C CNN "LCSC"
 	1    4850 3350
 	1    0    0    -1  
 $EndComp
@@ -866,6 +983,8 @@ F 4 "yes" H 10000 3850 50  0001 C CNN "Populate"
 F 5 "Microchip" H 10000 3850 50  0001 C CNN "Manufacturer_Name"
 F 6 "24LC02BT-I/SN" H 10000 3850 50  0001 C CNN "Manufacturer_Part_Number"
 F 7 "SOIC-8" H 10000 3850 50  0001 C CNN "package"
+F 8 "SOIC-8" H 10000 3850 50  0001 C CNN "JLC"
+F 9 "C5453" H 10000 3850 50  0001 C CNN "LCSC"
 	1    10000 3850
 	1    0    0    -1  
 $EndComp
@@ -950,6 +1069,8 @@ F 4 "yes" H 9150 1400 50  0001 C CNN "Populate"
 F 5 "Winbond" H 9150 1400 50  0001 C CNN "Manufacturer_Name"
 F 6 "W25Q32JVSSIQ" H 9150 1400 50  0001 C CNN "Manufacturer_Part_Number"
 F 7 "SOIC-8" H 9150 1400 50  0001 C CNN "package"
+F 8 "SOP-8" H 9150 1400 50  0001 C CNN "JLC"
+F 9 "C82344" H 9150 1400 50  0001 C CNN "LCSC"
 	1    9150 1400
 	1    0    0    -1  
 $EndComp
@@ -989,6 +1110,13 @@ F 3 "~" H 10800 3800 50  0001 C CNN
 F 4 "yes" H 10800 3800 50  0001 C CNN "Populate"
 F 5 "0603" H 10800 3800 50  0001 C CNN "Size Inch"
 F 6 "1608" H 10800 3800 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 10800 3800 50  0001 C CNN "Dielectric"
+F 8 "0603" H 10800 3800 50  0001 C CNN "JLC"
+F 9 "C1591" H 10800 3800 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 10800 3800 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 10800 3800 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 10800 3800 50  0001 C CNN "Tolerance"
+F 13 "50V" H 10800 3800 50  0001 C CNN "Voltage"
 	1    10800 3800
 	1    0    0    1   
 $EndComp
@@ -1012,6 +1140,13 @@ F 3 "~" H 10900 1300 50  0001 C CNN
 F 4 "yes" H 10900 1300 50  0001 C CNN "Populate"
 F 5 "0603" H 10900 1300 50  0001 C CNN "Size Inch"
 F 6 "1608" H 10900 1300 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 10900 1300 50  0001 C CNN "Dielectric"
+F 8 "0603" H 10900 1300 50  0001 C CNN "JLC"
+F 9 "C1591" H 10900 1300 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 10900 1300 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 10900 1300 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 10900 1300 50  0001 C CNN "Tolerance"
+F 13 "50V" H 10900 1300 50  0001 C CNN "Voltage"
 	1    10900 1300
 	1    0    0    1   
 $EndComp
@@ -1060,6 +1195,13 @@ F 3 "~" H 7850 3950 50  0001 C CNN
 F 4 "yes" H 7850 3950 50  0001 C CNN "Populate"
 F 5 "0603" H 7850 3950 50  0001 C CNN "Size Inch"
 F 6 "1608" H 7850 3950 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 7850 3950 50  0001 C CNN "Dielectric"
+F 8 "0603" H 7850 3950 50  0001 C CNN "JLC"
+F 9 "C1591" H 7850 3950 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 7850 3950 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 7850 3950 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 7850 3950 50  0001 C CNN "Tolerance"
+F 13 "50V" H 7850 3950 50  0001 C CNN "Voltage"
 	1    7850 3950
 	1    0    0    1   
 $EndComp
@@ -1137,6 +1279,12 @@ F 4 "no" H 4600 3550 50  0001 C CNN "Populate"
 F 5 "0603" H 4600 3550 50  0001 C CNN "Size Inch"
 F 6 "1608" H 4600 3550 50  0001 C CNN "Size Metric"
 F 7 "1%" H 4600 3550 50  0001 C CNN "Tolerance"
+F 8 "0603" H 4600 3550 50  0001 C CNN "JLC"
+F 9 "C21189" H 4600 3550 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 4600 3550 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 4600 3550 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 4600 3550 50  0001 C CNN "Power Rating"
+F 13 "75V" H 4600 3550 50  0001 C CNN "Voltage"
 	1    4600 3550
 	0    -1   -1   0   
 $EndComp
@@ -1155,6 +1303,12 @@ F 4 "no" H 4600 3450 50  0001 C CNN "Populate"
 F 5 "0603" H 4600 3450 50  0001 C CNN "Size Inch"
 F 6 "1608" H 4600 3450 50  0001 C CNN "Size Metric"
 F 7 "1%" H 4600 3450 50  0001 C CNN "Tolerance"
+F 8 "0603" H 4600 3450 50  0001 C CNN "JLC"
+F 9 "C21189" H 4600 3450 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 4600 3450 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 4600 3450 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 4600 3450 50  0001 C CNN "Power Rating"
+F 13 "75V" H 4600 3450 50  0001 C CNN "Voltage"
 	1    4600 3450
 	0    -1   -1   0   
 $EndComp
@@ -1173,6 +1327,12 @@ F 4 "no" H 4600 3350 50  0001 C CNN "Populate"
 F 5 "0603" H 4600 3350 50  0001 C CNN "Size Inch"
 F 6 "1608" H 4600 3350 50  0001 C CNN "Size Metric"
 F 7 "1%" H 4600 3350 50  0001 C CNN "Tolerance"
+F 8 "0603" H 4600 3350 50  0001 C CNN "JLC"
+F 9 "C21189" H 4600 3350 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 4600 3350 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 4600 3350 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 4600 3350 50  0001 C CNN "Power Rating"
+F 13 "75V" H 4600 3350 50  0001 C CNN "Voltage"
 	1    4600 3350
 	0    -1   -1   0   
 $EndComp
@@ -1217,6 +1377,12 @@ F 3 "~" H 10350 1300 50  0001 C CNN
 F 4 "0603" H 10350 1300 50  0001 C CNN "Size Inch"
 F 5 "1608" H 10350 1300 50  0001 C CNN "Size Metric"
 F 6 "1%" H 10350 1300 50  0001 C CNN "Tolerance"
+F 7 "0603" H 10350 1300 50  0001 C CNN "JLC"
+F 8 "C21189" H 10350 1300 50  0001 C CNN "LCSC"
+F 9 "UNI-ROYAL(Uniroyal Elec)" H 10350 1300 50  0001 C CNN "Manufacturer_Name"
+F 10 "0603WAF0000T5E" H 10350 1300 50  0001 C CNN "Manufacturer_Part_Number"
+F 11 "1/10W" H 10350 1300 50  0001 C CNN "Power Rating"
+F 12 "75V" H 10350 1300 50  0001 C CNN "Voltage"
 	1    10350 1300
 	-1   0    0    1   
 $EndComp
@@ -1233,6 +1399,12 @@ F 3 "~" H 10650 1300 50  0001 C CNN
 F 4 "0603" H 10650 1300 50  0001 C CNN "Size Inch"
 F 5 "1608" H 10650 1300 50  0001 C CNN "Size Metric"
 F 6 "1%" H 10650 1300 50  0001 C CNN "Tolerance"
+F 7 "0603" H 10650 1300 50  0001 C CNN "JLC"
+F 8 "C21189" H 10650 1300 50  0001 C CNN "LCSC"
+F 9 "UNI-ROYAL(Uniroyal Elec)" H 10650 1300 50  0001 C CNN "Manufacturer_Name"
+F 10 "0603WAF0000T5E" H 10650 1300 50  0001 C CNN "Manufacturer_Part_Number"
+F 11 "1/10W" H 10650 1300 50  0001 C CNN "Power Rating"
+F 12 "75V" H 10650 1300 50  0001 C CNN "Voltage"
 	1    10650 1300
 	-1   0    0    1   
 $EndComp
@@ -1273,6 +1445,12 @@ F 3 "~" H 10350 2050 50  0001 C CNN
 F 4 "0603" H 10350 2050 50  0001 C CNN "Size Inch"
 F 5 "1608" H 10350 2050 50  0001 C CNN "Size Metric"
 F 6 "1%" H 10350 2050 50  0001 C CNN "Tolerance"
+F 7 "0603" H 10350 2050 50  0001 C CNN "JLC"
+F 8 "C21189" H 10350 2050 50  0001 C CNN "LCSC"
+F 9 "UNI-ROYAL(Uniroyal Elec)" H 10350 2050 50  0001 C CNN "Manufacturer_Name"
+F 10 "0603WAF0000T5E" H 10350 2050 50  0001 C CNN "Manufacturer_Part_Number"
+F 11 "1/10W" H 10350 2050 50  0001 C CNN "Power Rating"
+F 12 "75V" H 10350 2050 50  0001 C CNN "Voltage"
 	1    10350 2050
 	-1   0    0    1   
 $EndComp
@@ -1311,6 +1489,12 @@ F 4 "yes" H 8600 4250 50  0001 C CNN "Populate"
 F 5 "0603" H 8600 4250 50  0001 C CNN "Size Inch"
 F 6 "1608" H 8600 4250 50  0001 C CNN "Size Metric"
 F 7 "1%" H 8600 4250 50  0001 C CNN "Tolerance"
+F 8 "0603" H 8600 4250 50  0001 C CNN "JLC"
+F 9 "C21189" H 8600 4250 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 8600 4250 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 8600 4250 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 8600 4250 50  0001 C CNN "Power Rating"
+F 13 "75V" H 8600 4250 50  0001 C CNN "Voltage"
 	1    8600 4250
 	-1   0    0    1   
 $EndComp
@@ -1348,6 +1532,12 @@ F 4 "yes" H 7600 3950 50  0001 C CNN "Populate"
 F 5 "0603" H 7600 3950 50  0001 C CNN "Size Inch"
 F 6 "1608" H 7600 3950 50  0001 C CNN "Size Metric"
 F 7 "1%" H 7600 3950 50  0001 C CNN "Tolerance"
+F 8 "0603" H 7600 3950 50  0001 C CNN "JLC"
+F 9 "C21189" H 7600 3950 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 7600 3950 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 7600 3950 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 7600 3950 50  0001 C CNN "Power Rating"
+F 13 "75V" H 7600 3950 50  0001 C CNN "Voltage"
 	1    7600 3950
 	-1   0    0    1   
 $EndComp
@@ -1379,12 +1569,8 @@ Wire Wire Line
 	7850 4100 7850 4150
 Text Notes 8500 6400 0    50   ~ 0
 Serie protection resistor ?
-Text Notes -2000 4250 0    50   ~ 0
-32.768kHz (smd3215-2p)\nfor pcf8563x (ESR 100K, Load C 12.5pF, C trim 5-25pf)\nSC-32S32.768kHz20PPM12.5pF\n\nfor DS1337C, DS1339C (ESR 50K, Load C 6pF)\nSC-32S32.768kHz20PPM6pF\n\nfor DS1372U (ESR  50K, Load C 12.5pF)\nSC-32S32.768kHz20PPM12.5pF\n\n
-Text Notes -2000 3350 0    50   ~ 0
+Text Notes 1700 3100 0    50   ~ 0
 Compatible with\nMAXIM DS1337C, DS1339C, DS1372\nNXP PCFxxxx SO8
-Text Notes 650  4400 0    50   ~ 0
-tobe defined \ndielectric c0g
 Text GLabel 1550 650  0    50   Input ~ 0
 WDG_RELOAD
 $Comp
@@ -1402,6 +1588,12 @@ F 4 "yes" H 1800 650 50  0001 C CNN "Populate"
 F 5 "0603" H 1800 650 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1800 650 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1800 650 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1800 650 50  0001 C CNN "JLC"
+F 9 "C21189" H 1800 650 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1800 650 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 1800 650 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1800 650 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1800 650 50  0001 C CNN "Voltage"
 	1    1800 650 
 	0    1    1    0   
 $EndComp
@@ -1420,6 +1612,12 @@ F 4 "yes" H 1800 1750 50  0001 C CNN "Populate"
 F 5 "0603" H 1800 1750 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1800 1750 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1800 1750 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1800 1750 50  0001 C CNN "JLC"
+F 9 "C21189" H 1800 1750 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1800 1750 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 1800 1750 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1800 1750 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1800 1750 50  0001 C CNN "Voltage"
 	1    1800 1750
 	0    -1   -1   0   
 $EndComp
@@ -1452,6 +1650,12 @@ F 4 "yes" H 1800 1300 50  0001 C CNN "Populate"
 F 5 "0603" H 1800 1300 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1800 1300 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1800 1300 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1800 1300 50  0001 C CNN "JLC"
+F 9 "C22894" H 1800 1300 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1800 1300 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF1823T5E" H 1800 1300 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1800 1300 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1800 1300 50  0001 C CNN "Voltage"
 	1    1800 1300
 	0    1    1    0   
 $EndComp
@@ -1472,6 +1676,12 @@ F 4 "yes" H 1800 1550 50  0001 C CNN "Populate"
 F 5 "0603" H 1800 1550 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1800 1550 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1800 1550 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1800 1550 50  0001 C CNN "JLC"
+F 9 "C22972" H 1800 1550 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1800 1550 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF2873T5E" H 1800 1550 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1800 1550 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1800 1550 50  0001 C CNN "Voltage"
 	1    1800 1550
 	0    1    1    0   
 $EndComp
@@ -1511,6 +1721,13 @@ F 3 "~" H 3900 1850 50  0001 C CNN
 F 4 "yes" H 3900 1850 50  0001 C CNN "Populate"
 F 5 "0603" H 3900 1850 50  0001 C CNN "Size Inch"
 F 6 "1608" H 3900 1850 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 3900 1850 50  0001 C CNN "Dielectric"
+F 8 "0603" H 3900 1850 50  0001 C CNN "JLC"
+F 9 "C1591" H 3900 1850 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 3900 1850 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 3900 1850 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 3900 1850 50  0001 C CNN "Tolerance"
+F 13 "50V" H 3900 1850 50  0001 C CNN "Voltage"
 	1    3900 1850
 	-1   0    0    -1  
 $EndComp
@@ -1533,6 +1750,12 @@ F 4 "yes" H 1800 850 50  0001 C CNN "Populate"
 F 5 "0603" H 1800 850 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1800 850 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1800 850 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1800 850 50  0001 C CNN "JLC"
+F 9 "C22894" H 1800 850 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1800 850 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF1823T5E" H 1800 850 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1800 850 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1800 850 50  0001 C CNN "Voltage"
 	1    1800 850 
 	0    1    1    0   
 $EndComp
@@ -1551,6 +1774,12 @@ F 4 "yes" H 1800 1100 50  0001 C CNN "Populate"
 F 5 "0603" H 1800 1100 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1800 1100 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1800 1100 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1800 1100 50  0001 C CNN "JLC"
+F 9 "C22896" H 1800 1100 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1800 1100 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF1873T5E" H 1800 1100 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1800 1100 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1800 1100 50  0001 C CNN "Voltage"
 	1    1800 1100
 	0    1    1    0   
 $EndComp
@@ -1578,8 +1807,11 @@ F 1 "MMBT4403" H 4994 5505 50  0000 L CNN
 F 2 "EcoApi_pcb:SOT23-BEC" H 4850 5550 50  0001 L BNN
 F 3 "" H 4850 5550 50  0001 L BNN
 F 4 "yes" H 4850 5550 50  0001 C CNN "Populate"
-F 5 "MMBT4403" H 4850 5550 50  0001 C CNN "Manufacturer_Part_Number"
+F 5 "MMBT4403-7-F" H 4850 5550 50  0001 C CNN "Manufacturer_Part_Number"
 F 6 "SOT-23-3" H 4850 5550 50  0001 C CNN "package"
+F 7 "SOT-23-3" H 4850 5550 50  0001 C CNN "JLC"
+F 8 "C85183" H 4850 5550 50  0001 C CNN "LCSC"
+F 9 "Diodes Incorporated" H 4850 5550 50  0001 C CNN "Manufacturer_Name"
 	1    4850 5550
 	-1   0    0    -1  
 $EndComp
@@ -1606,6 +1838,8 @@ F 10 "PCF8563T/5,518" H 2800 2850 50  0001 L CNN "Arrow Part Number"
 F 11 "https://www.arrow.com/en/products/pcf8563t5518/nxp-semiconductors?region=nac" H 2800 2750 50  0001 L CNN "Arrow Price/Stock"
 F 12 "yes" H 1750 3550 50  0001 C CNN "Populate"
 F 13 "SOIC-8" H 1750 3550 50  0001 C CNN "package"
+F 14 "SOIC-8" H 1750 3550 50  0001 C CNN "JLC"
+F 15 "C7440" H 1750 3550 50  0001 C CNN "LCSC"
 	1    1750 3550
 	1    0    0    -1  
 $EndComp
@@ -1621,6 +1855,8 @@ F 4 "yes" H 2800 1850 50  0001 C CNN "Populate"
 F 5 "Texas Instruments" H 2800 1850 50  0001 C CNN "Manufacturer_Name"
 F 6 "TPL5010DDCR" H 2800 1850 50  0001 C CNN "Manufacturer_Part_Number"
 F 7 "SOT-23-6" H 2800 1850 50  0001 C CNN "package"
+F 8 "SOT-23-6" H 2800 1850 50  0001 C CNN "JLC"
+F 9 "C473912" H 2800 1850 50  0001 C CNN "LCSC"
 	1    2800 1850
 	1    0    0    -1  
 $EndComp
@@ -1650,10 +1886,15 @@ AR Path="/62E656DD" Ref="Y?"  Part="1"
 AR Path="/62B8145A/62E656DD" Ref="Y?"  Part="1" 
 AR Path="/62EA3721/62E656DD" Ref="Y1"  Part="1" 
 F 0 "Y1" H 1050 3675 50  0000 C CNN
-F 1 "Crystal_Small" H 1050 3584 50  0000 C CNN
+F 1 "32.768kHz 12.5pF" H 1050 3584 50  0000 C CNN
 F 2 "EcoApi_pcb:XTAL_ABS07-120-32.768KHZ-T" H 1050 3450 50  0001 C CNN
 F 3 "~" H 1050 3450 50  0001 C CNN
 F 4 "yes" H 1050 3450 50  0001 C CNN "Populate"
+F 5 "3215" H 1050 3450 50  0001 C CNN "JLC"
+F 6 "C97606" H 1050 3450 50  0001 C CNN "LCSC"
+F 7 "Seiko" H 1050 3450 50  0001 C CNN "Manufacturer_Name"
+F 8 "SC-32S32.768kHz20PPM12.5pF" H 1050 3450 50  0001 C CNN "Manufacturer_Part_Number"
+F 9 "3215_2P" H 1050 3450 50  0001 C CNN "package"
 	1    1050 3450
 	0    -1   -1   0   
 $EndComp
@@ -1668,11 +1909,18 @@ AR Path="/62B8145A/62E656E5" Ref="C?"  Part="1"
 AR Path="/62EA3721/62E656E5" Ref="C1"  Part="1" 
 F 0 "C1" V 900 3650 50  0000 L CNN
 F 1 "22pF" V 800 3650 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 788 3700 50  0001 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 788 3700 50  0001 C CNN
 F 3 "~" H 750 3850 50  0001 C CNN
 F 4 "yes" H 750 3850 50  0001 C CNN "Populate"
-F 5 "0201" H 750 3850 50  0001 C CNN "Size Inch"
-F 6 "0603" H 750 3850 50  0001 C CNN "Size Metric"
+F 5 "0402" H 750 3850 50  0001 C CNN "Size Inch"
+F 6 "1005" H 750 3850 50  0001 C CNN "Size Metric"
+F 7 "C0G" H 750 3850 50  0001 C CNN "Dielectric"
+F 8 "5%" H 750 3850 50  0001 C CNN "Tolerance"
+F 9 "0402" H 750 3850 50  0001 C CNN "JLC"
+F 10 "C76960" H 750 3850 50  0001 C CNN "LCSC"
+F 11 "GRM1555C1H220JA01D" H 750 3850 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "Murata Electronics" H 750 3850 50  0001 C CNN "Manufacturer_Name"
+F 13 "50V" H 750 3850 50  0001 C CNN "Voltage"
 	1    750  3850
 	-1   0    0    -1  
 $EndComp
@@ -1723,12 +1971,19 @@ AR Path="/62E65701" Ref="C?"  Part="1"
 AR Path="/62B8145A/62E65701" Ref="C?"  Part="1" 
 AR Path="/62EA3721/62E65701" Ref="C25"  Part="1" 
 F 0 "C25" V 3750 3650 50  0000 L CNN
-F 1 "10uF" V 3650 3650 50  0000 L CNN
+F 1 "0.1uF" V 3650 3650 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric" H 3638 3700 50  0001 C CNN
 F 3 "~" H 3600 3850 50  0001 C CNN
 F 4 "yes" H 3600 3850 50  0001 C CNN "Populate"
 F 5 "0603" H 3600 3850 50  0001 C CNN "Size Inch"
 F 6 "1608" H 3600 3850 50  0001 C CNN "Size Metric"
+F 7 "X7R" H 3600 3850 50  0001 C CNN "Dielectric"
+F 8 "0603" H 3600 3850 50  0001 C CNN "JLC"
+F 9 "C1591" H 3600 3850 50  0001 C CNN "LCSC"
+F 10 "Samsung Electro-Mechanics" H 3600 3850 50  0001 C CNN "Manufacturer_Name"
+F 11 "CL10B104KB8NNNC" H 3600 3850 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "10%" H 3600 3850 50  0001 C CNN "Tolerance"
+F 13 "50V" H 3600 3850 50  0001 C CNN "Voltage"
 	1    3600 3850
 	-1   0    0    -1  
 $EndComp
@@ -1747,6 +2002,12 @@ F 4 "yes" H 1550 3750 50  0001 C CNN "Populate"
 F 5 "0603" H 1550 3750 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1550 3750 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1550 3750 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1550 3750 50  0001 C CNN "JLC"
+F 9 "C21189" H 1550 3750 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1550 3750 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 1550 3750 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1550 3750 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1550 3750 50  0001 C CNN "Voltage"
 	1    1550 3750
 	0    1    1    0   
 $EndComp
@@ -1771,6 +2032,12 @@ F 4 "no" H 3150 3650 50  0001 C CNN "Populate"
 F 5 "0603" H 3150 3650 50  0001 C CNN "Size Inch"
 F 6 "1608" H 3150 3650 50  0001 C CNN "Size Metric"
 F 7 "1%" H 3150 3650 50  0001 C CNN "Tolerance"
+F 8 "0603" H 3150 3650 50  0001 C CNN "JLC"
+F 9 "C21189" H 3150 3650 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 3150 3650 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF0000T5E" H 3150 3650 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 3150 3650 50  0001 C CNN "Power Rating"
+F 13 "75V" H 3150 3650 50  0001 C CNN "Voltage"
 	1    3150 3650
 	0    -1   -1   0   
 $EndComp
@@ -1780,48 +2047,12 @@ Wire Wire Line
 	3000 3650 2950 3650
 Wire Wire Line
 	1750 3850 1700 3850
-$Comp
-L Device:C C?
-U 1 1 62FF3718
-P 1050 3850
-AR Path="/62FF3718" Ref="C?"  Part="1" 
-AR Path="/62B8145A/62FF3718" Ref="C?"  Part="1" 
-AR Path="/62EA3721/62FF3718" Ref="C3"  Part="1" 
-F 0 "C3" V 1200 3650 50  0000 L CNN
-F 1 "22pF" V 1100 3650 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0201_0603Metric" H 1088 3700 50  0001 C CNN
-F 3 "~" H 1050 3850 50  0001 C CNN
-F 4 "yes" H 1050 3850 50  0001 C CNN "Populate"
-F 5 "0201" H 1050 3850 50  0001 C CNN "Size Inch"
-F 6 "0603" H 1050 3850 50  0001 C CNN "Size Metric"
-	1    1050 3850
-	-1   0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 6301B46E
-P 1050 4050
-AR Path="/6301B46E" Ref="#PWR?"  Part="1" 
-AR Path="/62B8145A/6301B46E" Ref="#PWR?"  Part="1" 
-AR Path="/62EA3721/6301B46E" Ref="#PWR0130"  Part="1" 
-F 0 "#PWR0130" H 1050 3800 50  0001 C CNN
-F 1 "GND" H 1055 3877 50  0000 C CNN
-F 2 "" H 1050 4050 50  0001 C CNN
-F 3 "" H 1050 4050 50  0001 C CNN
-	1    1050 4050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1050 4050 1050 4000
 Wire Wire Line
 	1300 3750 1300 3800
 Wire Wire Line
 	1750 3650 1050 3650
 Wire Wire Line
 	1050 3550 1050 3650
-Connection ~ 1050 3650
-Wire Wire Line
-	1050 3650 1050 3700
 Wire Wire Line
 	1650 3250 1650 3550
 Wire Wire Line
@@ -1957,6 +2188,12 @@ F 4 "yes" H 1350 1950 50  0001 C CNN "Populate"
 F 5 "0603" H 1350 1950 50  0001 C CNN "Size Inch"
 F 6 "1608" H 1350 1950 50  0001 C CNN "Size Metric"
 F 7 "1%" H 1350 1950 50  0001 C CNN "Tolerance"
+F 8 "0603" H 1350 1950 50  0001 C CNN "JLC"
+F 9 "C25804" H 1350 1950 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 1350 1950 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF1002T5E" H 1350 1950 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 1350 1950 50  0001 C CNN "Power Rating"
+F 13 "75V" H 1350 1950 50  0001 C CNN "Voltage"
 	1    1350 1950
 	0    1    1    0   
 $EndComp
@@ -1975,6 +2212,12 @@ F 4 "yes" H 2100 2650 50  0001 C CNN "Populate"
 F 5 "0603" H 2100 2650 50  0001 C CNN "Size Inch"
 F 6 "1608" H 2100 2650 50  0001 C CNN "Size Metric"
 F 7 "1%" H 2100 2650 50  0001 C CNN "Tolerance"
+F 8 "0603" H 2100 2650 50  0001 C CNN "JLC"
+F 9 "C25804" H 2100 2650 50  0001 C CNN "LCSC"
+F 10 "UNI-ROYAL(Uniroyal Elec)" H 2100 2650 50  0001 C CNN "Manufacturer_Name"
+F 11 "0603WAF1002T5E" H 2100 2650 50  0001 C CNN "Manufacturer_Part_Number"
+F 12 "1/10W" H 2100 2650 50  0001 C CNN "Power Rating"
+F 13 "75V" H 2100 2650 50  0001 C CNN "Voltage"
 	1    2100 2650
 	0    -1   -1   0   
 $EndComp

@@ -5,6 +5,11 @@ D BL Chip Ferrite Bead 0603
 F http://www.murata.com/~/media/webrenewal/support/library/catalog/products/emc/emifil/c31e.ashx?la=en-gb
 $ENDCMP
 #
+$CMP BSS84AK,215
+D BSS84AK,215 P-Channel MOSFET, 180 mA, 50 V, 3-Pin SOT-23 Nexperia
+F http://uk.rs-online.com/web/p/products/7920908
+$ENDCMP
+#
 $CMP DSHP06TSGET
 D SPST 6 1.27mm, Half Slide (Standard) Black SMD DIP Switches
 F https://datasheet.lcsc.com/szlcsc/1810191313_Dongguan-Guangzhu-Industrial-DSHP06TSGET_C40737.pdf
