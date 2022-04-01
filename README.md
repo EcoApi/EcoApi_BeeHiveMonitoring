@@ -1,6 +1,6 @@
 # EcoApi Bee hive monitoring
 
-description
+description TBD
 
 ## Features
 
@@ -27,14 +27,29 @@ description
 
 ## Hardware
 
-
-
 ### Characteristics
 
 - Cpu
+- Lora
 - Consumption
-- Modules
+- Fram
+- EEprom
+- Flash
+- Rtc
+- WDG
+- HX711
+- Protection battery
 - Backup capacitor explanation
+- Battery charger
+- USB cdc
+- Ldo
+- Buck-boost
+- Power Load switch
+- Wakeup parts (button, wdg, motion, rtc)
+- Dip switch
+- Connector (load cell, external sensors, Battery, internal sensor, Debug & SWD)
+- Push button
+- Debug (Uart, USB CDC, SWD)
 - ....
 
 ### Pcb
@@ -49,15 +64,32 @@ Back
 
 [![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/STM32F411_pinout.png?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/STM32F411_pinout.png?raw=true)
 
+array of pins description
+
+### pcb
+
+describ options with 0R resistors. etc ...
+
+#### JlcPcb production
+
+- Bom and pick&place : https://support.jlcpcb.com/article/153-how-to-generate-bom-and-centroid-files-from-kicad-in-linux
+- JlcPcb gerber files : https://support.jlcpcb.com/article/149-how-to-generate-gerber-and-drill-files-in-kicad
+
 ## Software
 
-To be define
+To be define (flow chart) ...
 
 ### Description
 
-- fsdfsf
-- fdsdfs
-- fqfdss
+- Lora : ttn, webhook for beep, js decoder, frame format
+- sensor template
+- Sensors auto-detection
+- Outside informations (temperature, pressure, humidity, wind, ...)
+- Inside informations (Sound, temperature, humidity, gas, bee counter, custom sensor ...)
+- System information (RSSI, VBATT, 
+- describe directive in platforio.ini
+- FFT on analog mic or I2S mic (parameters, range etc ...)
+- sleep mode
 
 ### Ide & compilation
 
@@ -86,11 +118,20 @@ by :
 
 #define LMIC_X_DEBUG_PRINTF(f, ...) LMIC_DEBUG_PRINTF(f, ## __VA_ARGS__)
 
-### other 
+## how to
+
+- Scale full or half
+- Tare button
+- Led information
+- Motion tilt
+- Debug
+- usb charger leds
+- Sleep on VBATT or 3.3V with slide switch
+- Dip switch
+- USB with android application (flutter.io or other)
+
+## other 
 [Editor.md](https://pandao.github.io/editor.md/en.html "Editor.md")
 
-### JlcPcb smt assembly ###
-https://support.jlcpcb.com/article/153-how-to-generate-bom-and-centroid-files-from-kicad-in-linux
 
-### JlcPcb gerber files ###
-https://support.jlcpcb.com/article/149-how-to-generate-gerber-and-drill-files-in-kicad
+
