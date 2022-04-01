@@ -28,12 +28,10 @@ description
 ### Pcb
 
 Front
-[![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/EcoApi_pcb1.jpg?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/EcoApi_pcb1.jpg?raw=true)
-
-[![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/EcoApi_pcb2.jpg?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/EcoApi_pcb2.jpg?raw=true)
+[![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/FrontV2.png?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/FrontV2.png?raw=true)
 
 Back
-[![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/EcoApi_pcb3.jpg?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/EcoApi_pcb3.jpg?raw=true)
+[![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/BackV2.png?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/BackV2.png?raw=true)
 
 ### other
 
