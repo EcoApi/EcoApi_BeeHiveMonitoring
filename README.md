@@ -79,3 +79,11 @@ by :
 
 ### other 
 [Editor.md](https://pandao.github.io/editor.md/en.html "Editor.md")
+
+### JlcPcb smt assembly ###
+https://support.jlcpcb.com/article/153-how-to-generate-bom-and-centroid-files-from-kicad-in-linux
+
+### JlcPcb gerber files ###
+https://support.jlcpcb.com/article/149-how-to-generate-gerber-and-drill-files-in-kicad
+
+
