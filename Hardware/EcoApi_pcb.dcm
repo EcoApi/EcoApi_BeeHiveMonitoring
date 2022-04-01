@@ -1,5 +1,15 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP BAT46W-7-F
+D Diodes Inc BAT46W-7-F, SMT Schottky Diode, 100V 150mA, 2-Pin SOD-123
+F https://componentsearchengine.com/Datasheets/2/BAT46W-7-F.pdf
+$ENDCMP
+#
+$CMP BAT46WH,115
+D NXP BAT46WH, SMT Diode, 2-Pin SOD-123F
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/aa87cfec7d553ab5a95524360b84cf1b.pdf
+$ENDCMP
+#
 $CMP BLM18PG221SN1D
 D BL Chip Ferrite Bead 0603
 F http://www.murata.com/~/media/webrenewal/support/library/catalog/products/emc/emifil/c31e.ashx?la=en-gb
@@ -38,6 +48,16 @@ $ENDCMP
 $CMP PCF8563T_5,518
 D Real Time Clock
 F http://www.nxp.com/docs/en/data-sheet/PCF8563.pdf
+$ENDCMP
+#
+$CMP PMEG10010ELRX
+D Diode Schottky 100V 1A Surface Mount CFP3
+F http://assets.nexperia.com/documents/data-sheet/PMEG10010ELR.pdf
+$ENDCMP
+#
+$CMP PMEG10020AELPX
+D Schottky Diodes & Rectifiers 2A Schottky Barrier Rectifier
+F https://assets.nexperia.com/documents/data-sheet/PMEG10020AELP.pdf
 $ENDCMP
 #
 $CMP RFM69HCW
