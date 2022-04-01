@@ -45,6 +45,10 @@ Front
 Back
 [![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/BackV2.png?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/BackV2.png?raw=true)
 
+### Pinout
+
+[![](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/STM32F411_pinout.png?raw=true)](https://github.com/EcoApi/EcoApi_BeeHiveMonitoring/blob/main/Hardware/images/STM32F411_pinout.png?raw=true)
+
 ## Software
 
 To be define
