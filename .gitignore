@@ -23,7 +23,7 @@ fp-info-cache
 
 # Exported BOM files
 *.xml
-*.csv
+#*.csv
 
 # vscode files
 .vscode/.browse.c_cpp.db*
