@@ -20,6 +20,12 @@
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
+#define R42 1000000.0
+#define R45 2000000.0
+#define VBAT_RATIO 4.0
+
+#define BATTERY_MAX 4100 //maximum voltage of battery
+#define BATTERY_MIN 3000 //minimum voltage of battery before shutdown
 
 /***************************************************************************************/
 /*	Local variables                                                                    
@@ -44,9 +50,11 @@ static int32_t getInternalVref(void);
  *
  ***************************************************************************************/
 static int32_t getExternalAnaRing(int32_t vref_mvolt) {
-  __HAL_RCC_ADC1_CLK_ENABLE();
+  //__HAL_RCC_ADC1_CLK_ENABLE();
 
-  return __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(EXTERNAL_RING), LL_ADC_RESOLUTION_12B);
+  //return __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(EXTERNAL_RING), LL_ADC_RESOLUTION_12B);
+
+  return 0;
 }
 
 /***************************************************************************************
@@ -56,9 +64,11 @@ static int32_t getExternalAnaRing(int32_t vref_mvolt) {
  *
  ***************************************************************************************/
 static int32_t getExternalVbatt(int32_t vref_mvolt) {
-  __HAL_RCC_ADC1_CLK_ENABLE();
+  //__HAL_RCC_ADC1_CLK_ENABLE();
 
-  return __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(EXTERNAL_VBAT), LL_ADC_RESOLUTION_12B);
+  //return __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(EXTERNAL_VBAT), LL_ADC_RESOLUTION_12B);
+
+  return 0;
 }
 
 /***************************************************************************************
@@ -82,7 +92,11 @@ static int32_t getInternalTemp(int32_t vref_mvolt) {
 static int32_t getInternalVbatt(int32_t vref_mvolt) {
   __HAL_RCC_ADC1_CLK_ENABLE();
 
-  return __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(INTERNAL_VBAT), LL_ADC_RESOLUTION_12B) * VBAT_RATIO;
+  float vbatt_ana = (float) ((__LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(INTERNAL_VBAT), LL_ADC_RESOLUTION_12B)) * VBAT_RATIO);
+
+  float vbatt = vbatt_ana / ((float) R45 / ((float) R45 + (float) R42)) /*+ 34.0*/; // check with other board 
+
+  return  vbatt;
 }
 
 /***************************************************************************************
@@ -92,9 +106,8 @@ static int32_t getInternalVbatt(int32_t vref_mvolt) {
  *
  ***************************************************************************************/
 static int32_t getInternalVrefInternal(int32_t vref_mvolt) {
-#if 0
   uint16_t vref_12b;
-  int32_t vref_mvolt, vrefint_mvolt;
+  int32_t vrefint_mvolt;
 
   
   /* Optionally, for this example purpose, calculate analog reference       */
@@ -106,9 +119,6 @@ static int32_t getInternalVrefInternal(int32_t vref_mvolt) {
   vrefint_mvolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, vref_12b, LL_ADC_RESOLUTION_12B);
 
   return vrefint_mvolt;
-#else
-  return 0;
-#endif
 }
 
 /***************************************************************************************
@@ -119,17 +129,15 @@ static int32_t getInternalVrefInternal(int32_t vref_mvolt) {
  ***************************************************************************************/
 int32_t analog_getInternalVref(void) {
   uint16_t vref_12b;
-  int32_t vref_mvolt, vrefint_mvolt;
+  int32_t vref_mvolt;
 
   __HAL_RCC_ADC1_CLK_ENABLE();
 
   vref_12b = AnalogRead(INTERNAL_VREF); 
 
   vref_mvolt = __LL_ADC_CALC_VREFANALOG_VOLTAGE(vref_12b, LL_ADC_RESOLUTION_12B);
-  //vrefint_mvolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, vref_12b, LL_ADC_RESOLUTION_12B);
 
   return vref_mvolt;
-  //return vrefint_mvolt;
 }
 
 /***************************************************************************************
@@ -139,17 +147,9 @@ int32_t analog_getInternalVref(void) {
  *
  ***************************************************************************************/
 float analog_getVBattPercent(int32_t vbatt) {
-  float percent;
-  
-  /* 18650 battery percent */
-  const float battery_max = 4100; //maximum voltage of battery
-  const float battery_min = 3500;  //minimum voltage of battery before shutdown
+  float percent = (float)((float)(vbatt - BATTERY_MIN) / (float)(BATTERY_MAX - BATTERY_MIN)) * 100;
 
-  percent = (float)((float)(vbatt - battery_min) / (float)(battery_max - battery_min)) * 100;
-  if(percent > 100)
-    percent = 100.0f;
-
-  return percent;  
+  return constrain(percent, 0.0, 100.0);
 }
 
 /***************************************************************************************
@@ -165,7 +165,8 @@ int32_t analog_setup(t_RamRet *pt_ramRet, int32_t vRef) {
   pt_ramRet_ = pt_ramRet;
   vRef_ = vRef;
 
-  pinMode(ANA_VBATT, INPUT_ANALOG);
+  pinMode(EN_VBATT, OUTPUT);
+  digitalWrite(EN_VBATT, HIGH);
 
   return OK;
 }
@@ -179,18 +180,17 @@ int32_t analog_setup(t_RamRet *pt_ramRet, int32_t vRef) {
 int32_t analog_getData(t_telemetryData *pt_telemetryData) {
   if(pt_telemetryData == NULL)
     return ERROR;
-  
-  //int32_t vref = getInternalVref();
-  //static int32_t getInternalVrefInternal(int32_t vref_mvolt);
-  int32_t temperatureInternal = getInternalTemp(vRef_); 
-  int32_t vbatt = getInternalVbatt(vRef_);
-  //int32_t anaRing = getExternalAnaRing(vref);
-  pt_telemetryData->vbatt = (float) getExternalVbatt(vRef_) / ((float)R2/((float)R1+(float)R2)); 
 
-  TRACE_CrLf("[ANALOG] vref %d mv, vbattInt: %d mv, vbattExtPercent: %0.2f, vbattExt: %d mv, temp: %d  C", vRef_, vbatt,
-                                                                                                         analog_getVBattPercent(pt_telemetryData->vbatt),
-                                                                                                         pt_telemetryData->vbatt,
-                                                                                                         temperatureInternal);
+  vRef_ = analog_getInternalVref();
+
+  int32_t temperatureInternal = getInternalTemp(vRef_); 
+
+  pt_telemetryData->vbatt = getInternalVbatt(vRef_);
+
+  TRACE_CrLf("[ANALOG] vref %d mv, vbattPercent: %0.2f, vbatt: %d mv, temp: %d C", vRef_, 
+                                                                                   analog_getVBattPercent(pt_telemetryData->vbatt),
+                                                                                   pt_telemetryData->vbatt,
+                                                                                   temperatureInternal);
 
   return OK;                                                                                                       
 }
@@ -203,6 +203,8 @@ int32_t analog_getData(t_telemetryData *pt_telemetryData) {
  ***************************************************************************************/
 int32_t analog_suspend(void) {
   __HAL_RCC_ADC1_CLK_DISABLE();
+
+  pinMode(EN_VBATT, INPUT_ANALOG);
 
   return OK;
 }

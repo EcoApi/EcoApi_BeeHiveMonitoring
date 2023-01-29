@@ -30,6 +30,12 @@
 /***************************************************************************************/
 /*	Local variables                                                                    
 /***************************************************************************************/
+#if (USE_EEPROM == 1)
+static t_Eeprom *pt_eeprom_ = NULL;
+#else
+static t_RamRet *pt_eeprom_ = NULL;
+#endif
+
 static t_RamRet *pt_ramRet_ = NULL;
 static uint16_t dataFlag_ = FLAG_NONE;
 
@@ -160,67 +166,77 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
 
 /***************************************************************************************
  *
- *	\fn		int32_t sensor_setup(t_RamRet *pt_ramRet) 
+ *	\fn		int32_t sensor_setup(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t sensor_setup(t_RamRet *pt_ramRet, uint16_t dataFlag) {
-  if(pt_ramRet == NULL)
+#if (USE_EEPROM == 1)
+int32_t sensor_setup(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag) {
+#else
+int32_t sensor_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag) {
+#endif
+
+  if((pt_eeprom == NULL) || (pt_ramRet == NULL))
     return ERROR;
 
+  pt_eeprom_ = pt_eeprom;
   pt_ramRet_ = pt_ramRet;
   dataFlag_ = dataFlag;
 
-  Wire.setSCL(I2C1_SCL);
-  Wire.setSDA(I2C1_SDA);
+#if 0 /* need puul down on 10k on on / off pin SIP32431 */
+  digitalWrite(EN_3V3_INT, HIGH);
+  pinMode(EN_3V3_INT, INPUT_PULLDOWN);
+
+  digitalWrite(EN_3V3_EXT, HIGH);
+  pinMode(EN_3V3_EXT, INPUT_PULLDOWN);
+#endif
+
+  //todo if powered up then self detection sensors !!!
 
   //if(power_isPoweredOn()) {
     /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 
     /* static detection */
-    pt_ramRet_->sensorPresence.sht3x = TRUE;
-    pt_ramRet_->sensorPresence.si7021 = FALSE;
-    pt_ramRet_->sensorPresence.as6200 = FALSE;
-    pt_ramRet_->sensorPresence.bmpxxx = TRUE;
-    pt_ramRet_->sensorPresence.bmexxx = FALSE;
-    pt_ramRet_->sensorPresence.my_custom_sensor = FALSE;
-    pt_ramRet_->sensorPresence.onewire = FALSE;
-    pt_ramRet_->sensorPresence.audio_ana = TRUE;
-    pt_ramRet_->sensorPresence.audio_i2s = FALSE;
-    pt_ramRet_->sensorPresence.hx711 = TRUE;
-    pt_ramRet_->sensorPresence.ads12xx = FALSE;
-    pt_ramRet_->sensorPresence.nau7802 = FALSE;
+    pt_eeprom_->sensorPresence.sht3x = TRUE;
+    pt_eeprom_->sensorPresence.si7021 = FALSE;
+    pt_eeprom_->sensorPresence.as6200 = FALSE;
+    pt_eeprom_->sensorPresence.bmpxxx = TRUE;
+    pt_eeprom_->sensorPresence.bmexxx = FALSE;
+    pt_eeprom_->sensorPresence.my_custom_sensor = FALSE;
+    pt_eeprom_->sensorPresence.audio_ana = TRUE;
+    pt_eeprom_->sensorPresence.audio_i2s = FALSE;
+    pt_eeprom_->sensorPresence.hx711 = TRUE;
+    pt_eeprom_->sensorPresence.ads12xx = FALSE;
+    pt_eeprom_->sensorPresence.nau7802 = FALSE;
     //trace found sensors
   //}
 
   /* weight info */
   if(dataFlag_ & FLAG_WEIGHT_INFO) {
-    if(pt_ramRet_->sensorPresence.hx711) {  
-      hx711_setup(pt_ramRet_);
-    } else if(pt_ramRet_->sensorPresence.ads12xx) {
+    if(pt_eeprom_->sensorPresence.hx711) {  
+      hx711_setup(pt_eeprom_, pt_ramRet_);
+    } else if(pt_eeprom_->sensorPresence.ads12xx) {
       /* to be create */
-    } else if(pt_ramRet_->sensorPresence.nau7802) {
+    } else if(pt_eeprom_->sensorPresence.nau7802) {
       /* to be create */
     }    
   }  
 
   /* inside info */
   if(dataFlag_ & FLAG_IN_INFO) {
-    if(pt_ramRet_->sensorPresence.onewire) {  
-      onewire_setup(pt_ramRet_);
-    } else if(pt_ramRet_->sensorPresence.sht3x) {
+    if(pt_eeprom_->sensorPresence.sht3x) {
       sht3x_setup(pt_ramRet_);
-    } else if(pt_ramRet_->sensorPresence.si7021) {
+    } else if(pt_eeprom_->sensorPresence.si7021) {
       /* to be create */
-    } else if(pt_ramRet_->sensorPresence.as6200) { 
+    } else if(pt_eeprom_->sensorPresence.as6200) { 
       /* to be create */
     }
   }
 
   /* outside info */
   if(dataFlag_ & FLAG_OUT_INFO) {
-    if(pt_ramRet_->sensorPresence.bmpxxx) { 
+    if(pt_eeprom_->sensorPresence.bmpxxx) { 
       bmp180_setup(pt_ramRet_);
-    } else if(pt_ramRet_->sensorPresence.bmexxx) {
+    } else if(pt_eeprom_->sensorPresence.bmexxx) {
       /* to be create */
     }    
   }
@@ -229,9 +245,9 @@ int32_t sensor_setup(t_RamRet *pt_ramRet, uint16_t dataFlag) {
 
   /* audio info */
   if(dataFlag_ & FLAG_AUDIO_INFO) {
-    if(pt_ramRet_->sensorPresence.audio_ana) {
-      audio_setup(pt_ramRet_, vRef);
-    } else if(pt_ramRet_->sensorPresence.audio_i2s) {
+    if(pt_eeprom_->sensorPresence.audio_ana) {
+      audio_setup(pt_eeprom_, vRef);
+    } else if(pt_eeprom_->sensorPresence.audio_i2s) {
       /* to be create */
     }  
   }
@@ -242,7 +258,7 @@ int32_t sensor_setup(t_RamRet *pt_ramRet, uint16_t dataFlag) {
   }
 
   /* custom info */
-  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_ramRet_->sensorPresence.my_custom_sensor) {
+  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_eeprom_->sensorPresence.my_custom_sensor) {
     /* to be create */
   } 
 
@@ -260,42 +276,40 @@ int32_t sensor_getData(void) {
   
   /* inside info */
   if(dataFlag_ & FLAG_IN_INFO) {
-    if(pt_ramRet_->sensorPresence.onewire) {  
-      onewire_getData(&telemetryData);
-    } else if(pt_ramRet_->sensorPresence.sht3x) {
+    if(pt_eeprom_->sensorPresence.sht3x) {
       sht3x_getData(&telemetryData);
-    } else if(pt_ramRet_->sensorPresence.si7021) {
+    } else if(pt_eeprom_->sensorPresence.si7021) {
       /* to be create */
-    } else if(pt_ramRet_->sensorPresence.as6200) { 
+    } else if(pt_eeprom_->sensorPresence.as6200) { 
       /* to be create */
     } 
   }
 
   /* outside info */
   if(dataFlag_ & FLAG_OUT_INFO) {
-    if(pt_ramRet_->sensorPresence.bmpxxx) { 
+    if(pt_eeprom_->sensorPresence.bmpxxx) { 
       bmp180_getData(&telemetryData);
-    } else if(pt_ramRet_->sensorPresence.bmexxx) {
+    } else if(pt_eeprom_->sensorPresence.bmexxx) {
       /* to be create */
     }   
   }
 
   /* weight info */
   if(dataFlag_ & FLAG_WEIGHT_INFO) {
-    if(pt_ramRet_->sensorPresence.hx711) {  
+    if(pt_eeprom_->sensorPresence.hx711) {  
       hx711_getData(&telemetryData);
-    } else if(pt_ramRet_->sensorPresence.ads12xx) {
+    } else if(pt_eeprom_->sensorPresence.ads12xx) {
       /* to be create */
-    } else if(pt_ramRet_->sensorPresence.nau7802) {
+    } else if(pt_eeprom_->sensorPresence.nau7802) {
       /* to be create */
     }    
   } 
 
   /* audio info */
   if(dataFlag_ & FLAG_AUDIO_INFO) {
-    if(pt_ramRet_->sensorPresence.audio_ana) {
+    if(pt_eeprom_->sensorPresence.audio_ana) {
       audio_getData(&telemetryData);
-    } else if(pt_ramRet_->sensorPresence.audio_i2s) {
+    } else if(pt_eeprom_->sensorPresence.audio_i2s) {
       /* to be create */
     }  
   }
@@ -303,10 +317,11 @@ int32_t sensor_getData(void) {
   /* batt info */ 
   if(dataFlag_ & FLAG_BATT_INFO) { //always present
     analog_getData(&telemetryData);
+    analog_suspend();
   }
 
   /* custom info */
-  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_ramRet_->sensorPresence.my_custom_sensor) {
+  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_eeprom_->sensorPresence.my_custom_sensor) {
     /* to be create */
   }
 
@@ -356,42 +371,40 @@ int8_t sensor_getAudioData(uint8_t *p_data, uint8_t dataSize) {
 int32_t sensor_suspend(void) {
   /* inside info */
   if(dataFlag_ & FLAG_IN_INFO) {
-    if(pt_ramRet_->sensorPresence.onewire) {  
-      onewire_suspend();
-    } else if(pt_ramRet_->sensorPresence.sht3x) {
+    if(pt_eeprom_->sensorPresence.sht3x) {
       sht3x_suspend();
-    } else if(pt_ramRet_->sensorPresence.si7021) {
+    } else if(pt_eeprom_->sensorPresence.si7021) {
       /* to be create */
-    } else if(pt_ramRet_->sensorPresence.as6200) { 
+    } else if(pt_eeprom_->sensorPresence.as6200) { 
       /* to be create */
     } 
   }
 
   /* outside info */
   if(dataFlag_ & FLAG_OUT_INFO) {
-    if(pt_ramRet_->sensorPresence.bmpxxx) { 
+    if(pt_eeprom_->sensorPresence.bmpxxx) { 
       bmp180_suspend();
-    } else if(pt_ramRet_->sensorPresence.bmexxx) {
+    } else if(pt_eeprom_->sensorPresence.bmexxx) {
       /* to be create */
     }   
   }
 
   /* weight info */
   if(dataFlag_ & FLAG_WEIGHT_INFO) {
-    if(pt_ramRet_->sensorPresence.hx711) {  
+    if(pt_eeprom_->sensorPresence.hx711) {  
       hx711_suspend();
-    } else if(pt_ramRet_->sensorPresence.ads12xx) {
+    } else if(pt_eeprom_->sensorPresence.ads12xx) {
       /* to be create */
-    } else if(pt_ramRet_->sensorPresence.nau7802) {
+    } else if(pt_eeprom_->sensorPresence.nau7802) {
       /* to be create */
     }    
   } 
 
   /* audio info */
   if(dataFlag_ & FLAG_AUDIO_INFO) {
-    if(pt_ramRet_->sensorPresence.audio_ana) {
+    if(pt_eeprom_->sensorPresence.audio_ana) {
       audio_suspend();
-    } else if(pt_ramRet_->sensorPresence.audio_i2s) {
+    } else if(pt_eeprom_->sensorPresence.audio_i2s) {
       /* to be create */
     }  
   }
@@ -402,14 +415,14 @@ int32_t sensor_suspend(void) {
   }
 
   /* custom info */
-  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_ramRet_->sensorPresence.my_custom_sensor) {
+  if((dataFlag_ & FLAG_CUSTOM_INFO) && pt_eeprom_->sensorPresence.my_custom_sensor) {
     /* to be create */
   }
 
-  pinMode(I2C1_SCL, INPUT);
-  pinMode(I2C1_SDA, INPUT);
+  //pinMode(I2C1_SCL, INPUT);
+  //pinMode(I2C1_SDA, INPUT);
 
-  Wire.end();
+  //Wire.end();
 
   return OK;
 }

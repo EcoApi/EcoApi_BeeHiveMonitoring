@@ -29,18 +29,21 @@ extern "C" {
 #define MAX_TEMPERATURE_INSIDE 2
 #define LORA_DEFAULT_MAX_WAIT_DOWNLINK_CYCLE 4  // max value 7 (3 bits)
 
-#define AUDIO_DEFAULT_BIN_OFFSET 13 // 13 * 3.789062Hz = 49.26Hz first not audible
-#define AUDIO_DEFAULT_BIN_SIZE 13
-#define AUDIO_MAX_BINS 20
-#define AUDIO_DEFAULT_MAX_SEND_DATA_CYCLE 2 // max value 7 (3 bits)
-#define AUDIO_SEND_DATA_OFFSET 1 // minimum minutes for duty cyle ttn
-#define AUDIO_DEFAULT_SAMPLING_FREQUENCY 1
+#if (USE_EEPROM == 0)
+  #define AUDIO_DEFAULT_BIN_OFFSET 13 // 13 * 3.789062Hz = 49.26Hz first not audible
+  #define AUDIO_DEFAULT_BIN_SIZE 13
+  #define AUDIO_MAX_BINS 20
+  #define AUDIO_DEFAULT_MAX_SEND_DATA_CYCLE 2 // max value 7 (3 bits)
+  #define AUDIO_SEND_DATA_OFFSET 1 // minimum minutes for duty cyle ttn
+  #define AUDIO_DEFAULT_SAMPLING_FREQUENCY 1
 
-#define DEFAULT_SEND_FREQUENCY 2 //15 // minutes
+  #define DEFAULT_SEND_FREQUENCY 5 //15 // minutes
+#endif
 
 /***************************************************************************************/
 /* Typedef                                                                        
 /***************************************************************************************/
+#if (USE_EEPROM == 0)
 typedef struct t_SensorPresence_ {
   uint16_t sht3x:1; /* i2c */ 
   uint16_t si7021:1; /* i2c */
@@ -48,15 +51,15 @@ typedef struct t_SensorPresence_ {
   uint16_t bmpxxx:1; /* i2c (check if same address) */
   uint16_t bmexxx:1; /* i2c (check if same address) */
   uint16_t my_custom_sensor:1;  /* i2c create slave with register 0x00 = n telemetry, 0x01 data type 1, 0x02 data 1, 0x03 data type n, 0x04 data n ... */
-  uint16_t onewire:1; /* 1 wire ds18b20 or other temp / humidity (see maxim family code) */
   uint16_t audio_ana:1; /* when present add info input (warning check power consumption */
   
   uint16_t audio_i2s:1; /* bus check */
   uint16_t hx711:1; /* bus check */
   uint16_t ads12xx:1; /* bus check */
   uint16_t nau7802:1; /* bus check */
-  uint16_t reserved:4;
+  uint16_t reserved:5;
 } t_SensorPresence;
+#endif
 
 typedef union t_ContentInformation_ {
   struct {    
@@ -80,7 +83,7 @@ typedef union t_ContentInformation_ {
 } t_ContentInformation;
 
 typedef struct t_telemetryData_ {
-  //1wire or i2c
+  // i2c
   float temperatureInside[MAX_TEMPERATURE_INSIDE]; 
   float humidityInside; 
 
@@ -105,10 +108,12 @@ typedef struct t_telemetryData_ {
   t_ContentInformation contentInfo; 
 } t_telemetryData; 
 
+#if (USE_EEPROM == 0)
 typedef struct t_hx711Settings_ {
   long offset; 
   float calibrationFactor; 
 } t_hx711Settings;
+#endif
 
 typedef struct t_loraSettings_ {
   uint32_t seqnoUp; 
@@ -119,6 +124,7 @@ typedef struct t_loraSettings_ {
   uint8_t reserved:2;
 } t_loraSettings;
 
+#if (USE_EEPROM == 0)
 typedef struct t_audioSettings_ {
   uint16_t binOffset; /* start bin */
   uint8_t binSize; /* bin count in one output bin */
@@ -133,8 +139,10 @@ typedef struct t_audioSettings_ {
   uint8_t sendData:1; // indicate send audio data next cycle
   uint8_t reserved:1;
 } t_audioSettings;
+#endif
 
 typedef struct t_RamRet_ {
+  uint32_t u32_magicStart; 
   uint8_t isUsed:1;
   uint8_t hx711_calibrated:1;
   uint8_t timeUpdated:1;
@@ -144,25 +152,29 @@ typedef struct t_RamRet_ {
   uint8_t reserved:2; 
     
   uint8_t boot; //wdg boot to be developped
-  uint8_t sendFrequency; // minutes
+
   uint32_t lastSendTime; // timestamp
 
-  t_hx711Settings hx711Settings;
-  t_loraSettings loraSettings;
-  t_audioSettings audioSettings;
+#if (USE_EEPROM == 0)  
+  uint8_t sendFrequency; // minutes
   
+  t_hx711Settings hx711Settings;
+  t_audioSettings audioSettings;
   t_SensorPresence sensorPresence; 
+#endif
+  
+  t_loraSettings loraSettings;
+
   t_telemetryData telemetryData; 
 
-  uint32_t u32_magic; 
+  uint32_t u32_magicEnd; 
 } t_RamRet; 
 
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/ 
-uint8_t ramret_init(t_RamRet *pt_ramRet);
-void ramret_save(t_RamRet *pt_ramRet);
-void ramret_dump(t_RamRet *pt_ramRet);
+int32_t ramret_init(t_RamRet *pt_ramRet, bool init);
+int32_t ramret_save(t_RamRet *pt_ramRet);
 uint8_t ramret_isNew(void);
 void ramret_clean(t_RamRet *pt_ramRet);
 

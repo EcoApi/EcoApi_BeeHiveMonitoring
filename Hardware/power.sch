@@ -2695,4 +2695,12 @@ F 3 "" H 2850 2500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2850 2400 2850 2500
+Text Notes 8750 4900 0    50   ~ 0
+Voir pull down sur signal on off
+Text Notes 5200 850  0    50   ~ 0
+voir si pas autre car introuvable
+Text Notes 4550 7600 0    50   ~ 0
+enlever wdg alarm
+Text Notes 8650 3550 0    50   ~ 0
+Revoir avec eval kit la partie switch low power\nVoir TPS22917
 $EndSCHEMATC

@@ -68,58 +68,61 @@ or
 #define ERROR (-1)
 #define DATA_NOT_CHANGED (ERROR - 1)
 
-#define HX711_DT PB_8
-#define HX711_CK PB_9
-#define SPI1_MOSI PB_5
-#define SPI1_MISO PB_4
-#define SPI1_SCK PB_3
-#define SPI1_NSS PA_15
-#define LORA_NSS PA_12
-#define LORA_RST PA_11
-#define LORA_DIO0 27//PB_12
-#define LORA_DIO1 28//PB_13
-#define LORA_DIO2 29//PB_14
-#define LORA_DIO3 30//PB_15
+#define HX711_RATE PB_5
+#define HX711_DT PB_6
+#define HX711_CK PB_7
+
+#define SPI1_MOSI PA_7
+#define SPI1_MISO PA_6
+#define SPI1_SCK PA_5
+//#define SPI1_NSS PA_15
+#define FLASH_NSS PA_3
+#define LORA_NSS PA_4
+#define LORA_RST PB_0
+#define LORA_DIO0 PB_1
+#define LORA_DIO1 PB_2
+#define LORA_DIO2 PB_10
+//#define LORA_DIO3 30//PB_15
+
 #define UART1_TX PA_9
 #define UART1_RX PA_10
 
+#define PWR_OFF PA_15
+
 #define LED_INFO PA_8
 
-#define R1 300000.0
-#define R2 300000.0
+
 
 #define WAKEUP_PIN PWR_WAKEUP_PIN1
+#define WAKEUP PA_0
 
 //#define BTN_RST ?
-#if defined(STM32F411xE) //blackpill
-    #define ONEWIRE_DATA PA_7
-    #define ANA_VBATT PB_0
-    #define SCALE_TYPE PA_6
-    #define BTN_TARE PA_5
-    #define BTN_ACT PA_4
-    #define RING PA_1 //SYS_WKUP1
-    #define RING_ANA PA_1
-    #define MIC_ANA PA_2
-    #define I2C1_SCL PB_6
-    #define I2C1_SDA PB_7
+//#define ONEWIRE_DATA PA_7
+//#define ANA_VBATT PB_0
+#define SCALE_TYPE PB_15
 
-    #define VBAT_RATIO 4
-#elif defined(STM32F103xB) //bluepill 
-    #define ONEWIRE_DATA PB_0
-    #define ANA_VBATT PB_1
-    #define SCALE_TYPE PA_7
-    #define BTN_TARE PA_6
-    #define BTN_ACT PA_5
-    #define RING PA_0 //WKUP
-    #define RING_ANA PA_2
-    #define MIC_ANA PA_3
-    #define I2C1_SCL PB_10
-    #define I2C1_SDA PB_11
+#define BTN_TARE PA_2
+#define EN_VBATT BTN_TARE
 
-    #define VBAT_RATIO 1 //must be define
-#else
-    #error "Bad µC defined"
-#endif
+#define TRACE_EN PB_14
+//#define BTN_ACT PA_4
+//#define RING PA_1 //SYS_WKUP1
+
+#define WDG_RELOAD PC_13
+
+#define MIC_ANA PA_2
+#define MIC_GAIN PB_13
+
+#define I2S_SD MIC_ANA
+#define I2S_CK MIC_GAIN
+#define I2S_WS PB_14
+
+#define I2C1_SCL PB_8
+#define I2C1_SDA PB_9
+
+
+#define EN_3V3_INT PB_3
+#define EN_3V3_EXT PB_4
 
 #ifdef __cplusplus
 }

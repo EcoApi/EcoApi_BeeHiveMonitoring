@@ -73,7 +73,7 @@ static uint8_t payload[MAX_LEN_PAYLOAD]; //put correct value
 static uint32_t userUTCTime; // Seconds since the UTC epoch
 
 const lmic_pinmap lmic_pins = {
-  .nss = SPI1_NSS, //LORA_NSS,
+  .nss = LORA_NSS, 
   .rxtx = LMIC_UNUSED_PIN,
   .rst = LORA_RST,
   .dio = {LORA_DIO0,LORA_DIO1,LORA_DIO2},

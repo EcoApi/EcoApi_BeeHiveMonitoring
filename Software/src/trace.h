@@ -17,8 +17,8 @@
 /*	Includes																		
 /***************************************************************************************/
 #include "board.h"
-#include "ramret.h"
 #include <stdio.h>
+#include "debug.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,6 +29,7 @@ extern "C" {
 /**************************************************************************************/
 #define TRACE(fmt, ...) trace_callback(FALSE, fmt, ##__VA_ARGS__)
 #define TRACE_CrLf(fmt, ...) trace_callback(TRUE, fmt, ##__VA_ARGS__)
+#define TRACE_DUMP(msg, buf, size) trace_display_buf(msg, buf, size)
 
 /***************************************************************************************/
 /* Typedef                                                                        
@@ -37,10 +38,11 @@ extern "C" {
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
-void trace_init(t_RamRet *pt_ramRet);
-void trace_setState(uint8_t u8_enable);
-uint8_t trace_getState(void);
+void trace_init(HardwareSerial *p_serial);
+void trace_setState(bool enable);
+bool trace_getState(void);
 void trace_callback(uint8_t withCrLf, const char * format, ... );
+void trace_display_buf(const char* msg, const uint8_t* p_buffer, uint32_t bufferSize);
 
 #ifdef __cplusplus
 }

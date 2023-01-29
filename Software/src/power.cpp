@@ -17,7 +17,7 @@
 #include "system.h"
 #include "ramret.h"
 #include "trace.h"
-#include "rtc.h"
+#include "rtc_ext.h"
 #include "stm32yyxx_ll_rcc.h"
 #include <stdio.h>
 
@@ -151,16 +151,20 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
   if(e_mode > e_SLEEP_MODE_STANDBY)
     goto error;
   
+  if((e_mode == e_SLEEP_MODE_OFF) && (e_wakeupType != e_WAKEUP_TYPE_RTC))
+    goto error;
+
   switch(e_wakeupType) {
-    case e_WAKEUP_TYPE_RTC:
+    case e_WAKEUP_TYPE_RTC:{
       if(!u32_sleepTime)
         goto error;
 
-      if(rtc_enableWakeUpRtc(u32_sleepTime * 1000) != OK) {
-        //Serial.println("ERROR rtc_enableWakeUpRtc");
+      if(rtc_enableWakeUpRtc(u32_sleepTime * 60 /* * 1000 */) != OK) {
+        TRACE_CrLf("[POWER] en wakeup rtc");
+        goto error;
       }
       break;  
-
+    }
     case e_WAKEUP_TYPE_INPUT:
       if(!u32_wakeupPin)
         goto error;
@@ -175,7 +179,7 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
       if((!u32_sleepTime) || (!u32_wakeupPin))
         goto error;
 
-      if(rtc_enableWakeUpRtc(u32_sleepTime * 1000) != OK) {
+      if(rtc_enableWakeUpRtc(u32_sleepTime * 60 /* * 1000 */) != OK) {
         //Serial.println("ERROR rtc_enableWakeUpRtc");
       }
       
@@ -187,6 +191,14 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
   }
 
   switch(e_mode) {
+    case e_SLEEP_MODE_OFF:
+      digitalWrite(PWR_OFF, HIGH);
+      pinMode(PWR_OFF, OUTPUT);
+      
+      while(TRUE) {};
+
+      return OK;
+
     case e_SLEEP_MODE_STANDBY:
       //HAL_EnableDBGStandbyMode();
 
@@ -212,6 +224,8 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
   return OK;
 
 error:
+  delay(500);
+
   system_reset();
 
   return ERROR;

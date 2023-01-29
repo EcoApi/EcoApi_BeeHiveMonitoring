@@ -2279,4 +2279,26 @@ Text Notes 8750 5250 0    50   ~ 0
 pullup value optimize
 Text Notes 10200 850  0    50   ~ 0
 1K pup pd
+Text Notes 5200 4250 0    50   ~ 0
+Remplacer footprint pour adress i2C
+Text Notes 9150 4650 0    50   ~ 0
+Prevoir adresse sur A0 / A1 / A1
+Text Notes 6650 4800 0    50   ~ 0
+Prevoir coupure vcc sur avec strap et possiblite sur 3.3 pilotable pour fram et eeprom
+Text Notes 1300 4600 0    50   ~ 0
+prevoir level sifter sur scl et sda car pas sur 3.3
+Text Notes 2300 950  0    50   ~ 0
+enlever pose pb et libere pin
+Text Notes 7600 6250 0    50   ~ 0
+2k pup new value pour 400kHz
+Text Notes 9700 2900 0    50   ~ 0
+Change MB24Cxx or NV24Cxx
+Text Notes 9700 3000 0    50   ~ 0
+Change with BR24Hxx or BR24Gxx
+Text Notes 7150 3150 0    50   ~ 0
+TCA9416\nPI6ULS5V9306\nTCA9406\nPCA9306\nUM3212M8\nCheck voltage translator for external / internal / vkup_vbatt
+Text Notes 9550 6200 0    50   ~ 0
+Not mounted !!! a terme
+Text Notes 4000 7550 0    50   ~ 0
+Prevoir Masse analog
 $EndSCHEMATC

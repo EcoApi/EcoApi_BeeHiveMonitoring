@@ -17,10 +17,12 @@
 /*	Includes																		                                      
 /***************************************************************************************/
 #include "board.h"
+#if (USE_EEPROM == 1)
+#include "eeprom.h"
+#endif
 #include "ramret.h"
 #include "analog.h"
 #include "hx711.h"
-#include "onewire.h"
 #include "bmp180.h"
 #include "sht3x.h"
 #include "audio.h"
@@ -52,7 +54,11 @@ extern "C" {
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
-int32_t sensor_setup(t_RamRet *pt_ramRet, uint16_t dataFlag);
+#if (USE_EEPROM == 1)
+int32_t sensor_setup(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag);
+#else
+int32_t sensor_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag);
+#endif
 int32_t sensor_getData(void);
 int8_t sensor_getAudioData(uint8_t *p_data, uint8_t dataSize);
 int32_t sensor_suspend(void);

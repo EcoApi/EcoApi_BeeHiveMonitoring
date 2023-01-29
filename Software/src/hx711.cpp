@@ -20,7 +20,7 @@
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
-#define LB2KG  0.45352
+#define LB2KG  0.45352 // livre to kg factor 0,453592
 #define CALWEIGHT 2.00 //Kg
 #define DEFAULT_CALIFACTOR -7050
 
@@ -28,13 +28,23 @@
 /*	Local variables                                                                    
 /***************************************************************************************/
 static HX711 scale;
+
+#if (USE_EEPROM == 1)
+static t_Eeprom *pt_eeprom_ = NULL;
+#else
+static t_RamRet *pt_eeprom_ = NULL;
+#endif
+
 static t_RamRet *pt_ramRet_ = NULL;
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
-
-static void hx711_calibrate(t_RamRet *pt_ramRet);
+#if (USE_EEPROM == 1)
+static void hx711_calibrate(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet);
+#else
+static void hx711_calibrate(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet);
+#endif
 
 /***************************************************************************************
  *
@@ -42,17 +52,22 @@ static void hx711_calibrate(t_RamRet *pt_ramRet);
  *	\brief 
  *
  ***************************************************************************************/
-static void hx711_calibrate(t_RamRet *pt_ramRet) {
-  if(pt_ramRet == NULL)
+#if (USE_EEPROM == 1)
+static void hx711_calibrate(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet) {
+#else
+static void hx711_calibrate(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
+#endif
+
+  if((pt_eeprom == NULL) || (pt_ramRet == NULL))
     return;
   
-  pt_ramRet->hx711Settings.offset = 0;
-  pt_ramRet->hx711Settings.calibrationFactor = DEFAULT_CALIFACTOR;  
+  pt_eeprom->hx711Settings.offset = 0;
+  pt_eeprom->hx711Settings.calibrationFactor = DEFAULT_CALIFACTOR;  
   
   pinMode(LED_INFO, OUTPUT);
-  pinMode(BTN_TARE, INPUT_PULLUP);
+  pinMode(BTN_TARE, INPUT);
 
-  while (digitalRead(BTN_TARE)) {
+  while (LOW == digitalRead(BTN_TARE)) {
     TRACE_CrLf("[HX711] start calibration, remove all weight and press <TARE> button");
     digitalWrite(LED_INFO, HIGH);
     delay(150);
@@ -61,21 +76,21 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
   };
   digitalWrite(LED_INFO, HIGH);
 
-  TRACE_CrLf("[HX711] calibration_factor: %0.0f", pt_ramRet->hx711Settings.calibrationFactor);
-  scale.set_scale(pt_ramRet->hx711Settings.calibrationFactor / LB2KG);
+  TRACE_CrLf("[HX711] calibration_factor: %0.0f", pt_eeprom->hx711Settings.calibrationFactor);
+  scale.set_scale(pt_eeprom->hx711Settings.calibrationFactor / LB2KG);
 
-  if (!digitalRead(BTN_TARE)) {
+  if (HIGH == digitalRead(BTN_TARE)) {
     TRACE_CrLf("[HX711] clear scale");
     
-    while (!digitalRead(BTN_TARE)); // wait leaves the button
+    while (HIGH == digitalRead(BTN_TARE)); // wait leaves the button
     
     delay(200); //short delay
     
     scale.tare();
-    pt_ramRet->hx711Settings.offset = scale.get_offset();
-    TRACE_CrLf("[HX711] current offset: %d", pt_ramRet->hx711Settings.offset);
+    pt_eeprom->hx711Settings.offset = scale.get_offset();
+    TRACE_CrLf("[HX711] current offset: %d", pt_eeprom->hx711Settings.offset);
 
-    while (digitalRead(BTN_TARE)) {
+    while (LOW == digitalRead(BTN_TARE)) {
       TRACE_CrLf("[HX711] place %0.2f kg and press <TARE> button", CALWEIGHT);
       digitalWrite(LED_INFO, HIGH);
       delay(50);
@@ -95,7 +110,7 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
   
     while (!done) {
       data = abs(scale.get_units());
-      TRACE_CrLf("[HX711] data: %0.2f, abs: %0.4f, calibration_factor: %0.0f", data, abs(data - CALWEIGHT), pt_ramRet->hx711Settings.calibrationFactor);
+      TRACE_CrLf("[HX711] data: %0.2f, abs: %0.4f, calibration_factor: %0.0f", data, abs(data - CALWEIGHT), pt_eeprom->hx711Settings.calibrationFactor);
       
       if (abs(data - CALWEIGHT) >= 0.01) {
         if (abs(data - CALWEIGHT) < abs(prevData - CALWEIGHT) && direction != 1 && data < CALWEIGHT) {
@@ -114,8 +129,8 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
           }
         }
         
-        pt_ramRet->hx711Settings.calibrationFactor += direction * dirScale;
-        scale.set_scale(pt_ramRet->hx711Settings.calibrationFactor / LB2KG);
+        pt_eeprom->hx711Settings.calibrationFactor += direction * dirScale;
+        scale.set_scale(pt_eeprom->hx711Settings.calibrationFactor / LB2KG);
         
         delay(5); //short delay
          
@@ -124,8 +139,8 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
         pt_ramRet->hx711_calibrated = TRUE;
         done = true;
 
-        TRACE_CrLf("[HX711] stop calibration, new currentOffset: %d, new calibration_factor: %0.0f", pt_ramRet->hx711Settings.offset,
-                                                                                                      pt_ramRet->hx711Settings.calibrationFactor);
+        TRACE_CrLf("[HX711] stop calibration, new currentOffset: %d, new calibration_factor: %0.0f", pt_eeprom->hx711Settings.offset,
+                                                                                                      pt_eeprom->hx711Settings.calibrationFactor);
 
         digitalWrite(LED_INFO, LOW);
         delay(250);
@@ -139,7 +154,7 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
     } 
   } 
 
-  scale.set_offset(pt_ramRet->hx711Settings.offset);
+  scale.set_offset(pt_eeprom->hx711Settings.offset);
 }  
 
 /***************************************************************************************
@@ -148,33 +163,48 @@ static void hx711_calibrate(t_RamRet *pt_ramRet) {
  *	\brief 
  *
  ***************************************************************************************/
-int32_t hx711_setup(t_RamRet *pt_ramRet) {
-  if(pt_ramRet == NULL)
+#if (USE_EEPROM == 1)
+int32_t hx711_setup(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet) {
+#else
+int32_t hx711_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
+#endif
+
+  if((pt_eeprom == NULL) || (pt_ramRet == NULL))
     return ERROR;
   
+  pt_eeprom_ = pt_eeprom;
   pt_ramRet_ = pt_ramRet;
+
+  pinMode(HX711_RATE, OUTPUT);
+  digitalWrite(HX711_RATE, LOW);
 
   scale.begin(HX711_DT, HX711_CK);
 
   scale.power_up();
 
   if(pt_ramRet_->hx711_calibrated == FALSE) {  
-    hx711_calibrate(pt_ramRet_);
+    hx711_calibrate(pt_eeprom_, pt_ramRet_);
 
-    pinMode(SCALE_TYPE, INPUT_PULLUP);
-    pt_ramRet->telemetryData.contentInfo.details.scaleType = digitalRead(SCALE_TYPE);
+#if (USE_EEPROM == 1)
+    eeprom_save(pt_eeprom);
+#else
+    ramret_save(pt_ramRet);
+#endif
+
+    pinMode(SCALE_TYPE, INPUT);
+    pt_ramRet_->telemetryData.contentInfo.details.scaleType = digitalRead(SCALE_TYPE);
     pinMode(SCALE_TYPE, INPUT);
 
-    TRACE_CrLf("[HX711] new calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_ramRet_->hx711Settings.offset,
-                                                                                                       pt_ramRet_->hx711Settings.calibrationFactor,
-                                                                                                       pt_ramRet->telemetryData.contentInfo.details.scaleType);    
+    TRACE_CrLf("[HX711] new calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_eeprom_->hx711Settings.offset,
+                                                                                                       pt_eeprom_->hx711Settings.calibrationFactor,
+                                                                                                       pt_ramRet_->telemetryData.contentInfo.details.scaleType);    
   } else {
-    scale.set_scale(pt_ramRet_->hx711Settings.calibrationFactor / LB2KG);
-    scale.set_offset(pt_ramRet_->hx711Settings.offset);
+    scale.set_scale(pt_eeprom_->hx711Settings.calibrationFactor / LB2KG);
+    scale.set_offset(pt_eeprom_->hx711Settings.offset);
 
-    TRACE_CrLf("[HX711] restore calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_ramRet_->hx711Settings.offset,
-                                                                                                           pt_ramRet_->hx711Settings.calibrationFactor,
-                                                                                                           pt_ramRet->telemetryData.contentInfo.details.scaleType);
+    TRACE_CrLf("[HX711] restore calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_eeprom_->hx711Settings.offset,
+                                                                                                           pt_eeprom_->hx711Settings.calibrationFactor,
+                                                                                                           pt_ramRet_->telemetryData.contentInfo.details.scaleType);
   }
 
   return OK;
@@ -201,7 +231,7 @@ int32_t hx711_getData(t_telemetryData *pt_telemetryData) {
 #endif
   // issue with abs missing at the 4th digit after the dot (bug!!)
   if (0.0000 - pt_telemetryData->weight > 0.0001) 
-  pt_telemetryData->weight = 0.00; //reset to zero
+    pt_telemetryData->weight = 0.00; //reset to zero
 
   TRACE_CrLf("[HX711] weight: %0.1f kg", pt_telemetryData->weight);
 
@@ -226,6 +256,9 @@ int32_t hx711_suspend(void) {
   //scale.power_down();
 
   //delayMicroseconds(60);
+
+  pinMode(HX711_DT, INPUT);
+  pinMode(HX711_CK, INPUT);
 
   return OK;
 }

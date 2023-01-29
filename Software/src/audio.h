@@ -18,6 +18,7 @@
 /***************************************************************************************/
 #include "board.h"
 #include "ramret.h"
+#include "eeprom.h"  
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,7 +43,11 @@ typedef FFT_RESULTS_ FFT_RESULTS;
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
-int32_t audio_setup(t_RamRet *pt_ramRet, int32_t vref);
+#if (USE_EEPROM == 1)
+int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vref);
+#else
+int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vref);
+#endif
 int32_t audio_getData(t_telemetryData *pt_telemetryData);
 int32_t audio_suspend(void);
 uint8_t audio_getResultCount(void);

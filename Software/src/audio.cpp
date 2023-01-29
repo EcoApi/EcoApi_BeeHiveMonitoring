@@ -19,7 +19,7 @@
 #include "arm_math.h"
 #include "arm_const_structs.h"
 #include "arm_common_tables.h"
-#include "math.h"
+#include <math.h>
 
 #include "audio.h"
 #include "trace.h"
@@ -69,10 +69,19 @@
 #define FFT_HIGH_CUTT_OFF_FREQ        50 /* Hz */
 #define FFT_LOW_CUTT_OFF_FREQ         50 /* Hz */
 
+#ifndef M_PI
+  #define M_PI       3.14159265358979323846
+#endif
+
 /***************************************************************************************/
 /*	Local variables                                                                    
 /***************************************************************************************/
-static t_RamRet *pt_ramRet_ = NULL;
+#if (USE_EEPROM == 1)
+static t_Eeprom *pt_eeprom_ = NULL;
+#else
+static t_RamRet *pt_eeprom_ = NULL;
+#endif
+
 static int32_t vRef_ = 3300; /* mV */
 
 static uint32_t adcData[FFT_ADC_BUFFER_SIZE];
@@ -448,7 +457,7 @@ static void MX_ADC1_Init(void) {
     Error_Handler();
   }
 
-  sConfig.Channel = ADC_CHANNEL_2; //
+  sConfig.Channel = ADC_CHANNEL_1; //ADC_CHANNEL_2; //
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if(HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
@@ -629,7 +638,7 @@ static void _HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) {
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /* ADC1 GPIO Configuration PA2-WKUP     ------> ADC1_I2 */
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Pin = GPIO_PIN_1; //GPIO_PIN_2;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -772,15 +781,19 @@ static void _HAL_TIM_OC_DelayElapsedCallback(void)
 
 /***************************************************************************************
  *
- *	\fn		int32_t sht3x_setup(t_RamRet *pt_ramRet)
+ *	\fn		int32_t sht3x_setup(t_Eeprom *pt_eeprom)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t audio_setup(t_RamRet *pt_ramRet, int32_t vRef) {
-  if(pt_ramRet == NULL)
+#if (USE_EEPROM == 1)
+int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vRef) {
+#else
+int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vRef) {
+#endif  
+  if(pt_eeprom == NULL)
     return ERROR;
 
-  pt_ramRet_ = pt_ramRet;
+  pt_eeprom_ = pt_eeprom;
   vRef_ = vRef;
 
   //HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
@@ -954,9 +967,9 @@ int32_t audio_getData(t_telemetryData *pt_telemetryData) {
     /* Create new fft output and compress the data */
     fft_create_result(&fftResult[fftPerformed],
                       m_fft_output_f32,
-                      pt_ramRet_->audioSettings.binCount,
-                      pt_ramRet_->audioSettings.binOffset,
-                      pt_ramRet_->audioSettings.binSize,
+                      pt_eeprom_->audioSettings.binCount,
+                      pt_eeprom_->audioSettings.binOffset,
+                      pt_eeprom_->audioSettings.binSize,
                       FFT_OUTPUT_SIZE / 2); // N/2 (nyquist-theorm)
 
     //print_dataShort("fft compressed", fftResult[fftPerformed].values, fftResult[fftPerformed].bins);

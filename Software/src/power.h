@@ -35,14 +35,13 @@ typedef enum {
   e_WAKEUP_TYPE_RTC = 0,
   e_WAKEUP_TYPE_INPUT,
   e_WAKEUP_TYPE_BOTH,
-
 } e_WAKEUP_TYPE;
 
 typedef enum {
-  e_SLEEP_MODE_STANDBY = 0,
+  e_SLEEP_MODE_OFF = 0,
+  e_SLEEP_MODE_STANDBY,
   e_SLEEP_MODE_SLEEP,
   e_SLEEP_MODE_STOP,
-
 } e_SLEEP_MODE;
 
 /***************************************************************************************/

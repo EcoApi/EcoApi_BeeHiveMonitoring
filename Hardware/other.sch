@@ -1512,4 +1512,12 @@ Wire Wire Line
 Connection ~ 2150 2400
 Wire Wire Line
 	2150 2400 2300 2400
+Text Notes 2550 4300 0    50   ~ 0
+attention conflit avec 3v3 pullup i2c et 3v3-int !!!
+Text Notes 5150 4000 0    50   ~ 0
+enlever switch et VBAT == VWKUP
+Text Notes 2700 3200 0    50   ~ 0
+R45 = 2M
+Text Notes 3600 3150 0    50   ~ 0
+C46 = 100nF
 $EndSCHEMATC

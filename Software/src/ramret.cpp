@@ -14,17 +14,20 @@
 /*	Includes				
 /***************************************************************************************/
 #include "ramret.h"
-#include "rtc.h"
+
+#include <FRAM_MB85RC_I2C.h>
+#include "trace.h"
 
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
-//#define RAMRET_MAGIC              0x52526574 //RRet
 #define RAMRET_MAGIC              0x65526574 //eRet
 
 /***************************************************************************************/
 /*	Local variables                                                                    
 /***************************************************************************************/
+FRAM_MB85RC_I2C fram(MB85RC_ADDRESS_A100, false, 0, 4);
+
 static uint8_t u8_ramRetIsNew = FALSE;
 
 /***************************************************************************************/
@@ -33,21 +36,22 @@ static uint8_t u8_ramRetIsNew = FALSE;
 
 /************************************************************************************
  *
- *	\fn		uint8_t ramret_init(t_RamRet *pt_ramRet)
+ *	\fn		uint8_t ramret_init(t_RamRet *pt_ramRet, bool init)
  *	\brief 
  *
  ***************************************************************************************/
-uint8_t ramret_init(t_RamRet *pt_ramRet) {
-  uint32_t *pu32_rawRamRetData = (uint32_t*)(void*)pt_ramRet;
-  uint32_t u32_i, u32_maxBackupRegister = sizeof(t_RamRet) / sizeof(uint32_t);
+int32_t ramret_init(t_RamRet *pt_ramRet, bool init) {
+	byte result;
 
-  if((pt_ramRet != NULL) && (u32_maxBackupRegister <= RTC_BACKUP_MAX_INDEX)) {
-    for(u32_i=0;u32_i<u32_maxBackupRegister;u32_i++)
-      pu32_rawRamRetData[u32_i] = rtc_backupRead(u32_i);
-  } else
-    pt_ramRet->isUsed = 0;
+  if(0 != fram.begin())
+    return ERROR;
 
-  if(0 == pt_ramRet->isUsed || RAMRET_MAGIC != pt_ramRet->u32_magic) {
+  if(0 != fram.readArray(0, sizeof(t_RamRet), (uint8_t*) pt_ramRet))
+    return ERROR;
+
+  //TRACE_DUMP("[FRAM] read : ", (uint8_t*) pt_ramRet, sizeof(t_RamRet));
+
+  if(init == true || 0 == pt_ramRet->isUsed || RAMRET_MAGIC != pt_ramRet->u32_magicStart || RAMRET_MAGIC != pt_ramRet->u32_magicEnd) {
     memset(pt_ramRet, 0, sizeof(t_RamRet)); 
 
     u8_ramRetIsNew = TRUE;
@@ -55,7 +59,9 @@ uint8_t ramret_init(t_RamRet *pt_ramRet) {
     /* lora */
     pt_ramRet->loraSettings.waitDownlinkMaxCycle = LORA_DEFAULT_MAX_WAIT_DOWNLINK_CYCLE;
     
-    /* audio */
+    /* other */
+#if (USE_EEPROM == 0) 
+   /* audio */
     pt_ramRet->audioSettings.binOffset = AUDIO_DEFAULT_BIN_OFFSET;
     pt_ramRet->audioSettings.binSize = AUDIO_DEFAULT_BIN_SIZE;
     pt_ramRet->audioSettings.binCount = AUDIO_MAX_BINS;
@@ -66,36 +72,56 @@ uint8_t ramret_init(t_RamRet *pt_ramRet) {
 
     /* common */
     pt_ramRet->sendFrequency = DEFAULT_SEND_FREQUENCY;
+#endif
 
+    /* common */
     pt_ramRet->isUsed = TRUE;
-    pt_ramRet->u32_magic = RAMRET_MAGIC;
-    
-    return TRUE;
+    pt_ramRet->u32_magicStart = RAMRET_MAGIC;
+    pt_ramRet->u32_magicEnd = RAMRET_MAGIC;
   }  
 
-  return FALSE;
+  return OK;
 }
+
+#include "utils.h"
 
 /************************************************************************************
  *
- *	\fn		void ramset_save(t_RamRet *pt_ramRet)
+ *	\fn		int32_t ramset_save(t_RamRet *pt_ramRet)
  *	\brief 
  *
  ***************************************************************************************/
-void ramret_save(t_RamRet *pt_ramRet) {
-  uint32_t *pu32_rawRamRetData = (uint32_t*)(void*)pt_ramRet;
-  uint32_t u32_i, u32_maxBackupRegister = sizeof(t_RamRet) / sizeof(uint32_t);
-
+int32_t ramret_save(t_RamRet *pt_ramRet) {
+  t_RamRet t_ramRetTmp;
+  byte result;
+  
   if(pt_ramRet == NULL)
-    return;
+    return ERROR;
 
-  if(u32_maxBackupRegister > RTC_BACKUP_MAX_INDEX)
-    return;
+  if(0 != fram.writeArray(0, sizeof(t_RamRet), (uint8_t*) pt_ramRet)) {
+    TRACE_CrLf("[RRAM] save ko, write");
+    return ERROR;
+  }
 
-  rtc_backupWrite(u32_maxBackupRegister - 1, 0); //Erase the ramret magic
+ 
+  if(0 != fram.readArray(0, sizeof(t_RamRet), (uint8_t*) &t_ramRetTmp)) {
+    TRACE_CrLf("[RRAM] save ko, read");
+    return ERROR;
+  }
 
-  for(u32_i=0;u32_i<u32_maxBackupRegister;u32_i++)
-    rtc_backupWrite(u32_i, pu32_rawRamRetData[u32_i]);
+  for(int i=0;i<sizeof(t_RamRet);i++) {
+    if(((uint8_t*) pt_ramRet)[i] != ((uint8_t*) &t_ramRetTmp)[i]) {
+      TRACE_DUMP("[FRAM] write : ", (uint8_t*) pt_ramRet, sizeof(t_RamRet));
+      TRACE_DUMP("[FRAM] verify : ", (uint8_t*) &t_ramRetTmp, sizeof(t_RamRet));
+
+      TRACE_CrLf("[RRAM] save ko, verify");
+      return ERROR;
+    }  
+  }
+
+  TRACE_CrLf("[RRAM] save ok");
+
+  return OK;
 }
 
 /************************************************************************************
@@ -118,6 +144,9 @@ void ramret_clean(t_RamRet *pt_ramRet) {
   if(pt_ramRet == NULL)
     return;
   
-  pt_ramRet->u32_magic = 0xffffffff;
+  pt_ramRet->u32_magicStart = 0xffffffff;
+  pt_ramRet->u32_magicEnd = 0xffffffff;
   ramret_save(pt_ramRet);
+
+  TRACE_CrLf("[RRAM] save ok");
 }

@@ -17,6 +17,9 @@
 /*	Includes																		
 /***************************************************************************************/
 #include "board.h"
+#if (USE_EEPROM == 1)
+#include "eeprom.h"
+#endif
 #include "ramret.h"
 
 #ifdef __cplusplus
@@ -34,7 +37,11 @@ extern "C" {
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
-int32_t hx711_setup(t_RamRet *pt_ramRet);
+#if (USE_EEPROM == 1)
+int32_t hx711_setup(t_Eeprom *pt_eeprom, t_RamRet *pt_ramRet);
+#else
+int32_t hx711_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet);
+#endif
 int32_t hx711_getData(t_telemetryData *pt_telemetryData);
 int32_t hx711_suspend(void);
 

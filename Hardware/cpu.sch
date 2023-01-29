@@ -844,4 +844,8 @@ Wire Wire Line
 Connection ~ 7050 2250
 Wire Wire Line
 	6000 2250 6300 2250
+Text Notes 2100 1200 0    50   ~ 0
+enlever wakeup
+Text Notes 5050 1200 0    50   ~ 0
+enlever wdg reload
 $EndSCHEMATC
