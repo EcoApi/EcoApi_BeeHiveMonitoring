@@ -135,6 +135,9 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
     pt_telemetryData->contentInfo.details.temperatureInsideCount = 0;
   }  
 
+  /* motion detection */
+  pt_telemetryData->contentInfo.details.motionDetectionOrPowerOn = pt_ramRet->telemetryData.contentInfo.details.motionDetectionOrPowerOn;
+
   memcpy(&pt_ramRet->telemetryData, pt_telemetryData, sizeof(t_telemetryData));
 
   if(pt_ramRet->telemetryData.contentInfo.details.baseInfo || pt_ramRet->telemetryData.contentInfo.details.boot ||
@@ -142,8 +145,9 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
      pt_ramRet->telemetryData.contentInfo.details.pressureOutside || pt_ramRet->telemetryData.contentInfo.details.weight ||
      pt_ramRet->telemetryData.contentInfo.details.vbatt || pt_ramRet->telemetryData.contentInfo.details.humidityInside ||
      pt_ramRet->telemetryData.contentInfo.details.audio || pt_ramRet->telemetryData.contentInfo.details.custom ||
-     pt_ramRet->telemetryData.contentInfo.details.temperatureInside) {
-    TRACE_CrLf("[SENSOR] data change, binfo %d, boot %d, t_out %d, h_out %d, p_out %d, w %d, vbatt %d, h_in %d, audio %d, custom %d, t_in %d", 
+     pt_ramRet->telemetryData.contentInfo.details.temperatureInside ||
+     pt_ramRet->telemetryData.contentInfo.details.motionDetectionOrPowerOn) {
+    TRACE_CrLf("[SENSOR] data change, binfo %d, boot %d, t_out %d, h_out %d, p_out %d, w %d, vbatt %d, h_in %d, audio %d, custom %d, t_in %d, motion %d", 
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.baseInfo,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.boot,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.temperatureOutside,
@@ -154,7 +158,8 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.humidityInside,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.audio,
                                                                                                 pt_ramRet->telemetryData.contentInfo.details.custom,
-                                                                                                pt_ramRet->telemetryData.contentInfo.details.temperatureInside);
+                                                                                                pt_ramRet->telemetryData.contentInfo.details.temperatureInside,
+                                                                                                pt_ramRet->telemetryData.contentInfo.details.motionDetectionOrPowerOn);
                                                                                                
   } else {
     TRACE_CrLf("[SENSOR] data not change");

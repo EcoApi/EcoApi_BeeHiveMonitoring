@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		rtc.h
+ *	\file		rtc_internal.h
  *
  *	\brief
  *
@@ -10,8 +10,8 @@
  *
  ***************************************************************************************/
 
-#ifndef __RTC_H
-#define __RTC_H
+#ifndef __RTC_INTERNAL_H
+#define __RTC_INTERNAL_H
 
 /***************************************************************************************/
 /*	Includes																		
@@ -31,18 +31,16 @@ extern "C" {
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
-int32_t rtc_init(time_t *p_startTime);
-int32_t rtc_start(uint32_t u32_lsFrequency);
-int32_t rtc_deinit(void);
-time_t rtc_read(void);
-int32_t rtc_write(time_t timestamp);
-int32_t rtc_isEnabled(void);
-int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */);
-int32_t rtc_isEnabledWakeUpRtc();
-int32_t rtc_disableWakeUpTimer(void);
-uint32_t rtc_backupRead(uint32_t u32_index);
-int32_t rtc_backupWrite(uint32_t u32_index, uint32_t u32_value);
-bool rtc_isLostPower(void);
+int32_t rtc_internal_init(void);
+int32_t rtc_internal_start(uint32_t u32_lsFrequency);
+int32_t rtc_internal_deinit(void);
+uint32_t rtc_internal_read(void);
+int32_t rtc_internal_write(uint32_t timestamp);
+int32_t rtc_internal_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */);
+int32_t rtc_internal_isEnabledWakeUpRtc();
+int32_t rtc_internal_disableWakeUpTimer(void);
+uint32_t rtc_internal_backupRead( uint32_t u32_index );
+int32_t rtc_internal_backupWrite( uint32_t u32_index, uint32_t u32_value );
 
 #ifdef __cplusplus
 }

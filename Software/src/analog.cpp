@@ -185,7 +185,7 @@ int32_t analog_getData(t_telemetryData *pt_telemetryData) {
 
   int32_t temperatureInternal = getInternalTemp(vRef_); 
 
-  pt_telemetryData->vbatt = getInternalVbatt(vRef_);
+  pt_telemetryData->vbatt = getInternalVbatt(vRef_); /* warning amperemeter influence */
 
   TRACE_CrLf("[ANALOG] vref %d mv, vbattPercent: %0.2f, vbatt: %d mv, temp: %d C", vRef_, 
                                                                                    analog_getVBattPercent(pt_telemetryData->vbatt),

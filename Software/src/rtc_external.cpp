@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		rtc.cpp
+ *	\file		rtc_external.cpp
  *
  *	\brief
  *
@@ -13,7 +13,7 @@
 /***************************************************************************************/
 /*	Includes				
 /***************************************************************************************/
-#include "rtc_ext.h"
+#include "rtc_external.h"
 #include <PCF8563.h>
 #include "trace.h"
 
@@ -32,11 +32,11 @@ PCF8563 rtc;
 
 /************************************************************************************
  *
- *	\fn		int32_t rtc_init(void)
+ *	\fn		int32_t rtc_external_init(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_init(time_t *p_startTime) {
+int32_t rtc_external_init(time_t *p_startTime) {
   if (!rtc.begin(p_startTime)) {
     TRACE_CrLf("[RTC] not found");
     return ERROR;
@@ -61,50 +61,32 @@ int32_t rtc_init(time_t *p_startTime) {
 
 /************************************************************************************
  *
- *	\fn		int32_t rtc_init(void)
+ *	\fn		int32_t rtc_external_init(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_start(uint32_t u32_lsFrequency) {
+int32_t rtc_external_start(uint32_t u32_lsFrequency) {
   return OK;
 }
 
 /************************************************************************************
  *
- *	\fn		int32_t rtc_deinit(void)
+ *	\fn		int32_t rtc_external_deinit(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_deinit(void) {
+int32_t rtc_external_deinit(void) {
 
   return OK;
 }
 
 /************************************************************************************
  *
- *	\fn		time_t rtc_read(void) 
+ *	\fn		time_t rtc_external_read(void) 
  *	\brief 
  *
  ***************************************************************************************/
-//#include <mktime.h>
-time_t rtc_read(void) {
-#if 0
-  struct tm now_;
-  time_t seconds;
-
-  rtc.get_time(&now_);
-
-  TRACE_CrLf("[RTC] sec %d", now_.tm_sec);
-  TRACE_CrLf("[RTC] min %d", now_.tm_min);
-  TRACE_CrLf("[RTC] hour %d", now_.tm_hour);
-  TRACE_CrLf("[RTC] mday %d", now_.tm_mday);
-  TRACE_CrLf("[RTC] wday %d", now_.tm_wday);
-  TRACE_CrLf("[RTC] mon %d", now_.tm_mon);
-  TRACE_CrLf("[RTC] year %d", now_.tm_year);
-  TRACE_CrLf("[RTC] yday %d", now_.tm_yday);
-  TRACE_CrLf("[RTC] isdst %d", now_.tm_isdst);
-#endif  
-  
+time_t rtc_external_read(void) {
   time_t now = rtc.now();
 
   if(now == -1) {
@@ -118,52 +100,71 @@ time_t rtc_read(void) {
 
 /************************************************************************************
  *
- *	\fn		void rtc_write(time_t timestamp)
+ *	\fn		void rtc_external_write(time_t timestamp)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_write(time_t timestamp) {
+int32_t rtc_external_write(time_t timestamp) {
 
-  rtc.set_timestamp(0);  
+  if(true != rtc.set_timestamp(timestamp))
+    return ERROR;  
 
   return OK;
 }
  
 /************************************************************************************
  *
- *	\fn		int32_t rtc_isEnabled(void) 
- *	\brief 
- *
- ***************************************************************************************/ 
-int32_t rtc_isEnabled(void) {
-  return TRUE;
-}
-
-/************************************************************************************
- *
- *	\fn		void rtc_enableWakeUpRtc(uint32_t u32_sleepTime)
+ *	\fn		void rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
-  time_t now = rtc_read();
+int32_t rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
+  time_t now;
+  uint8_t i;
 
-  rtc.clearAlarm();
-  
-  rtc.set_timestampAlarm(now + u32_sleepTime);
+  // modulo 60 check because min alarm is 1 minute 
 
-  TRACE_CrLf("[RTC] alarm, now %d, sleep %d", now, u32_sleepTime);
+  i = 5;
+  while(true) {
+    now = rtc_external_read();
+
+    if(ERROR != now)
+      break;
+
+    if(i-- == 0)
+      return ERROR;  
+  }
+
+  i = 5;
+  while(true) {
+    if(true == rtc.clearAlarm())
+      break;
+
+    if(i-- == 0)
+      return ERROR;  
+  }
+
+  i = 5;
+  while(true) {
+    if(true == rtc.set_timestampAlarm(now + u32_sleepTime))
+      break;
+    
+    if(i-- == 0)
+      return ERROR;  
+  }
+
+  TRACE_CrLf("[RTC] alarm, now %d, sleep %d s", (uint32_t) now, u32_sleepTime);
 
   return OK;  
 }
 
 /************************************************************************************
  *
- *	\fn		void rtc_isEnabledWakeUpRtc()
+ *	\fn		void rtc_external_isEnabledWakeUpRtc()
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_isEnabledWakeUpRtc(void) {
+bool rtc_external_isEnabledWakeUpRtc(void) {
 #if 0
   struct tm timeAlarm;
   rtc.get_timeAlarm(&timeAlarm);
@@ -178,11 +179,30 @@ int32_t rtc_isEnabledWakeUpRtc(void) {
 
 /************************************************************************************
  *
- *	\fn		void rtc_desableWakeUpTimer(void)
+ *	\fn		int32_t rtc_external_isWakeUpRtc(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_disableWakeUpTimer(void) {
+bool rtc_external_isWakeUpRtc(void) {
+#if 0
+  struct tm timeAlarm;
+  rtc.get_timeAlarm(&timeAlarm);
+  Serial.printf("Alarm next : %02d:%02d, day %02d, day n%d\r\n", timeAlarm.tm_hour, timeAlarm.tm_min, timeAlarm.tm_mday, timeAlarm.tm_wday);
+
+  Serial.println(rtc.alarmEnabled() ? "Alarm enabled" : "Alarm disabled"); 
+  Serial.println(rtc.alarmActive() ? "Alarm active" : "Alarm not active");
+#endif
+
+  return rtc.alarmActive();  
+}
+
+/************************************************************************************
+ *
+ *	\fn		void rtc_external_desableWakeUpTimer(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+int32_t rtc_external_disableWakeUpTimer(void) {
   rtc.clearAlarm();
 
   return OK;
@@ -190,11 +210,11 @@ int32_t rtc_disableWakeUpTimer(void) {
 
 /************************************************************************************
  *
- *	\fn		bool rtc_isLostPower(void)
+ *	\fn		bool rtc_external_isLostPower(void)
  *	\brief 
  *
  ***************************************************************************************/
-bool rtc_isLostPower(void) {
+bool rtc_external_isLostPower(void) {
 
   return rtc.lostPower();
 }

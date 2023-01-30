@@ -2703,4 +2703,10 @@ Text Notes 4550 7600 0    50   ~ 0
 enlever wdg alarm
 Text Notes 8650 3550 0    50   ~ 0
 Revoir avec eval kit la partie switch low power\nVoir TPS22917
+Text Notes 6150 6700 0    50   ~ 0
+NM
+Text Notes 5850 7400 0    50   ~ 0
+NM
+Text Notes 6150 7200 0    50   ~ 0
+NM
 $EndSCHEMATC

@@ -50,14 +50,9 @@ void trace_init(HardwareSerial *p_serial) {
 
   p_serial_ = p_serial;
 
-  /*pinMode(TRACE_EN, INPUT);
-  int traceEnValue = digitalRead(TRACE_EN);
-
-  traceEnValue = digitalRead(TRACE_EN);
-  traceEnValue = digitalRead(TRACE_EN);
-  traceEnValue = digitalRead(TRACE_EN);*/
-
-  bool traceEnValue = true;
+  pinMode(TRACE_EN, INPUT_PULLUP);
+  bool traceEnValue = (bool) digitalRead(TRACE_EN);
+  pinMode(TRACE_EN, INPUT_ANALOG);
 
   trace_setState(traceEnValue); 
 }

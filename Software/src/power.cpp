@@ -17,7 +17,7 @@
 #include "system.h"
 #include "ramret.h"
 #include "trace.h"
-#include "rtc_ext.h"
+#include "rtc.h"
 #include "stm32yyxx_ll_rcc.h"
 #include <stdio.h>
 
@@ -159,9 +159,16 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
       if(!u32_sleepTime)
         goto error;
 
-      if(rtc_enableWakeUpRtc(u32_sleepTime * 60 /* * 1000 */) != OK) {
-        TRACE_CrLf("[POWER] en wakeup rtc");
-        goto error;
+      if(e_mode == e_SLEEP_MODE_OFF) {
+        if(rtc_external_enableWakeUpRtc(u32_sleepTime) != OK) {
+          TRACE_CrLf("[POWER] error en wakeup rtc external");
+          goto error;
+        }
+      } else {
+        if(rtc_internal_enableWakeUpRtc(u32_sleepTime * 1000 * 1000) != OK) {
+          TRACE_CrLf("[POWER] error en wakeup rtc internal");
+          goto error;
+        }
       }
       break;  
     }
@@ -179,8 +186,9 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
       if((!u32_sleepTime) || (!u32_wakeupPin))
         goto error;
 
-      if(rtc_enableWakeUpRtc(u32_sleepTime * 60 /* * 1000 */) != OK) {
-        //Serial.println("ERROR rtc_enableWakeUpRtc");
+      if(rtc_internal_enableWakeUpRtc(u32_sleepTime * 1000 * 1000) != OK) {
+        TRACE_CrLf("[POWER] error en wakeup rtc internal");
+        goto error;
       }
       
       if(e_mode != e_SLEEP_MODE_SLEEP)
@@ -195,15 +203,21 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
       digitalWrite(PWR_OFF, HIGH);
       pinMode(PWR_OFF, OUTPUT);
       
-      while(TRUE) {};
+      delay(100);
 
-      return OK;
+      TRACE_CrLf("[POWER] error power off (motion or power on)");
+
+      rtc_internal_disableWakeUpTimer();
+
+      goto error;
 
     case e_SLEEP_MODE_STANDBY:
       //HAL_EnableDBGStandbyMode();
 
       power_standbyMode();
-      break;
+
+      TRACE_CrLf("[POWER] error en stanby");
+      goto error;
 
 #if 0
     case e_SLEEP_MODE_STOP:
@@ -363,6 +377,26 @@ uint8_t power_isPoweredOn(void) {
  ***************************************************************************************/
 uint8_t power_isWatchdogReset(void) {
   return u8_independentWindowWatchdogReset;
+}
+
+/************************************************************************************
+ *
+ *	\fn		uint8_t power_isWatchdogReset(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+uint8_t power_isPinReset(void) {
+  return u8_pinReset;
+}
+
+/************************************************************************************
+ *
+ *	\fn		uint8_t power_isSoftwareReset(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+uint8_t power_isSoftwareReset(void) {
+  return u8_softwareReset;
 }
 
 /************************************************************************************

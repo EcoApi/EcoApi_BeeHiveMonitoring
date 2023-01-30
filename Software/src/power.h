@@ -53,6 +53,8 @@ int32_t power_init(void);
 int32_t power_getLastState(void);
 uint8_t power_isPoweredOn(void);
 uint8_t power_isWatchdogReset(void);
+uint8_t power_isPinReset(void);
+uint8_t power_isSoftwareReset(void);
 void power_traceState(void);
 
 #ifdef __cplusplus

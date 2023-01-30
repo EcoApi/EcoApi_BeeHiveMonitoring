@@ -74,6 +74,10 @@ int32_t ramret_init(t_RamRet *pt_ramRet, bool init) {
     pt_ramRet->sendFrequency = DEFAULT_SEND_FREQUENCY;
 #endif
 
+    pt_ramRet->lastSendMotionOrPowerTime = 0;
+    pt_ramRet->lastUpdateTime = 0;
+    pt_ramRet->lastSendTime = 0;
+
     /* common */
     pt_ramRet->isUsed = TRUE;
     pt_ramRet->u32_magicStart = RAMRET_MAGIC;

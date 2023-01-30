@@ -18,7 +18,7 @@
 #include "trace.h"
 #include "power.h"
 #include "system.h"
-#include "rtc_ext.h"
+#include "rtc.h"
 #if (USE_EEPROM == 1)
 #include "eeprom.h"
 #endif
@@ -37,7 +37,6 @@
 #define LORA_ENABLE (1)
 #define WDG_ENABLE (0)
 
-// #define STM32_ID	((u1_t *) 0x1FFFF7E8) //F1
 #define STM32_UUID ((uint32_t *)0x1FFF7A10) // F4
 
 #define MIN_TO_SEC(min) (min * 60)
@@ -163,8 +162,50 @@ void setup(void) {
   } else {
     if (rtc_isLostPower())
       TRACE_CrLf("[RTC] init");
-    else
-      TRACE_CrLf("[RTC] ok, timestamp: %d, sleep time %d, last send time %d", startTime, startTime - t_ramRet.lastSendTime, t_ramRet.lastSendTime);
+    else {
+      TRACE_CrLf("[RTC] ok, timestamp: %d, sleep time %d, last send time %d, last update time %d", (uint32_t) startTime,
+                                                                                                   (uint32_t) startTime - t_ramRet.lastSendTime,
+                                                                                                   t_ramRet.lastSendTime,
+                                                                                                   t_ramRet.lastUpdateTime);
+
+      /*TRACE_CrLf("rtc is wkup %d, rtc is en %d, is p rst %d, is sw rst %d, is pwr on %d, pwr sb %d", rtc_isWakeUpRtc(),
+                                                                                       rtc_isEnabledWakeUpRtc(),
+                                                                                       power_isPinReset(),
+                                                                                       power_isSoftwareReset(),
+                                                                                       power_isPoweredOn(),
+                                                                                       powerInit == STANDBY_RESUMED);*/
+
+      if((FALSE == rtc_isWakeUpRtc()) &&
+         (TRUE == rtc_isEnabledWakeUpRtc()) &&
+         (TRUE == power_isPoweredOn()) || (TRUE == power_isSoftwareReset()) || (powerInit == STANDBY_RESUMED))
+        t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn = TRUE;
+      else
+        t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn = FALSE;
+
+      if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn) {
+        TRACE_CrLf("[POWER] motion or power on detected, last time %d", t_ramRet.lastSendMotionOrPowerTime);
+
+        if((t_ramRet.lastSendMotionOrPowerTime + DEFAULT_MOTION_DETECT_PERIOD) > startTime) {
+#if (TEST_HARDWARE == 0) 
+          TRACE_CrLf("[POWER] go standby");
+         
+          //lora_suspend();
+
+          pinMode(LED_INFO, INPUT_ANALOG);
+
+          pinMode(MIC_ANA, INPUT_ANALOG);
+
+          SET_3V3_EXTERNAL(false);
+
+          trace_setState(false);  
+
+          Wire.end();
+
+          power_sleep(e_SLEEP_MODE_STANDBY, e_WAKEUP_TYPE_RTC, DEFAULT_STANDBY_MOTION_DETECT_TIMEOUT, WAKEUP_PIN);
+#endif          
+        }  
+      } 
+    }    
   }
 
   if (OK != ramRetInit) {
@@ -174,12 +215,19 @@ void setup(void) {
   } else {
     if (ramret_isNew())
       TRACE_CrLf("[RRAM] initialized to default");
-    else
-      TRACE_CrLf("[RRAM] restored");
+    else {
+      if((t_ramRet.lastUpdateTime + DEFAULT_UPDATE_TIME_PERIOD) < startTime) {
+        t_ramRet.lastUpdateTime = startTime;
+        t_ramRet.timeUpdated = FALSE;
+
+        TRACE_CrLf("[RRAM] restored, ask update time");
+      } else
+        TRACE_CrLf("[RRAM] restored");
+    }  
   }
 
 #if (TEST_HARDWARE == 1)
-  test_hardware(void);
+  test_hardware();
 #endif
 
 #if (LORA_ENABLE == 1)
@@ -254,9 +302,12 @@ void loop(void) {
   // sensor_suspend();
   // delay(5000);
 
+  if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn)
+    t_ramRet.lastSendMotionOrPowerTime = rtc_read();
+
   ramret_save(&t_ramRet);
 
-  power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 2 /*minute*/, WAKEUP_PIN);
+  power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 120 /*seconde*/, WAKEUP_PIN);
 #endif
 
   //display_mallinfo();
@@ -475,8 +526,10 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void *pv_data, uint32_t siz
                time_info.tm_mon + 1,
                time_info.tm_year - 100);
 
-    rtc_write(*p_time);
-    t_ramRet.timeUpdated = TRUE;
+    if(OK == rtc_write(*p_time)) {
+      t_ramRet.timeUpdated = TRUE;
+      t_ramRet.lastUpdateTime = *p_time;
+    }
     break;
   }
   }
@@ -545,9 +598,12 @@ static void gotoSleep(void) {
 
   t_ramRet.lastSendTime = now;
 
-  sleepTime = constrain(sleepTime, 60 /* 1min */, 86400 /* 24h */) / 60;
+  if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn)
+    t_ramRet.lastSendMotionOrPowerTime = now;
 
-  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d min, runtime %d s", t_ramRet.lastSendTime, sleepTime, runTime);
+  sleepTime = constrain(sleepTime, MIN_SLEEP_PERIOD, MAX_SLEEP_PERIOD);
+
+  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d s, runtime %d s", t_ramRet.lastSendTime, sleepTime, runTime);
 
   ramret_save(&t_ramRet);
 
@@ -604,17 +660,24 @@ void _Error_Handler(const char *msg, int val) {
  *
  ***************************************************************************************/
 static void test_hardware(void) {
-  #if 0 /* test vbatt */
   t_telemetryData telemetryData;
+  int i;
+
+  #if 1 /* test vbatt */
+  pinMode(WAKEUP, INPUT_FLOATING);
+  //rtc_disableWakeUpTimer();
 
   analog_setup(&t_ramRet, 0);
 
-  int i = 10;
+  i = 10;
   while(i--) {
     delay(1000);
     analog_getData(&telemetryData);
+    TRACE_CrLf("WAKEUP pin %d", digitalRead(WAKEUP));
   };
   
+  power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 180 /*minute*/, WAKEUP_PIN);
+
   NVIC_SystemReset();
 #endif
 
@@ -626,9 +689,7 @@ static void test_hardware(void) {
   t_ramRet.lastSendTime = 0;
 #endif
 #endif
-  int i;
-  t_telemetryData telemetryData;
-
+ 
 #if (USE_EEPROM == 1)
   hx711_setup(&t_eeprom, &t_ramRet);
 #else
@@ -639,7 +700,7 @@ static void test_hardware(void) {
 
   bmp180_setup(&t_ramRet);
 
-#if 0
+#if 1
   i = 10;
   while(i--) {
     delay(1000);
@@ -665,6 +726,11 @@ static void test_hardware(void) {
   lora_suspend();
 #endif
 
+  if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn) {
+    t_ramRet.lastSendMotionOrPowerTime = rtc_read();
+    TRACE_CrLf("[POWER] last motion %d", t_ramRet.lastSendMotionOrPowerTime);
+  }
+
   // SET_3V3_EXTERNAL(false);
 
   ramret_save(&t_ramRet);
@@ -676,9 +742,9 @@ static void test_hardware(void) {
 
   // while(TRUE) {};
 
-  power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 3 /*minute*/, WAKEUP_PIN);
+  power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 60 /*minute*/, WAKEUP_PIN);
 
-  system_reset();
+  //system_reset();
 #endif
 }
 #endif

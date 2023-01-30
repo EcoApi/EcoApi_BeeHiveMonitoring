@@ -29,7 +29,7 @@ public:
     bool get_timeAlarm(struct tm *time);
     time_t get_timestampAlarm(void);
     
-    void clearAlarm(void);
+    bool clearAlarm(void);
     void resetAlarm(void);
 
     bool alarmEnabled(void);
@@ -72,7 +72,7 @@ private:
     byte decToBcd(byte value);
     byte bcdToDec(byte value);
 
-    void enableAlarm(void);
+    bool enableAlarm(void);
 
     byte hour;
     byte minute;

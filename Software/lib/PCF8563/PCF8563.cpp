@@ -236,7 +236,8 @@ bool PCF8563::set_time(struct tm time)
     /* As per data sheet, have to set everything all in one operation */
     Wire.beginTransmission(Rtcc_Addr);    // Issue I2C start signal
     Wire.write(buffer, 8);
-    Wire.endTransmission();
+    if(I2C_OK != Wire.endTransmission())
+        return false;
 
     return true;
 }
@@ -247,9 +248,7 @@ bool PCF8563::set_timestamp(time_t time)
     
     _rtc_localtime(time, &now, RTC_FULL_LEAP_YEAR_SUPPORT);
     
-    set_time(now);
-
-    return true;
+    return set_time(now);
 }
 
 bool PCF8563::set_timeAlarm(struct tm time)
@@ -269,9 +268,11 @@ bool PCF8563::set_timeAlarm(struct tm time)
     // First set alarm values, then enable
     Wire.beginTransmission(Rtcc_Addr);    // Issue I2C start signal
     Wire.write(buffer, 5); 
-    Wire.endTransmission();
+    if(I2C_OK != Wire.endTransmission())
+        return false;
 
-    enableAlarm();
+    if(true != enableAlarm())
+        return false;
   
     return true;
 }
@@ -283,7 +284,8 @@ bool PCF8563::set_timestampAlarm(time_t time)
     
     _rtc_localtime(time, &now, RTC_FULL_LEAP_YEAR_SUPPORT);
 
-    set_timeAlarm(now);
+    if(true != set_timeAlarm(now))
+        return false;
   
     return true;
 }
@@ -407,7 +409,7 @@ void PCF8563::setRegister(byte register_, byte value) {
  * whenever the clock matches these values an int will
  * be sent out pin 3 of the Pcf8563 chip
  */
-void PCF8563::enableAlarm()
+bool PCF8563::enableAlarm()
 {
     char start = 0x01;
     byte status = getStatus2();
@@ -423,10 +425,13 @@ void PCF8563::enableAlarm()
     Wire.beginTransmission(Rtcc_Addr);  // Issue I2C start signal
     Wire.write((byte)start);
     Wire.write((byte)status);
-    Wire.endTransmission();
+    if(I2C_OK != Wire.endTransmission())
+        return false;
+
+    return true;    
 }
 
-void PCF8563::clearAlarm()
+bool PCF8563::clearAlarm()
 {
     char start = 0x01;
     byte status = getStatus2();
@@ -441,7 +446,11 @@ void PCF8563::clearAlarm()
     Wire.beginTransmission(Rtcc_Addr);
     Wire.write((byte)start);
     Wire.write((byte)status);
-    Wire.endTransmission();
+    
+    if(I2C_OK != Wire.endTransmission())
+        return false;
+
+    return true;    
 }
 
 /**

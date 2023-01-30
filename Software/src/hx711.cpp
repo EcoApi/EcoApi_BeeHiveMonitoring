@@ -191,9 +191,9 @@ int32_t hx711_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
     ramret_save(pt_ramRet);
 #endif
 
-    pinMode(SCALE_TYPE, INPUT);
+    pinMode(SCALE_TYPE, INPUT_PULLUP);
     pt_ramRet_->telemetryData.contentInfo.details.scaleType = digitalRead(SCALE_TYPE);
-    pinMode(SCALE_TYPE, INPUT);
+    pinMode(SCALE_TYPE, INPUT_ANALOG);
 
     TRACE_CrLf("[HX711] new calibration, currentOffset: %d, calibration_factor: %0.0f, scale type %d", pt_eeprom_->hx711Settings.offset,
                                                                                                        pt_eeprom_->hx711Settings.calibrationFactor,

@@ -38,7 +38,14 @@ extern "C" {
   #define AUDIO_DEFAULT_SAMPLING_FREQUENCY 1
 
   #define DEFAULT_SEND_FREQUENCY 5 //15 // minutes
+  #define DEFAULT_UPDATE_TIME_PERIOD 86400 // seconds
 #endif
+
+#define DEFAULT_MOTION_DETECT_PERIOD  60 // seconds min ttn between two frame
+#define DEFAULT_STANDBY_MOTION_DETECT_TIMEOUT 30 // seconds
+
+#define MIN_SLEEP_PERIOD 60 // seconds
+#define MAX_SLEEP_PERIOD 86400 // seconds
 
 /***************************************************************************************/
 /* Typedef                                                                        
@@ -77,7 +84,7 @@ typedef union t_ContentInformation_ {
     uint8_t temperatureInside:1;
     uint8_t temperatureInsideCount:3;
     uint8_t scaleType:1;
-    uint8_t reserved:1;
+    uint8_t motionDetectionOrPowerOn:1;
   } details;
   uint8_t data[2];  
 } t_ContentInformation;
@@ -103,6 +110,7 @@ typedef struct t_telemetryData_ {
   //not in ram retention  
 
   //custom
+
   //not in ram retention   
 
   t_ContentInformation contentInfo; 
@@ -154,6 +162,8 @@ typedef struct t_RamRet_ {
   uint8_t boot; //wdg boot to be developped
 
   uint32_t lastSendTime; // timestamp
+  uint32_t lastUpdateTime; // timestamp
+  uint32_t lastSendMotionOrPowerTime; // timestamp
 
 #if (USE_EEPROM == 0)  
   uint8_t sendFrequency; // minutes

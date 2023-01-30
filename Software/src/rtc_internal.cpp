@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		rtc.cpp
+ *	\file		rtc_internal.cpp
  *
  *	\brief
  *
@@ -13,7 +13,7 @@
 /***************************************************************************************/
 /*	Includes				
 /***************************************************************************************/
-#include "rtc.h"
+#include "rtc_internal.h"
 #include "stm32yyxx_ll_rtc.h"
 
 /***************************************************************************************/
@@ -47,19 +47,19 @@ static RTC_HandleTypeDef RtcHandle;
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
+static int32_t rtc_internal_isEnabled(void);
 
 #if defined(RCC_LSE_HIGHDRIVE_MODE) || defined(RCC_LSE_LOWPOWER_MODE)
     
 #endif
 
-
 /************************************************************************************
  *
- *	\fn		int32_t rtc_init(void)
+ *	\fn		int32_t rtc_internal_init(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_init(void) {
+int32_t rtc_internal_init(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct;
 
@@ -166,11 +166,11 @@ int32_t rtc_init(void) {
 
 /************************************************************************************
  *
- *	\fn		int32_t rtc_init(void)
+ *	\fn		int32_t rtc_internal_init(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_start(uint32_t u32_lsFrequency) {
+int32_t rtc_internal_start(uint32_t u32_lsFrequency) {
 #if 0
   RtcHandle.Instance = RTC;
   //RtcHandle.State = HAL_RTC_STATE_RESET;
@@ -208,8 +208,8 @@ int32_t rtc_start(uint32_t u32_lsFrequency) {
 #endif
 #endif
 
-  if (!rtc_isEnabled()) {
-    rtc_write(0);
+  if (!rtc_internal_isEnabled()) {
+    rtc_internal_write(0);
   }
 
   return OK;
@@ -217,11 +217,11 @@ int32_t rtc_start(uint32_t u32_lsFrequency) {
 
 /************************************************************************************
  *
- *	\fn		int32_t rtc_deinit(void)
+ *	\fn		int32_t rtc_internal_deinit(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_deinit(void) {
+int32_t rtc_internal_deinit(void) {
   if(HAL_RTC_DeInit(&RtcHandle) != HAL_OK) {
     return ERROR;
   }
@@ -235,7 +235,7 @@ int32_t rtc_deinit(void) {
 
 /************************************************************************************
  *
- *	\fn		time_t rtc_read(void) 
+ *	\fn		time_t rtc_internal_read(void) 
  *	\brief 
  *
  ***************************************************************************************/
@@ -274,11 +274,11 @@ uint32_t rtc_read(void) {
 
 /************************************************************************************
  *
- *	\fn		void rtc_write(time_t timestamp)
+ *	\fn		void rtc_internal_write(time_t timestamp)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_write(uint32_t timestamp) {
+int32_t rtc_internal_write(uint32_t timestamp) {
 #if defined(STM32F1) 
   RtcHandle.Instance = RTC;
   if (RTC_WriteTimeCounter(&RtcHandle, t) != HAL_OK) {
@@ -327,11 +327,11 @@ int32_t rtc_write(uint32_t timestamp) {
  
 /************************************************************************************
  *
- *	\fn		int32_t rtc_isEnabled(void) 
+ *	\fn		static int32_t rtc_internal_isEnabled(void) 
  *	\brief 
  *
  ***************************************************************************************/ 
-int32_t rtc_isEnabled(void) {
+static int32_t rtc_internal_isEnabled(void) {
 #if defined (RTC_FLAG_INITS) /* all STM32 except STM32F1 */
   return LL_RTC_IsActiveFlag_INITS(RTC);
 #else /* RTC_FLAG_INITS */ /* TARGET_STM32F1 */
@@ -341,11 +341,11 @@ int32_t rtc_isEnabled(void) {
 
 /************************************************************************************
  *
- *	\fn		void rtc_enableWakeUpRtc(uint32_t u32_sleepTime)
+ *	\fn		void rtc_internal_enableWakeUpRtc(uint32_t u32_sleepTime)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */) {
+int32_t rtc_internal_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */) {
   uint32_t u32_wakeUpCounter, u32_wakeUpClock;
 
   /*The Following Wakeup sequence is highly recommended prior to each Standby mode entry
@@ -416,11 +416,11 @@ int32_t rtc_enableWakeUpRtc(uint32_t u32_sleepTime /* usecond */) {
 
 /************************************************************************************
  *
- *	\fn		void rtc_isEnabledWakeUpRtc()
+ *	\fn		void rtc_internal_isEnabledWakeUpRtc()
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_isEnabledWakeUpRtc(void) {
+int32_t rtc_internal_isEnabledWakeUpRtc(void) {
   uint8_t u8_isRTCWakeUpEnabled =  (RtcHandle.Instance->CR & (RTC_CR_WUTE)) ? 1 : 0;
   uint8_t u8_isRTCWakeUpEnabledIT = (RtcHandle.Instance->CR & (RTC_IT_WUT)) ? 1 : 0;
 
@@ -432,11 +432,11 @@ int32_t rtc_isEnabledWakeUpRtc(void) {
 
 /************************************************************************************
  *
- *	\fn		void rtc_desableWakeUpTimer(void)
+ *	\fn		void rtc_internal_desableWakeUpTimer(void)
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_disableWakeUpTimer(void) {
+int32_t rtc_internal_disableWakeUpTimer(void) {
   HAL_RTCEx_DeactivateWakeUpTimer(&RtcHandle);
   NVIC_DisableIRQ(RTC_WKUP_IRQn);
 
@@ -459,11 +459,11 @@ void RTC_IRQHandler(void) {
 
 /************************************************************************************
  *
- *	\fn		uint32_t rtc_backupRead( uint32_t u32_index ) 
+ *	\fn		uint32_t rtc_internal_backupRead( uint32_t u32_index ) 
  *	\brief 
  *
  ***************************************************************************************/
-uint32_t rtc_backupRead(uint32_t u32_index) {
+uint32_t rtc_internal_backupRead(uint32_t u32_index) {
   if(u32_index <= RTC_BACKUP_MAX_INDEX)
     return HAL_RTCEx_BKUPRead(&RtcHandle, u32_index);
   
@@ -472,11 +472,11 @@ uint32_t rtc_backupRead(uint32_t u32_index) {
 
 /************************************************************************************
  *
- *	\fn		rtc_backupWrite( uint32_t u32_index, uint32_t u32_value ) 
+ *	\fn		rtc_internal_backupWrite( uint32_t u32_index, uint32_t u32_value ) 
  *	\brief 
  *
  ***************************************************************************************/
-int32_t rtc_backupWrite( uint32_t u32_index, uint32_t u32_value ) {
+int32_t rtc_internal_backupWrite( uint32_t u32_index, uint32_t u32_value ) {
   if(u32_index <= RTC_BACKUP_MAX_INDEX) {
     HAL_RTCEx_BKUPWrite( &RtcHandle, u32_index, u32_value );
     return TRUE;
