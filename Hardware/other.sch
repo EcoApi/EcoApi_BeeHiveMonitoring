@@ -1520,4 +1520,10 @@ Text Notes 2700 3200 0    50   ~ 0
 R45 = 2M
 Text Notes 3600 3150 0    50   ~ 0
 C46 = 100nF
+Text Notes 9550 4450 0    50   ~ 0
+enlever
+Text Notes 9550 5250 0    50   ~ 0
+enlever
+Text Notes 8150 1300 0    50   ~ 0
+remplacer par 10k
 $EndSCHEMATC

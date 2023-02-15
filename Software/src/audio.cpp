@@ -84,6 +84,14 @@ static t_RamRet *pt_eeprom_ = NULL;
 
 static int32_t vRef_ = 3300; /* mV */
 
+#define MIC_SAMPLE_FREQUENCY 48000
+#define MIC_SAMPLES_PER_MS (MIC_SAMPLE_FREQUENCY/1000)  // == 48
+#define MIC_NUM_CHANNELS 1
+#define MIC_MS_PER_PACKET 20
+#define MIC_SAMPLES_PER_PACKET (MIC_SAMPLES_PER_MS * MIC_MS_PER_PACKET) // == 960
+
+static int32_t _i2sSampleBuffer[MIC_SAMPLES_PER_PACKET * 2];
+
 static uint32_t adcData[FFT_ADC_BUFFER_SIZE];
 static FFT_RESULTS fftResult[FTT_COUNT];
 static uint8_t fftPerformed;
@@ -91,10 +99,15 @@ static uint8_t fftPerformed;
 volatile uint8_t adcDataCount;
 volatile uint8_t fftStarted;
 
+static bool i2s_used = false; //true;
+
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 DMA_HandleTypeDef hdma_dac1;
 TIM_HandleTypeDef htim2;
+
+I2S_HandleTypeDef hi2s4;
+DMA_HandleTypeDef hdma_spi4_rx;
 
 typedef enum e_WindowType_ {
   e_WINDOW_TYPE_NONE = 0, // square (no window)
@@ -126,12 +139,20 @@ static double steeper (int i, int nn);
 static void windowing (int n, const float32_t *data, e_WindowType e_windowType, float32_t scale, float32_t *out);
 static void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8_t binOutputCount, uint16_t binOffset, uint8_t binOutputSize, uint16_t fftSize);
 static void MX_ADC1_Init(void);
+static void MX_ADC1_Deinit(void);
+static void MX_I2S4_Init(void);
+static void MX_I2S4_Deinit(void);
 static void MX_TIM2_Init(void);
+static void MX_TIM2_Deinit(void);
 static void MX_DMA_Init(void);
+static void MX_DMA_Deinit(void);
 static void MX_GPIO_Init(void); 
+static void MX_GPIO_Deinit(void);
 
 static void _HAL_ADC_MspInit(ADC_HandleTypeDef* hadc); 
 static void _HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc);
+static void _HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);
+static void _HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s); 
 static void _HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base);
 static void _HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base);
 
@@ -439,7 +460,7 @@ static void MX_ADC1_Init(void) {
   ADC_ChannelConfTypeDef sConfig = {0};
 
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4; // ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
@@ -477,6 +498,44 @@ static void MX_ADC1_Deinit(void) {
   }
 
   _HAL_ADC_MspDeInit(&hadc1); 
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void MX_I2S4_Init(void) {
+  hi2s4.Instance = SPI4;
+  hi2s4.Init.Mode = I2S_MODE_MASTER_RX;
+  hi2s4.Init.Standard = I2S_STANDARD_PHILIPS;
+  hi2s4.Init.DataFormat = I2S_DATAFORMAT_24B;
+  hi2s4.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
+  hi2s4.Init.AudioFreq = I2S_AUDIOFREQ_48K;
+  hi2s4.Init.CPOL = I2S_CPOL_HIGH;
+  hi2s4.Init.ClockSource = I2S_CLOCK_EXTERNAL;
+  hi2s4.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_DISABLE;
+
+  _HAL_I2S_MspInit(&hi2s4); // my mspInit use for using st framework instead of arduino framework
+
+  if (HAL_I2S_Init(&hi2s4) != HAL_OK) {
+    Error_Handler();
+  }
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void MX_I2S4_Deinit(void) {
+  if (HAL_I2S_DeInit(&hi2s4) != HAL_OK) {
+    Error_Handler();
+  }
+
+  _HAL_I2S_MspDeInit(&hi2s4);
 }
 
 /***************************************************************************************
@@ -658,7 +717,7 @@ static void _HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) {
       Error_Handler();
     }
 
-    __HAL_LINKDMA(hadc,DMA_Handle,hdma_adc1);
+    __HAL_LINKDMA(hadc, DMA_Handle, hdma_adc1);
   }
 }
 
@@ -677,6 +736,103 @@ static void _HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc) {
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(hadc->DMA_Handle);
+  }
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void _HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) {
+  GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
+
+  if (hi2s->Instance == SPI4) {
+#if 1
+    /** Initializes the peripherals clock
+    */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
+    PeriphClkInitStruct.PLLI2S.PLLI2SN = 100;
+    PeriphClkInitStruct.PLLI2S.PLLI2SM = 8;
+    PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    {
+      Error_Handler();
+    }
+#endif    
+
+    /* Peripheral clock enable */
+    __HAL_RCC_SPI4_CLK_ENABLE();
+    
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    /**I2S4 GPIO Configuration
+     PB12    ------> I2S4_WS
+     PB13    ------> I2S4_CK
+     PA1     ------> I2S4_SD
+     */
+
+    GPIO_InitStruct.Pin = GPIO_PIN_1;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF6_SPI4;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    /* I2S4 DMA Init */
+    /* SPI4_RX Init */
+
+    hdma_spi4_rx.Instance = DMA2_Stream0;
+    hdma_spi4_rx.Init.Channel = DMA_CHANNEL_4;
+    hdma_spi4_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_spi4_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_spi4_rx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_spi4_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    hdma_spi4_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+    hdma_spi4_rx.Init.Mode = DMA_CIRCULAR;
+    hdma_spi4_rx.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_spi4_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+
+    if (HAL_DMA_Init(&hdma_spi4_rx) != HAL_OK) {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(hi2s, hdmarx, hdma_spi4_rx);
+  }
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static void _HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s) {
+  if (hi2s->Instance == SPI4) {
+    /* Peripheral clock disable */
+    __HAL_RCC_SPI4_CLK_DISABLE();
+
+    /**I2S4 GPIO Configuration
+    PA1     ------> I2S4_SD
+    PB12     ------> I2S4_WS
+    PB13     ------> I2S4_CK
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1);
+
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12 | GPIO_PIN_13);
+
+    /* I2S4 DMA DeInit */
+    HAL_DMA_DeInit(hi2s->hdmarx);
   }
 }
 
@@ -711,7 +867,10 @@ static void _HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base) {
  *
  ***************************************************************************************/
 void _DMA2_Stream0_IRQHandler(void) {
-  HAL_DMA_IRQHandler(&hdma_adc1);
+  if(i2s_used == true)
+    HAL_DMA_IRQHandler(&hdma_spi4_rx);
+  else
+    HAL_DMA_IRQHandler(&hdma_adc1);
 }
 
 /***************************************************************************************
@@ -764,6 +923,60 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 #endif  
 }
 
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief call all 1024 bytes
+ *
+ ***************************************************************************************/
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+  HAL_StatusTypeDef status;
+
+  if(++adcDataCount >= FTT_COUNT) {
+    if ((status = HAL_I2S_DMAStop(&hi2s4)) == HAL_OK) {
+
+    }
+  } 
+
+  //datas are in _i2sSampleBuffer to MIC_SAMPLES_PER_PACKET
+  
+  if(!fftStarted) {
+    fftStarted = TRUE;
+  }
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief call all 2048 bytes
+ *
+ ***************************************************************************************/
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s) {
+  HAL_StatusTypeDef status;
+
+  if(++adcDataCount < FTT_COUNT) {
+    if ((status = HAL_I2S_Receive_DMA(&hi2s4, (uint16_t*) _i2sSampleBuffer, MIC_SAMPLES_PER_PACKET * 2)) == HAL_OK) {
+    
+    }
+  }
+
+  //datas are in _i2sSampleBuffer[MIC_SAMPLES_PER_PACKET] to (MIC_SAMPLES_PER_PACKET * 2)
+
+  if(!fftStarted) {
+    fftStarted = TRUE;
+  }
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t sht3x_suspend(void)
+ *	\brief call all 2048 bytes
+ *
+ ***************************************************************************************/
+void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s) {
+  Error_Handler();
+}
+
 #if (DEBUG_SAMPLING_FREQUENCY == 1)
 /***************************************************************************************
  *
@@ -785,6 +998,7 @@ static void _HAL_TIM_OC_DelayElapsedCallback(void)
  *	\brief 
  *
  ***************************************************************************************/
+#if 0
 #if (USE_EEPROM == 1)
 int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vRef) {
 #else
@@ -822,6 +1036,70 @@ int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vRef) {
 
   return OK;
 }
+#else
+#if (USE_EEPROM == 1)
+int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vRef) {
+#else
+int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vRef) {
+#endif  
+  HAL_StatusTypeDef status;
+  
+  if(pt_eeprom == NULL)
+    return ERROR;
+
+  pt_eeprom_ = pt_eeprom;
+  vRef_ = vRef;
+
+  //HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
+
+  MX_GPIO_Init();
+  MX_DMA_Init();
+
+  if(i2s_used)
+    MX_I2S4_Init();
+  else {
+    MX_ADC1_Init();
+    MX_TIM2_Init();
+  }
+
+  __disable_irq();
+  adcDataCount = 0;
+  fftPerformed = 0;
+  fftStarted = FALSE;
+  __enable_irq();
+
+
+  // detected i2s or analog !!!
+
+  if(i2s_used) {
+    // Warning set LR to low on pcb (it's pulled low anyway) for mono !!!
+
+    if((status = HAL_I2S_Receive_DMA(&hi2s4, (uint16_t*) _i2sSampleBuffer, MIC_SAMPLES_PER_PACKET * 2)) != HAL_OK) {
+      TRACE_CrLf("[AUDIO] error start dma i2s");
+      return ERROR;
+    }
+  } else {
+    if((status = HAL_TIM_Base_Start(&htim2)) != HAL_OK) {
+      TRACE_CrLf("[AUDIO] error start sampling timer");
+      return ERROR;
+    }
+
+#if (DEBUG_SAMPLING_FREQUENCY == 1)
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+    HAL_TIM_OC_Start(&htim2, TIM_CHANNEL_1); //debug timer
+#endif
+    
+    if((status = HAL_ADC_Start_DMA(&hadc1, (uint32_t *) adcData, FFT_ADC_BUFFER_SIZE)) != HAL_OK) {
+      TRACE_CrLf("[AUDIO] error start dma adc");
+      return ERROR;
+    }
+  }
+
+  TRACE_CrLf("[AUDIO] init ok");  
+
+  return OK;
+}
+#endif
 
 
 //#pragma GCC push_options
@@ -851,6 +1129,16 @@ int32_t audio_getData(t_telemetryData *pt_telemetryData) {
         
       continue;
     }  
+
+#if 0
+    adcIndex = fftPerformed * MIC_SAMPLES_PER_PACKET;
+
+    TRACE_CrLf("new fft %d:", fftPerformed);  
+    print_dataInteger("i2s samples", (uint32_t*) &_i2sSampleBuffer[adcIndex], MIC_SAMPLES_PER_PACKET);
+    //_i2sSampleBuffer to MIC_SAMPLES_PER_PACKET
+
+    while(true);
+#endif
 
     adcIndex = fftPerformed * FFT_OUTPUT_SIZE;
   

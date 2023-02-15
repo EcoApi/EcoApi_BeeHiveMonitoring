@@ -110,7 +110,11 @@ bool PCF8563::begin(time_t *p_init_time) {
   if(!detected())
     return false;
 
-  last_ts = now(); 
+  last_ts = now();
+
+  if(last_ts == -1) {
+    last_ts = now();
+  }
 
   *p_init_time = last_ts; 
 
@@ -194,7 +198,7 @@ bool PCF8563::get_time(struct tm *time)
     time->tm_mday = bcdToDecimal(buffer[3] & 0x3F);
     time->tm_wday = bcdToDecimal(buffer[4] & 0x07) + 1;
     time->tm_mon = bcdToDecimal(buffer[5] & 0x1F) - 1;
-    time->tm_year = bcdToDecimal(buffer[6]);
+    time->tm_year = bcdToDecimal(buffer[6]) + 100;
     time->tm_yday = 0;
     time->tm_isdst = 0;
 
@@ -226,12 +230,12 @@ bool PCF8563::set_time(struct tm time)
     
     buffer[0] = 0x02; // memory address
     buffer[1] = decimalToBcd(time.tm_sec) & 0x7F; // VL = 0
-    buffer[2] = decimalToBcd(time.tm_min) /*& 0x7F*/;
-    buffer[3] = decimalToBcd(time.tm_hour) /*& 0x3F*/;
-    buffer[4] = decimalToBcd(time.tm_mday) /*& 0x3F*/;
-    buffer[5] = time.tm_wday - 1;
-    buffer[6] = decimalToBcd(time.tm_mon + 1) /*& 0x1F*/;
-    buffer[7] = decimalToBcd(time.tm_year);
+    buffer[2] = decimalToBcd(time.tm_min) & 0x7F;
+    buffer[3] = decimalToBcd(time.tm_hour) & 0x3F;
+    buffer[4] = decimalToBcd(time.tm_mday) & 0x3F;
+    buffer[5] = (time.tm_wday - 1) & 0x07;
+    buffer[6] = decimalToBcd(time.tm_mon + 1) & 0x1F;
+    buffer[7] = decimalToBcd(time.tm_year - 100);
 
     /* As per data sheet, have to set everything all in one operation */
     Wire.beginTransmission(Rtcc_Addr);    // Issue I2C start signal
@@ -426,6 +430,11 @@ bool PCF8563::enableAlarm()
     Wire.write((byte)start);
     Wire.write((byte)status);
     if(I2C_OK != Wire.endTransmission())
+        return false;
+
+    byte status_ = getStatus2();
+
+    if(0x02 != status_) /* todo check */
         return false;
 
     return true;    

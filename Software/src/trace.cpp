@@ -74,6 +74,7 @@ void trace_setState(bool enable) {
     while (!*p_serial_) ; // Loop that only continues once the serial port is active (true)
 
     setDebugSerial(p_serial_);
+    TRACE_CrLf("##### START #####");
   } else {
     p_serial_->end();
   }

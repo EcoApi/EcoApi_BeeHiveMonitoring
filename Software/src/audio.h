@@ -56,6 +56,10 @@ int32_t audio_getResult(FFT_RESULTS *p_fftResult, uint8_t resultIndex);
 void _DMA2_Stream0_IRQHandler(void);
 void _TIM2_IRQHandler(void);
 
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);
+void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s);
+
 #ifdef __cplusplus
 }
 #endif

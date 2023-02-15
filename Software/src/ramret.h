@@ -37,7 +37,7 @@ extern "C" {
   #define AUDIO_SEND_DATA_OFFSET 1 // minimum minutes for duty cyle ttn
   #define AUDIO_DEFAULT_SAMPLING_FREQUENCY 1
 
-  #define DEFAULT_SEND_FREQUENCY 5 //15 // minutes
+  #define DEFAULT_SEND_FREQUENCY 15 // minutes
   #define DEFAULT_UPDATE_TIME_PERIOD 86400 // seconds
 #endif
 

@@ -2709,4 +2709,10 @@ Text Notes 5850 7400 0    50   ~ 0
 NM
 Text Notes 6150 7200 0    50   ~ 0
 NM
+Text Notes 4450 4350 0    50   ~ 0
+remplacer par 1M
+Text Notes 5950 5750 0    50   ~ 0
+remplacer 10K
+Text Notes 6850 5300 0    50   ~ 0
+enlever
 $EndSCHEMATC

@@ -67,6 +67,8 @@ static void hx711_calibrate(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
   pinMode(LED_INFO, OUTPUT);
   pinMode(BTN_TARE, INPUT);
 
+  delay(50);
+
   while (LOW == digitalRead(BTN_TARE)) {
     TRACE_CrLf("[HX711] start calibration, remove all weight and press <TARE> button");
     digitalWrite(LED_INFO, HIGH);
@@ -176,7 +178,8 @@ int32_t hx711_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
   pt_ramRet_ = pt_ramRet;
 
   pinMode(HX711_RATE, OUTPUT);
-  digitalWrite(HX711_RATE, LOW);
+  digitalWrite(HX711_RATE, HIGH); // 80 sps
+  //digitalWrite(HX711_RATE, LOW); // 10 sps
 
   scale.begin(HX711_DT, HX711_CK);
 

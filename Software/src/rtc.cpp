@@ -39,13 +39,13 @@ int32_t rtc_init(time_t *p_startTime) {
     return ERROR;
     
   if(OK != rtc_external_init(p_startTime))
-    return ERROR;
+    return -2;
 
   if(OK != rtc_internal_init())
-    return ERROR;
+    return -3;
 
   if(OK != rtc_internal_start(0))
-    return ERROR;
+    return -4;
 
   return OK;
 }

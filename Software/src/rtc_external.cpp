@@ -42,16 +42,20 @@ int32_t rtc_external_init(time_t *p_startTime) {
     return ERROR;
   } 
 
+  TRACE_CrLf("[RTC] reg 00 = 0x%02X, reg 01 = 0x%02X", rtc.getStatus1(), rtc.getStatus2());
 
   //rtc.setRegister(0x00, 0x00);
-  //rtc.setRegister(0x01, 0x00);
+  //rtc.setRegister(0x01, 0x08);
   //rtc.setRegister(0x0e, 0x00);
 
   if (rtc.lostPower()) {
     TRACE_CrLf("[RTC] lost power");
 
-    rtc.set_timestamp(0);  
-    rtc.clearAlarm();
+    if(true != rtc.set_timestamp(0))
+      TRACE_CrLf("[RTC] error set default ts");
+
+    if(true != rtc.clearAlarm())
+      TRACE_CrLf("[RTC] error clear alarm");
   }
   
   //rtc.clearAlarm();
@@ -131,6 +135,8 @@ int32_t rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
     if(ERROR != now)
       break;
 
+    TRACE_CrLf("[RTC] retry rtc_external_read");
+
     if(i-- == 0)
       return ERROR;  
   }
@@ -139,6 +145,8 @@ int32_t rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
   while(true) {
     if(true == rtc.clearAlarm())
       break;
+
+    TRACE_CrLf("[RTC] retry clearAlarm");
 
     if(i-- == 0)
       return ERROR;  
@@ -149,6 +157,8 @@ int32_t rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
     if(true == rtc.set_timestampAlarm(now + u32_sleepTime))
       break;
     
+    TRACE_CrLf("[RTC] retry set_timestampAlarm");
+
     if(i-- == 0)
       return ERROR;  
   }
@@ -215,7 +225,6 @@ int32_t rtc_external_disableWakeUpTimer(void) {
  *
  ***************************************************************************************/
 bool rtc_external_isLostPower(void) {
-
   return rtc.lostPower();
 }
 

@@ -94,7 +94,9 @@ static int32_t getInternalVbatt(int32_t vref_mvolt) {
 
   float vbatt_ana = (float) ((__LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(INTERNAL_VBAT), LL_ADC_RESOLUTION_12B)) * VBAT_RATIO);
 
-  float vbatt = vbatt_ana / ((float) R45 / ((float) R45 + (float) R42)) /*+ 34.0*/; // check with other board 
+  //TRACE_CrLf("vbatt: %0.2f mv", vbatt_ana);
+
+  float vbatt = vbatt_ana / ((float) R45 / ((float) R45 + (float) R42)) + 28.0; // check with other board 
 
   return  vbatt;
 }

@@ -77,6 +77,7 @@ int32_t ramret_init(t_RamRet *pt_ramRet, bool init) {
     pt_ramRet->lastSendMotionOrPowerTime = 0;
     pt_ramRet->lastUpdateTime = 0;
     pt_ramRet->lastSendTime = 0;
+    pt_ramRet->hx711_calibrated = false;
 
     /* common */
     pt_ramRet->isUsed = TRUE;

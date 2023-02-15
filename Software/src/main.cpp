@@ -31,10 +31,15 @@
 /***************************************************************************************/
 /*	Defines
 /***************************************************************************************/
-#define HW_VERSION 1
+#define HW_VERSION 2
 
+#define TEST_AUDIO (0) 
 #define TEST_HARDWARE (0) 
+#if (TEST_HARDWARE == 1) || (TEST_AUDIO == 1)
+#define LORA_ENABLE (0)
+#else
 #define LORA_ENABLE (1)
+#endif
 #define WDG_ENABLE (0)
 
 #define STM32_UUID ((uint32_t *)0x1FFF7A10) // F4
@@ -103,6 +108,9 @@ void setup(void) {
 
   trace_init(&Serial);
 
+  if(power_isPoweredOn())
+    delay(1000);
+
   Wire.setSCL(I2C1_SCL);
   Wire.setSDA(I2C1_SDA);
 
@@ -117,7 +125,6 @@ void setup(void) {
 
   int32_t ramRetInit = ramret_init(&t_ramRet, rtc_isLostPower());
 
-  TRACE_CrLf("################");
   TRACE_CrLf("[BOOT] EcoApi BeeHive Monitor [hw %d, sw %d]", HW_VERSION, SW_REVISION);
 #if (USE_EEPROM == 1)
   TRACE_CrLf("[BOOT] tx freq %d, cpu uuid %08X%08X%08X", t_eeprom.sendFrequency, STM32_UUID[0], STM32_UUID[1], STM32_UUID[2]);
@@ -156,7 +163,7 @@ void setup(void) {
 #endif
 
   if (OK != rtcInit) {
-    TRACE_CrLf("[RTC] error");
+    TRACE_CrLf("[RTC] error %d", rtcInit);
     delay(1000);
     system_reset();
   } else {
@@ -186,7 +193,7 @@ void setup(void) {
         TRACE_CrLf("[POWER] motion or power on detected, last time %d", t_ramRet.lastSendMotionOrPowerTime);
 
         if((t_ramRet.lastSendMotionOrPowerTime + DEFAULT_MOTION_DETECT_PERIOD) > startTime) {
-#if (TEST_HARDWARE == 0) 
+#if (TEST_HARDWARE == 0) && (TEST_AUDIO == 0)
           TRACE_CrLf("[POWER] go standby");
          
           //lora_suspend();
@@ -226,10 +233,13 @@ void setup(void) {
     }  
   }
 
-#if (TEST_HARDWARE == 1)
-  test_hardware();
-#endif
+#if (TEST_AUDIO == 1)
+  uint32_t vRef = analog_getInternalVref();
 
+  audio_setup(&t_ramRet, vRef);
+#elif (TEST_HARDWARE == 1)
+  test_hardware();
+#else
 #if (LORA_ENABLE == 1)
   if (t_ramRet.audioSettings.sendData == FALSE) {
     if (sensor_setup(&t_ramRet, &t_ramRet, FLAG_ALL_WITHOUT_AUDIO) != OK) {
@@ -265,6 +275,7 @@ void setup(void) {
     delay(1000);
     system_reset();
   }
+#endif
 
   //display_mallinfo();
 }
@@ -276,6 +287,13 @@ void setup(void) {
  *
  ***************************************************************************************/
 void loop(void) {
+#if (TEST_AUDIO == 1)
+  t_telemetryData telemetryData; 
+
+  audio_getData(&telemetryData);
+
+  while(true);
+#else
 #if (LORA_ENABLE == 1)
   lora_process();
 
@@ -308,6 +326,7 @@ void loop(void) {
   ramret_save(&t_ramRet);
 
   power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 120 /*seconde*/, WAKEUP_PIN);
+#endif
 #endif
 
   //display_mallinfo();
@@ -519,12 +538,13 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void *pv_data, uint32_t siz
 
     _rtc_localtime(*p_time, &time_info, RTC_4_YEAR_LEAP_YEAR_SUPPORT);
 
-    TRACE_CrLf("[LORA] utc time is: %02d:%02d:%02d %02d/%02d/%02d", time_info.tm_hour,
+    TRACE_CrLf("[LORA] utc time is: %02d:%02d:%02d %02d/%02d/%02d, ts %d", time_info.tm_hour,
                time_info.tm_min,
                time_info.tm_sec,
                time_info.tm_mday,
                time_info.tm_mon + 1,
-               time_info.tm_year - 100);
+               time_info.tm_year - 100,
+               *p_time);
 
     if(OK == rtc_write(*p_time)) {
       t_ramRet.timeUpdated = TRUE;
@@ -663,33 +683,163 @@ static void test_hardware(void) {
   t_telemetryData telemetryData;
   int i;
 
+#if 0
+  i = 10;
+  while(i--) {
+    delay(1000);
+    TRACE_CrLf("[RTC] timestamp: %d", rtc_read());
+    
+    digitalToggle(LED_INFO);
+  };
+#endif
+
+#if 0
+  i = 3;
+  while(i--) {
+ // if(rtc_isLostPower()) {
+    time_t time_write = 1676325389; //13/02/2023 22:56:29
+    time_t time_read;
+
+    struct tm time_info_write;
+    struct tm time_info_read;
+
+    if( 0 == _rtc_localtime(time_write, &time_info_write, RTC_4_YEAR_LEAP_YEAR_SUPPORT)) 
+      TRACE_CrLf("[RTC] error local time");
+
+    TRACE_CrLf("[RTC] utc time write is: %02d:%02d:%02d %02d/%02d/%02d from ts %d", time_info_write.tm_hour,
+                time_info_write.tm_min,
+                time_info_write.tm_sec,
+                time_info_write.tm_mday,
+                time_info_write.tm_mon + 1,
+                time_info_write.tm_year - 100,
+                time_write);
+
+    if(OK != rtc_write(time_write))
+      TRACE_CrLf("[RTC] error write");
+
+    delay(1000);
+
+    time_read = rtc_read();
+
+    if(0 == _rtc_localtime(time_read, &time_info_read, RTC_FULL_LEAP_YEAR_SUPPORT))
+      TRACE_CrLf("[RTC] error make time");
+    
+    TRACE_CrLf("[RTC] utc time read is: %02d:%02d:%02d %02d/%02d/%02d from ts %d", time_info_read.tm_hour,
+                time_info_read.tm_min,
+                time_info_read.tm_sec,
+                time_info_read.tm_mday,
+                time_info_read.tm_mon + 1,
+                time_info_read.tm_year - 100,
+                time_read);
+
+    delay(1000);
+
+    time_read = rtc_read();
+
+    if(0 == _rtc_localtime(time_read, &time_info_read, RTC_FULL_LEAP_YEAR_SUPPORT))
+      TRACE_CrLf("[RTC] error make time");
+    
+    TRACE_CrLf("[RTC] utc time read is: %02d:%02d:%02d %02d/%02d/%02d from ts %d", time_info_write.tm_hour,
+                time_info_read.tm_min,
+                time_info_read.tm_sec,
+                time_info_read.tm_mday,
+                time_info_read.tm_mon + 1,
+                time_info_read.tm_year - 100,
+                time_read); 
+
+    delay(1000);                       
+  //}
+  };
+
+  i = 3;
+  while(i--) {
+ // if(rtc_isLostPower()) {
+    time_t time_write = 1676359293; //14/02/2023 08:21:33
+    time_t time_read;
+
+    struct tm time_info_write;
+    struct tm time_info_read;
+  
+    if( 0 == _rtc_localtime(time_write, &time_info_write, RTC_4_YEAR_LEAP_YEAR_SUPPORT)) 
+      TRACE_CrLf("[RTC] error local time");
+
+    TRACE_CrLf("[RTC] utc time write is: %02d:%02d:%02d %02d/%02d/%02d from ts %d", time_info_write.tm_hour,
+                time_info_write.tm_min,
+                time_info_write.tm_sec,
+                time_info_write.tm_mday,
+                time_info_write.tm_mon + 1,
+                time_info_write.tm_year - 100,
+                time_write);
+
+    if(OK != rtc_write(time_write))
+      TRACE_CrLf("[RTC] error write");
+
+    delay(1000);
+
+    time_read = rtc_read();
+
+    if(0 == _rtc_localtime(time_read, &time_info_read, RTC_FULL_LEAP_YEAR_SUPPORT))
+      TRACE_CrLf("[RTC] error make time");
+    
+    TRACE_CrLf("[RTC] utc time read is: %02d:%02d:%02d %02d/%02d/%02d from ts %d", time_info_read.tm_hour,
+                time_info_read.tm_min,
+                time_info_read.tm_sec,
+                time_info_read.tm_mday,
+                time_info_read.tm_mon + 1,
+                time_info_read.tm_year - 100,
+                time_read);
+
+    delay(1000);
+
+    time_read = rtc_read();
+
+    if(0 == _rtc_localtime(time_read, &time_info_read, RTC_FULL_LEAP_YEAR_SUPPORT))
+      TRACE_CrLf("[RTC] error make time");
+    
+    TRACE_CrLf("[RTC] utc time read is: %02d:%02d:%02d %02d/%02d/%02d from ts %d", time_info_read.tm_hour,
+                time_info_read.tm_min,
+                time_info_read.tm_sec,
+                time_info_read.tm_mday,
+                time_info_read.tm_mon + 1,
+                time_info_read.tm_year - 100,
+                time_read);  
+
+    delay(1000);                      
+  //}
+  };
+#endif
+
   #if 1 /* test vbatt */
   pinMode(WAKEUP, INPUT_FLOATING);
   //rtc_disableWakeUpTimer();
 
   analog_setup(&t_ramRet, 0);
 
-  i = 10;
+  i = 3;
   while(i--) {
-    delay(1000);
+    delay(500);
     analog_getData(&telemetryData);
-    TRACE_CrLf("WAKEUP pin %d", digitalRead(WAKEUP));
+    //TRACE_CrLf("WAKEUP pin %d", digitalRead(WAKEUP));
   };
   
-  power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 180 /*minute*/, WAKEUP_PIN);
+  //power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 180 /*minute*/, WAKEUP_PIN);
 
-  NVIC_SystemReset();
+  //NVIC_SystemReset();
 #endif
 
-#if 0 /* test rtc */
+#if 1 /* test rtc */
 #if (LORA_ENABLE == 1)
-  lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_receiveDataCallback, &lora_eventCallback);
+  lora_setup(&t_ramRet, &lora_sendDataCallback, &lora_eventCallback);
 
 #if (STANDBY_ENABLE == 0)
   t_ramRet.lastSendTime = 0;
 #endif
 #endif
  
+  //delay(2000);
+
+  //power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 60 /*minute*/, WAKEUP_PIN);
+
 #if (USE_EEPROM == 1)
   hx711_setup(&t_eeprom, &t_ramRet);
 #else
@@ -701,10 +851,11 @@ static void test_hardware(void) {
   bmp180_setup(&t_ramRet);
 
 #if 1
-  i = 10;
+  i = 100;
   while(i--) {
-    delay(1000);
-    TRACE_CrLf("[RTC] timestamp: %d", rtc_read());
+    delay(500);
+    
+    hx711_getData(&telemetryData);
     
     digitalToggle(LED_INFO);
   };
@@ -714,13 +865,13 @@ static void test_hardware(void) {
 
   bmp180_getData(&telemetryData);
 
-  hx711_getData(&telemetryData);
+  
 
   sht3x_suspend();
 
   bmp180_suspend();
 
-  hx711_suspend();
+  //hx711_suspend();
 
 #if (LORA_ENABLE == 1)
   lora_suspend();
@@ -745,6 +896,7 @@ static void test_hardware(void) {
   power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 60 /*minute*/, WAKEUP_PIN);
 
   //system_reset();
+  while(TRUE) {};
 #endif
 }
 #endif
