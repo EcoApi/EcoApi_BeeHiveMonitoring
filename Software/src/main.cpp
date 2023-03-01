@@ -33,9 +33,10 @@
 /***************************************************************************************/
 #define HW_VERSION 2
 
+#define TEST_USB_CDC (0)
 #define TEST_AUDIO (0) 
 #define TEST_HARDWARE (0) 
-#if (TEST_HARDWARE == 1) || (TEST_AUDIO == 1)
+#if (TEST_HARDWARE == 1) || (TEST_AUDIO == 1) || (TEST_USB_CDC == 1)
 #define LORA_ENABLE (0)
 #else
 #define LORA_ENABLE (1)
@@ -49,15 +50,14 @@
 /***************************************************************************************/
 /*	Local variables
 /***************************************************************************************/
-typedef enum e_DATA_STATE
-{
+typedef enum e_DATA_STATE {
   e_dataStateDefault = 0,
   e_dataStateNotChange,
   e_dataStateQueued,
   e_dataStateSended,
   e_dataStateSendFailed,
   e_dataStateStandby,
-};
+} e_DATA_STATE;
 
 static e_DATA_STATE e_dataState = e_dataStateDefault;
 
@@ -97,7 +97,7 @@ void setup(void) {
   digitalWrite(LED_INFO, LOW);
   pinMode(LED_INFO, OUTPUT);
 
-  pinMode(MIC_ANA, INPUT_ANALOG);
+  //pinMode(MIC_ANA, INPUT_ANALOG);
 
   // clock debug with mco pin
   // HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSI, RCC_MCODIV_1);
@@ -106,7 +106,7 @@ void setup(void) {
 
   int32_t powerInit = power_init();
 
-  trace_init(&Serial);
+  trace_init(&Serial1 /*&Serial*/);
 
   if(power_isPoweredOn())
     delay(1000);
@@ -193,7 +193,7 @@ void setup(void) {
         TRACE_CrLf("[POWER] motion or power on detected, last time %d", t_ramRet.lastSendMotionOrPowerTime);
 
         if((t_ramRet.lastSendMotionOrPowerTime + DEFAULT_MOTION_DETECT_PERIOD) > startTime) {
-#if (TEST_HARDWARE == 0) && (TEST_AUDIO == 0)
+#if (TEST_HARDWARE == 0) && (TEST_AUDIO == 0) && (TEST_USB_CDC == 0)
           TRACE_CrLf("[POWER] go standby");
          
           //lora_suspend();
@@ -233,7 +233,9 @@ void setup(void) {
     }  
   }
 
-#if (TEST_AUDIO == 1)
+#if (TEST_USB_CDC == 1)
+  SerialUSB.begin(115200);
+#elif (TEST_AUDIO == 1)
   uint32_t vRef = analog_getInternalVref();
 
   audio_setup(&t_ramRet, vRef);
@@ -287,12 +289,35 @@ void setup(void) {
  *
  ***************************************************************************************/
 void loop(void) {
-#if (TEST_AUDIO == 1)
+#if (TEST_USB_CDC == 1)
+  static bool serialUSB_Enable = false;
+
+  bool dtrState = SerialUSB.dtr();
+
+  if(!serialUSB_Enable && dtrState) {
+    SerialUSB.println("USB serial enable");
+    
+    TRACE_CrLf("USB serial enable");
+    
+    serialUSB_Enable = true;
+  } else if(serialUSB_Enable && !dtrState) {
+    SerialUSB.println("USB serial disable");
+
+    TRACE_CrLf("USB serial disable");
+
+    serialUSB_Enable = false;
+  }
+
+  if(serialUSB_Enable) {
+    while(SerialUSB.available()) {
+      char rc = SerialUSB.read();// read a character
+      TRACE("%c", rc);
+     }
+  }
+#elif (TEST_AUDIO == 1)
   t_telemetryData telemetryData; 
 
   audio_getData(&telemetryData);
-
-  while(true);
 #else
 #if (LORA_ENABLE == 1)
   lora_process();

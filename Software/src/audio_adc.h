@@ -1,6 +1,6 @@
 /************************************************************************************//**
  *
- *	\file		audio.h
+ *	\file		audio_adc.h
  *
  *	\brief
  *
@@ -10,8 +10,8 @@
  *
  ***************************************************************************************/
 
-#ifndef __AUDIO_H_
-#define __AUDIO_H_
+#ifndef __AUDIO_ADC_H_
+#define __AUDIO_ADC_H_
 
 /***************************************************************************************/
 /*	Includes																		
@@ -38,16 +38,17 @@ extern "C" {
 /*	Shared Functions																  
 /***************************************************************************************/  
 #if (USE_EEPROM == 1)
-int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vref);
+int32_t audio_adc_setup(t_Eeprom *pt_eeprom, int32_t vref);
 #else
-int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vref);
+int32_t audio_adc_setup(t_RamRet *pt_eeprom, int32_t vref);
 #endif
-int32_t audio_getData(t_telemetryData *pt_telemetryData);
-int32_t audio_suspend(void);
-uint8_t audio_getResultCount(void);
-int32_t audio_getResult(FFT_RESULTS *p_fftResult, uint8_t resultIndex);
+int32_t audio_adc_getData(t_telemetryData *pt_telemetryData);
+int32_t audio_adc_suspend(void);
+uint8_t audio_adc_getResultCount(void);
+int32_t audio_adc_getResult(FFT_RESULTS *p_fftResult, uint8_t resultIndex);
 
-void _DMA2_Stream0_IRQHandler(void);
+void ADC_DMA2_Stream0_IRQHandler(void);
+void _TIM2_IRQHandler(void);
 
 #ifdef __cplusplus
 }

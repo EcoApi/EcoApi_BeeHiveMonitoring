@@ -1,17 +1,17 @@
 /************************************************************************************//**
  *
- *	\file		audio.h
+ *	\file		audio_i2s.h
  *
  *	\brief
  *
- *	\date		2 nov. 2021
+ *	\date		21 feb. 2023
  *
  *	\author		ecoapi
  *
  ***************************************************************************************/
 
-#ifndef __AUDIO_H_
-#define __AUDIO_H_
+#ifndef __AUDIO_I2S_H_
+#define __AUDIO_I2S_H_
 
 /***************************************************************************************/
 /*	Includes																		
@@ -38,16 +38,21 @@ extern "C" {
 /*	Shared Functions																  
 /***************************************************************************************/  
 #if (USE_EEPROM == 1)
-int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vref);
+int32_t audio_i2s_setup(t_Eeprom *pt_eeprom);
 #else
-int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vref);
+int32_t audio_i2s_setup(t_RamRet *pt_eeprom);
 #endif
-int32_t audio_getData(t_telemetryData *pt_telemetryData);
-int32_t audio_suspend(void);
-uint8_t audio_getResultCount(void);
-int32_t audio_getResult(FFT_RESULTS *p_fftResult, uint8_t resultIndex);
+int32_t audio_i2s_getData(t_telemetryData *pt_telemetryData);
+int32_t audio_i2s_suspend(void);
+uint8_t audio_i2s_getResultCount(void);
+int32_t audio_i2s_getResult(FFT_RESULTS *p_fftResult, uint8_t resultIndex);
 
-void _DMA2_Stream0_IRQHandler(void);
+void I2S_DMA2_Stream0_IRQHandler(void);
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s);
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s);
+
+void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s);
+void HAL_I2S_MspDeInit(I2S_HandleTypeDef *hi2s); 
 
 #ifdef __cplusplus
 }
