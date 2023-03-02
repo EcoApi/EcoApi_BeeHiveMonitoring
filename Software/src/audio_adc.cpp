@@ -635,7 +635,8 @@ int32_t audio_adc_getData(t_telemetryData *pt_telemetryData) {
                       pt_eeprom_->audioSettings.binCount,
                       pt_eeprom_->audioSettings.binOffset,
                       pt_eeprom_->audioSettings.binSize,
-                      FFT_OUTPUT_SIZE / 2); // N/2 (nyquist-theorm)
+                      FFT_OUTPUT_SIZE / 2,
+                      e_FFT_SAMBLE_TYPE_ADC); // N/2 (nyquist-theorm)
 
     //print_dataShort("fft compressed", fftResult[adc_fftPerformed].values, fftResult[adc_fftPerformed].bins);
     print_fft_result(&fftResult[adc_fftPerformed], FFT_SAMPLE_RES_HZ, FFT_OUTPUT_SIZE / 2);

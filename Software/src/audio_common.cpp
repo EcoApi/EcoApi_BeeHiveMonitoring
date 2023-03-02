@@ -15,6 +15,7 @@
 /***************************************************************************************/
 #include <string.h>
 #include <stdio.h>
+#include <float.h>
 
 #include "audio_common.h"
 #include "trace.h"
@@ -33,12 +34,23 @@
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
+static float floatMap(float x, float in_min, float in_max, float out_min, float out_max);
 static double parzen (int i, int nn);
 static double welch (int i, int nn);
 static double hanning (int i, int nn);
 static double hamming (int i, int nn);
 static double blackman (int i, int nn);
 static double steeper (int i, int nn);
+
+/***************************************************************************************
+ *
+ *	\fn		float floatMap(float x, float in_min, float in_max, float out_min, float out_max)
+ *	\brief 
+ *
+ ***************************************************************************************/
+static float floatMap(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
 /***************************************************************************************
  *
@@ -336,10 +348,10 @@ void windowing (int n, const float32_t *data, e_WindowType e_windowType, float32
  *	\brief 
  *
  ***************************************************************************************/
-void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8_t binOutputCount /* 20 max */, uint16_t binOffset /* max 512 */, uint8_t binOutputSize, uint16_t fftSize) {
-  uint32_t binsOutput, binInputCurrent, i;
+void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8_t binOutputCount /* 20 max */, uint16_t binOffset /* max 512 */, uint8_t binOutputSize, uint16_t fftSize, e_FFT_SAMPLE_TYPE e_sampleType) {
+  uint16_t binsOutput, binInputCurrent, i;
   float32_t binOutputSum;
-  uint32_t min = UINT32_MAX;
+  uint16_t min = UINT16_MAX;
   bool end = FALSE;
 
   if((p_fftResult == NULL) || (p_fftValue == NULL) || !binOutputCount || !fftSize)
@@ -365,13 +377,14 @@ void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8_t binO
       binOutputSum += p_fftValue[binInputCurrent];
     }
 
-    p_fftResult->values[binsOutput] = (binOutputSum > UINT32_MAX) ? UINT32_MAX : (uint32_t) binOutputSum; // check diff on 32 bits !!!
+    if(e_sampleType == e_FFT_SAMBLE_TYPE_I2S)
+      p_fftResult->values[binsOutput] = (uint16_t) floatMap(binOutputSum, 0, UINT32_MAX, 0, UINT16_MAX);
+    else 
+      p_fftResult->values[binsOutput] = constrain((uint16_t) binOutputSum, 0, UINT16_MAX);
 
     if((p_fftResult->values[binsOutput] != 0) && (p_fftResult->values[binsOutput] < min))
       min = p_fftResult->values[binsOutput];
   
-    //min with high pass filter
-
     if(end)
       break;
   }

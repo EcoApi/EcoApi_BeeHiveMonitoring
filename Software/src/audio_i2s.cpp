@@ -19,7 +19,8 @@
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
 #define FFT_USE_WINDOWING             1
-#define FFT_USE_FILTER_HIGH           1
+#define FFT_USE_FILTER_HIGH           0
+#define FFT_USE_FILTER_LOW_FREQ       1
 #define FFT_USE_FILTER_LOW            0
 #define FTT_USE_FREQ_FACTOR           1
 #define FTT_USE_I2S_STANDBY_OFFSET    1
@@ -81,6 +82,7 @@
 #define FFT_SAMPLE_RES_HZ             ((float32_t)(((float32_t) FFT_SAMPLE_FREQ_HZ / (float32_t) FFT_I2S_SAMPLING_SIZE) * (float32_t) FFT_SAMPLE_FREQ_FACTOR))
 #define FFT_HIGH_CUTT_OFF_FREQ        40 /* Hz */
 #define FFT_LOW_CUTT_OFF_FREQ         50 /* Hz */
+#define FFT_LOW_FREQ_THRESHLOD        60 /* Hz */
 
 /***************************************************************************************/
 /*	Local variables                                                                    
@@ -481,6 +483,16 @@ int32_t audio_i2s_getData(t_telemetryData *pt_telemetryData) {
     /* Calculate the magnitude */
     arm_cmplx_mag_f32(m_fft_output_f32, m_fft_output_f32, FFT_OUTPUT_SIZE / 2);
 
+#if (FFT_USE_FILTER_LOW_FREQ == 1)
+    float32_t Fcut = FFT_LOW_FREQ_THRESHLOD / FFT_SAMPLE_RES_HZ; 
+  
+    for(uint32_t i=0;i<FFT_OUTPUT_SIZE/2;i++) { 
+      if((float32_t)i < Fcut) {
+        m_fft_output_f32[i] = 0; // Real part.
+      }
+    }
+#endif
+
     //print_plotterFloat(m_fft_output_f32, FFT_OUTPUT_SIZE); // full 
     //print_plotterFloat(m_fft_output_f32, FFT_OUTPUT_SIZE / 2); // N/2 (nyquist-theorm)
     //print_dataFloat("fft uncompressed", m_fft_output_f32, FFT_OUTPUT_SIZE / 2);
@@ -497,7 +509,7 @@ int32_t audio_i2s_getData(t_telemetryData *pt_telemetryData) {
     }*/
 
     /* Remove first bin correspond to the DC component */
-    m_fft_output_f32[0] = 0.0; 
+    //m_fft_output_f32[0] = 0.0; 
 
     /* Create new fft output and compress the data */
     fft_create_result(&fftResult[i2s_fftPerformed],
@@ -505,7 +517,8 @@ int32_t audio_i2s_getData(t_telemetryData *pt_telemetryData) {
                       pt_eeprom_->audioSettings.binCount,
                       pt_eeprom_->audioSettings.binOffset,
                       pt_eeprom_->audioSettings.binSize,
-                      FFT_OUTPUT_SIZE / 2); // N/2 (nyquist-theorm)
+                      FFT_OUTPUT_SIZE / 2,
+                      e_FFT_SAMBLE_TYPE_I2S); // N/2 (nyquist-theorm)
 
     //print_dataShort("fft compressed", fftResult[i2s_fftPerformed].values, fftResult[i2s_fftPerformed].bins);
     print_fft_result(&fftResult[i2s_fftPerformed], FFT_SAMPLE_RES_HZ, FFT_OUTPUT_SIZE / 2);
