@@ -25,11 +25,16 @@
 #include "audio_i2s.h"
 #include "audio_adc.h"
 #include "trace.h"
+#include "adc.h"
 
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
 /***************************************************************************************/
-
+#define DETECT_MAX_VALUE (10)
+#define DETECT_THRESHOLD_FOR_I2S (20)
+#define DETECT_THRESHOLD_FOR_ADC (1000)
+#define DETECT_THRESHOLD_MIN_FOR_NONE (700)
+#define DETECT_THRESHOLD_MAX_FOR_NONE (850)
 
 /***************************************************************************************/
 /*	Local variables                                                                    
@@ -63,24 +68,73 @@ void _DMA2_Stream0_IRQHandler(void) {
 
 /***************************************************************************************
  *
- *	\fn		int32_t sht3x_setup(t_Eeprom *pt_eeprom)
+ *	\fn		e_AUDIO_TYPE audio_detectType(void)
+ *	\brief 
+ *
+ ***************************************************************************************/
+e_AUDIO_TYPE audio_detectType(void) {
+  uint16_t vref_12b;
+  int32_t vref_mvolt;
+  int32_t mic_mvolt;
+  uint32_t mic_mvolt_average = 0;
+
+  pinMode(MIC_ANA, INPUT_ANALOG);
+
+  __HAL_RCC_ADC1_CLK_ENABLE();
+
+  vref_12b = AnalogRead(INTERNAL_VREF); 
+  vref_mvolt = __LL_ADC_CALC_VREFANALOG_VOLTAGE(vref_12b, LL_ADC_RESOLUTION_12B);
+
+  for(uint8_t i=0;i<DETECT_MAX_VALUE;i++) {
+    mic_mvolt = __LL_ADC_CALC_DATA_TO_VOLTAGE(vref_mvolt, AnalogRead(EXTERNAL_MIC), LL_ADC_RESOLUTION_12B);
+
+    mic_mvolt_average += mic_mvolt;
+  }
+
+  mic_mvolt_average = mic_mvolt_average / DETECT_MAX_VALUE;
+
+  if(mic_mvolt_average <= DETECT_THRESHOLD_FOR_I2S) {
+    TRACE_CrLf("[AUDIO] i2s detected, average = %d", mic_mvolt_average);
+
+    return e_AUDIO_TYPE_I2S;
+  } else if((mic_mvolt_average > DETECT_THRESHOLD_MIN_FOR_NONE) && (mic_mvolt_average < DETECT_THRESHOLD_MAX_FOR_NONE)) {
+    TRACE_CrLf("[AUDIO] none detected, average = %d", mic_mvolt_average);
+
+    return e_AUDIO_TYPE_NONE;
+  } else if (mic_mvolt_average > DETECT_THRESHOLD_FOR_ADC) {
+    TRACE_CrLf("[AUDIO] adc detected, average = %d", mic_mvolt_average);
+
+    return e_AUDIO_TYPE_ADC;
+  } 
+  
+  TRACE_CrLf("[AUDIO] none detected, average = %d", mic_mvolt_average);
+
+  return e_AUDIO_TYPE_NONE;
+}
+
+/***************************************************************************************
+ *
+ *	\fn		int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vRef, e_AUDIO_TYPE e_audioType) 
  *	\brief 
  *
  ***************************************************************************************/
 #if (USE_EEPROM == 1)
-int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vRef) {
+int32_t audio_setup(t_Eeprom *pt_eeprom, int32_t vRef, e_AUDIO_TYPE e_audioType) {
 #else
-int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vRef) {
+int32_t audio_setup(t_RamRet *pt_eeprom, int32_t vRef, e_AUDIO_TYPE e_audioType) {
 #endif  
   int32_t ret;
   
   if(pt_eeprom == NULL)
     return ERROR;
 
+  if(e_audioType == e_AUDIO_TYPE_NONE)
+    return ERROR;
+
   pt_eeprom_ = pt_eeprom;
   vRef_ = vRef;
 
-  //detected i2s or not and store 
+  i2s_used = (e_audioType == e_AUDIO_TYPE_I2S) ? TRUE : FALSE;
 
   if(i2s_used)
     ret = audio_i2s_setup(pt_eeprom);

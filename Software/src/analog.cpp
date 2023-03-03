@@ -27,11 +27,14 @@
 #define BATTERY_MAX 4100 //maximum voltage of battery
 #define BATTERY_MIN 3000 //minimum voltage of battery before shutdown
 
+#define WAIT_ADC_DONE (400) /* ms */
+
 /***************************************************************************************/
 /*	Local variables                                                                    
 /***************************************************************************************/
 static t_RamRet *pt_ramRet_ = NULL;
 static int32_t vRef_ = 3300;
+static uint32_t lastInitTime = 0;
 
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
@@ -170,6 +173,8 @@ int32_t analog_setup(t_RamRet *pt_ramRet, int32_t vRef) {
   pinMode(EN_VBATT, OUTPUT);
   digitalWrite(EN_VBATT, HIGH);
 
+  lastInitTime = millis();
+
   return OK;
 }
 
@@ -182,6 +187,11 @@ int32_t analog_setup(t_RamRet *pt_ramRet, int32_t vRef) {
 int32_t analog_getData(t_telemetryData *pt_telemetryData) {
   if(pt_telemetryData == NULL)
     return ERROR;
+
+  uint32_t lapseTime = millis() - lastInitTime;
+
+  if(lapseTime < WAIT_ADC_DONE)
+    delay(WAIT_ADC_DONE - lapseTime);
 
   vRef_ = analog_getInternalVref();
 

@@ -222,7 +222,15 @@ void print_fft_result(FFT_RESULTS *p_fftResult, float sample_res_hz, uint32_t ff
   if(binEnd >= fft_size)
     binEnd = fft_size;
 
-  TRACE_CrLf("[AUDIO] fft result start: %u / %0.2f Hz, end: %u / %0.2f Hz, out bin freq: %0.2f Hz, out bin count: %u, in bin by out bin: %u", p_fftResult->binOffset, startFrequency,  binEnd, (float32_t) binEnd * sample_res_hz, binFrequency, p_fftResult->binCount, p_fftResult->binSize);
+  TRACE_CrLf("[AUDIO] fft %s result type start: %u / %0.2f Hz, end: %u / %0.2f Hz, out bin freq: %0.2f Hz, out bin count: %u, in bin by out bin: %u",
+                                                            (p_fftResult->sampleType == e_FFT_SAMBLE_TYPE_ADC) ? "adc" : "i2s",
+                                                            p_fftResult->binOffset,
+                                                            startFrequency,
+                                                            binEnd,
+                                                            (float32_t) binEnd * sample_res_hz,
+                                                            binFrequency,
+                                                            p_fftResult->binCount,
+                                                            p_fftResult->binSize);
 
   for(i=0;i<p_fftResult->binCount;i++) {
     TRACE_CrLf("[AUDIO] %02d -> brut s_bin%f_%fHz,\t\ts_bin%04d_%04dHz = %d", i,
@@ -360,6 +368,7 @@ void fft_create_result(FFT_RESULTS *p_fftResult, float *p_fftValue, uint8_t binO
   if(binOutputCount > AUDIO_MAX_BINS)
     binOutputCount = AUDIO_MAX_BINS;
 
+  p_fftResult->sampleType = e_sampleType;
   p_fftResult->binOffset = binOffset; // start input bin
   p_fftResult->binSize = binOutputSize; // n input bin for one output bin
 

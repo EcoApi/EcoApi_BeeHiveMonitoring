@@ -17,6 +17,7 @@
 #include "sensor.h"
 #include "power.h"
 #include "trace.h"
+#include "rtc.h"
 
 /***************************************************************************************/
 /*	Defines		  	 	 															                                     
@@ -198,21 +199,26 @@ int32_t sensor_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag
 
   //todo if powered up then self detection sensors !!!
 
-  //if(power_isPoweredOn()) {
-    /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 
-    /* static detection */
-    pt_eeprom_->sensorPresence.sht3x = TRUE;
-    pt_eeprom_->sensorPresence.si7021 = FALSE;
-    pt_eeprom_->sensorPresence.as6200 = FALSE;
-    pt_eeprom_->sensorPresence.bmpxxx = TRUE;
-    pt_eeprom_->sensorPresence.bmexxx = FALSE;
-    pt_eeprom_->sensorPresence.my_custom_sensor = FALSE;
-    pt_eeprom_->sensorPresence.audio_ana = TRUE;
-    pt_eeprom_->sensorPresence.audio_i2s = FALSE;
-    pt_eeprom_->sensorPresence.hx711 = TRUE;
-    pt_eeprom_->sensorPresence.ads12xx = FALSE;
-    pt_eeprom_->sensorPresence.nau7802 = FALSE;
-    //trace found sensors
+  if(rtc_isLostPower()) {
+    e_AUDIO_TYPE e_audioType = audio_detectType();
+    pt_eeprom_->sensorPresence.audio_enable = (e_audioType == e_AUDIO_TYPE_NONE) ? FALSE : TRUE;
+    pt_eeprom_->sensorPresence.audio_type = (e_audioType == e_AUDIO_TYPE_I2S) ? TRUE : FALSE;
+  }  
+  
+  /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 
+  /* static detection */
+  pt_eeprom_->sensorPresence.sht3x = TRUE;
+  pt_eeprom_->sensorPresence.si7021 = FALSE;
+  pt_eeprom_->sensorPresence.as6200 = FALSE;
+  pt_eeprom_->sensorPresence.bmpxxx = TRUE;
+  pt_eeprom_->sensorPresence.bmexxx = FALSE;
+  pt_eeprom_->sensorPresence.my_custom_sensor = FALSE;
+    
+  pt_eeprom_->sensorPresence.hx711 = TRUE;
+
+  pt_eeprom_->sensorPresence.ads12xx = FALSE;
+  pt_eeprom_->sensorPresence.nau7802 = FALSE;
+  //trace found sensors
   //}
 
   /* weight info */
@@ -249,12 +255,8 @@ int32_t sensor_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag
   uint32_t vRef = analog_getInternalVref();
 
   /* audio info */
-  if(dataFlag_ & FLAG_AUDIO_INFO) {
-    if(pt_eeprom_->sensorPresence.audio_ana) {
-      audio_setup(pt_eeprom_, vRef);
-    } else if(pt_eeprom_->sensorPresence.audio_i2s) {
-      /* to be create */
-    }  
+  if((dataFlag_ & FLAG_AUDIO_INFO) && pt_eeprom_->sensorPresence.audio_enable) {
+    audio_setup(pt_eeprom_, vRef, (pt_eeprom_->sensorPresence.audio_type == TRUE) ? e_AUDIO_TYPE_I2S : e_AUDIO_TYPE_ADC);
   }
 
   /* batt info */ 
@@ -311,12 +313,8 @@ int32_t sensor_getData(void) {
   } 
 
   /* audio info */
-  if(dataFlag_ & FLAG_AUDIO_INFO) {
-    if(pt_eeprom_->sensorPresence.audio_ana) {
-      audio_getData(&telemetryData);
-    } else if(pt_eeprom_->sensorPresence.audio_i2s) {
-      /* to be create */
-    }  
+  if((dataFlag_ & FLAG_AUDIO_INFO) && pt_eeprom_->sensorPresence.audio_enable)  {
+    audio_getData(&telemetryData);
   }
 
   /* batt info */ 
@@ -347,18 +345,27 @@ int8_t sensor_getAudioData(uint8_t *p_data, uint8_t dataSize) {
   if((p_data == NULL) || !dataSize)
     return 0;
   
+  if(pt_eeprom_->sensorPresence.audio_enable == FALSE)
+    return 0;
+
   resultCount = audio_getResultCount();
 
-  if(!resultCount)
+  if(!resultCount) {
+    TRACE_CrLf("[SENSOR] audio no result count");
     return 0;
+  }  
 
-  if(audio_getResult(&fftResult, 0) != OK)
+  if(audio_getResult(&fftResult, 0) != OK) {
+    TRACE_CrLf("[SENSOR] audio get result error");
     return 0;
+  }  
 
-  rawDataSize = sizeof(fftResult.binOffset) + sizeof(fftResult.binSize) + sizeof(fftResult.binCount) + (fftResult.binCount * sizeof(fftResult.values[0]));
+  rawDataSize = sizeof(fftResult.sampleType) + sizeof(fftResult.binOffset) + sizeof(fftResult.binSize) + sizeof(fftResult.binCount) + (fftResult.binCount * sizeof(fftResult.values[0]));
 
-  if(rawDataSize > dataSize)
+  if(rawDataSize > dataSize) {
+    TRACE_CrLf("[SENSOR] audio buffer overflow %d > %d", rawDataSize, dataSize);
     return 0;
+  }  
 
   //todo more result or more bins
 
@@ -406,12 +413,8 @@ int32_t sensor_suspend(void) {
   } 
 
   /* audio info */
-  if(dataFlag_ & FLAG_AUDIO_INFO) {
-    if(pt_eeprom_->sensorPresence.audio_ana) {
-      audio_suspend();
-    } else if(pt_eeprom_->sensorPresence.audio_i2s) {
-      /* to be create */
-    }  
+  if((dataFlag_ & FLAG_AUDIO_INFO) && pt_eeprom_->sensorPresence.audio_enable) {
+    audio_suspend();
   }
 
   /* batt info */ 

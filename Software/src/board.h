@@ -110,12 +110,12 @@ or
 
 #define WDG_RELOAD PC13
 
-#define MIC_ANA PA2
+#define MIC_ANA PA1
 #define MIC_GAIN PB13
 
 #define I2S_SD MIC_ANA
 #define I2S_CK MIC_GAIN
-#define I2S_WS PB14
+#define I2S_WS PB12
 
 #define I2C1_SCL PB8
 #define I2C1_SDA PB9

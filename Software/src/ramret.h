@@ -58,13 +58,13 @@ typedef struct t_SensorPresence_ {
   uint16_t bmpxxx:1; /* i2c (check if same address) */
   uint16_t bmexxx:1; /* i2c (check if same address) */
   uint16_t my_custom_sensor:1;  /* i2c create slave with register 0x00 = n telemetry, 0x01 data type 1, 0x02 data 1, 0x03 data type n, 0x04 data n ... */
-  uint16_t audio_ana:1; /* when present add info input (warning check power consumption */
-  
-  uint16_t audio_i2s:1; /* bus check */
+  uint16_t audio_enable:1; /* false : no audio used */
+
+  uint16_t audio_type:1; /* true : i2s, false : adc */
   uint16_t hx711:1; /* bus check */
   uint16_t ads12xx:1; /* bus check */
   uint16_t nau7802:1; /* bus check */
-  uint16_t reserved:5;
+  uint16_t reserved1:5;
 } t_SensorPresence;
 #endif
 

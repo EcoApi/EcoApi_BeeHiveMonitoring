@@ -82,7 +82,7 @@
 #define FFT_SAMPLE_RES_HZ             ((float32_t)(((float32_t) FFT_SAMPLE_FREQ_HZ / (float32_t) FFT_I2S_SAMPLING_SIZE) * (float32_t) FFT_SAMPLE_FREQ_FACTOR))
 #define FFT_HIGH_CUTT_OFF_FREQ        40 /* Hz */
 #define FFT_LOW_CUTT_OFF_FREQ         50 /* Hz */
-#define FFT_LOW_FREQ_THRESHLOD        60 /* Hz */
+#define FFT_LOW_FREQ_THRESHLOD        60 /* Hz */ /* defined in inmp441 datasheet */
 
 /***************************************************************************************/
 /*	Local variables                                                                    
@@ -107,7 +107,7 @@ DMA_HandleTypeDef hdma_spi4_rx;
 /***************************************************************************************/
 /*	Local Functions prototypes                                                         
 /***************************************************************************************/
-static void MX_I2S4_Init(void);
+static void MX_I2S4_Init(uint32_t audioFreq);
 static void MX_I2S4_Deinit(void);
 static void MX_DMA_Init(void);
 static void MX_DMA_Deinit(void);
@@ -120,13 +120,13 @@ static void MX_GPIO_Deinit(void);
  *	\brief 
  *
  ***************************************************************************************/
-static void MX_I2S4_Init(void) {
+static void MX_I2S4_Init(uint32_t audioFreq) {
   hi2s4.Instance = SPI4;
   hi2s4.Init.Mode = I2S_MODE_MASTER_RX;
   hi2s4.Init.Standard = I2S_STANDARD_PHILIPS;
   hi2s4.Init.DataFormat = I2S_DATAFORMAT_24B;
   hi2s4.Init.MCLKOutput = I2S_MCLKOUTPUT_DISABLE;
-  hi2s4.Init.AudioFreq = 4000U; //I2S_AUDIOFREQ_8K;
+  hi2s4.Init.AudioFreq = audioFreq; //4000U; //I2S_AUDIOFREQ_8K;
   hi2s4.Init.CPOL = I2S_CPOL_LOW; //I2S_CPOL_HIGH;
   hi2s4.Init.ClockSource = I2S_CLOCK_PLL;
   hi2s4.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_DISABLE;
@@ -353,10 +353,18 @@ int32_t audio_i2s_setup(t_RamRet *pt_eeprom) {
 
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_I2S4_Init();
+
+  { /* for startup time of inmp441 */
+    MX_I2S4_Init(I2S_AUDIOFREQ_192K); 
+    HAL_I2S_Receive(&hi2s4, (uint16_t *) i2sData, 1024, 15);
+    MX_I2S4_Deinit();
+  }
+
+  MX_I2S4_Init(FFT_SAMPLE_FREQ_HZ);
 
   HAL_I2S_DMAStop(&hi2s4);
-  HAL_Delay(500);
+  
+  HAL_Delay(400);
 
   __disable_irq();
   i2s_dataCount = 0;
@@ -493,6 +501,9 @@ int32_t audio_i2s_getData(t_telemetryData *pt_telemetryData) {
     }
 #endif
 
+    /* Remove first bin correspond to the DC component */
+    //m_fft_output_f32[0] = 0.0; 
+
     //print_plotterFloat(m_fft_output_f32, FFT_OUTPUT_SIZE); // full 
     //print_plotterFloat(m_fft_output_f32, FFT_OUTPUT_SIZE / 2); // N/2 (nyquist-theorm)
     //print_dataFloat("fft uncompressed", m_fft_output_f32, FFT_OUTPUT_SIZE / 2);
@@ -507,9 +518,6 @@ int32_t audio_i2s_getData(t_telemetryData *pt_telemetryData) {
     for(uint32_t i=0;i<FFT_OUTPUT_SIZE / 2;i++) { 
       m_fft_output_f32[i] -= min_value;
     }*/
-
-    /* Remove first bin correspond to the DC component */
-    //m_fft_output_f32[0] = 0.0; 
 
     /* Create new fft output and compress the data */
     fft_create_result(&fftResult[i2s_fftPerformed],

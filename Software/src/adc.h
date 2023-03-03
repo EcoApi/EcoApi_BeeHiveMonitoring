@@ -31,12 +31,7 @@ extern "C" {
 /***************************************************************************************/
 typedef enum Pin_ADC_ {
 #if defined(STM32F411xE) //blackpill
-    //EXTERNAL_RING = 1, //ADC1_IN1 -> RING_ANA
-    //EXTERNAL_MIC = 2, //ADC1_IN2 -> MIC_ANA
-    //EXTERNAL_VBAT = 8, //ADC1_IN8 -> ANA_VBATT  
-#elif defined(STM32F103xB) //bluepill 
-    //EXTERNAL_RING = 1, //ADC1_IN1 -> RING_ANA
-    //EXTERNAL_VBAT = 8, //ADC1_IN8 -> ANA_VBATT 
+    EXTERNAL_MIC = 1, //ADC1_IN1 -> MIC_ANA
 #else
     #error "Bad µC defined"
 #endif

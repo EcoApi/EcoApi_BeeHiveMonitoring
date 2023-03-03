@@ -106,7 +106,7 @@ void setup(void) {
 
   int32_t powerInit = power_init();
 
-  trace_init(&Serial1 /*&Serial*/);
+  trace_init(&Serial1);
 
   if(power_isPoweredOn())
     delay(1000);
@@ -238,7 +238,7 @@ void setup(void) {
 #elif (TEST_AUDIO == 1)
   uint32_t vRef = analog_getInternalVref();
 
-  audio_setup(&t_ramRet, vRef);
+  audio_setup(&t_ramRet, vRef, audio_detectType());
 #elif (TEST_HARDWARE == 1)
   test_hardware();
 #else
@@ -316,8 +316,11 @@ void loop(void) {
   }
 #elif (TEST_AUDIO == 1)
   t_telemetryData telemetryData; 
+  uint8_t payload[243];
 
   audio_getData(&telemetryData);
+
+  sensor_getAudioData(payload, sizeof(payload));
 #else
 #if (LORA_ENABLE == 1)
   lora_process();
@@ -620,8 +623,10 @@ static void gotoSleep(void) {
   uint32_t runTime = constrain(now - startTime, 0, 0xffffffff);
   uint32_t sleepTime = 60;
 
+  
+
   if (t_ramRet.audioSettings.sendData == FALSE) { // if not send audio data
-    if (++t_ramRet.audioSettings.sendDataCounter >= t_ramRet.audioSettings.sendDataMaxCycle) { // if time to send audio (next cycle)
+    if(t_ramRet.sensorPresence.audio_enable && (++t_ramRet.audioSettings.sendDataCounter >= t_ramRet.audioSettings.sendDataMaxCycle)) { // if time to send audio (next cycle)
       t_ramRet.audioSettings.sendData = TRUE;
       sleepTime = MIN_TO_SEC(AUDIO_SEND_DATA_OFFSET); // short suspend for sending audio data
 
@@ -834,22 +839,23 @@ static void test_hardware(void) {
   };
 #endif
 
-  #if 1 /* test vbatt */
-  pinMode(WAKEUP, INPUT_FLOATING);
+#if 1 /* test vbatt */
+  //pinMode(WAKEUP, INPUT_FLOATING);
   //rtc_disableWakeUpTimer();
 
   analog_setup(&t_ramRet, 0);
 
-  i = 3;
+  i = 5;
   while(i--) {
-    delay(500);
+    //delay(500);
+    delay(300);
     analog_getData(&telemetryData);
     //TRACE_CrLf("WAKEUP pin %d", digitalRead(WAKEUP));
   };
   
   //power_sleep(e_SLEEP_MODE_OFF, e_WAKEUP_TYPE_RTC, 180 /*minute*/, WAKEUP_PIN);
 
-  //NVIC_SystemReset();
+  NVIC_SystemReset();
 #endif
 
 #if 1 /* test rtc */
