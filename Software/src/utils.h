@@ -57,6 +57,7 @@ extern "C" {
 /*	Shared Functions																  
 /***************************************************************************************/  
 void unwedge_i2c_bus(uint32_t scl_pin, uint32_t sda_pin);
+uint32_t time_lapse(uint32_t u32_start, uint32_t u32_end);
 
 #ifdef __cplusplus
 }

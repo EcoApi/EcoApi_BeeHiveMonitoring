@@ -196,7 +196,7 @@ bool PCF8563::get_time(struct tm *time)
     time->tm_min = bcdToDecimal(buffer[1] & 0x7F);
     time->tm_hour = bcdToDecimal(buffer[2] & 0x3F);
     time->tm_mday = bcdToDecimal(buffer[3] & 0x3F);
-    time->tm_wday = bcdToDecimal(buffer[4] & 0x07) + 1;
+    time->tm_wday = bcdToDecimal(buffer[4] & 0x07);
     time->tm_mon = bcdToDecimal(buffer[5] & 0x1F) - 1;
     time->tm_year = bcdToDecimal(buffer[6]) + 100;
     time->tm_yday = 0;
@@ -233,7 +233,7 @@ bool PCF8563::set_time(struct tm time)
     buffer[2] = decimalToBcd(time.tm_min) & 0x7F;
     buffer[3] = decimalToBcd(time.tm_hour) & 0x3F;
     buffer[4] = decimalToBcd(time.tm_mday) & 0x3F;
-    buffer[5] = (time.tm_wday - 1) & 0x07;
+    buffer[5] = time.tm_wday & 0x07;
     buffer[6] = decimalToBcd(time.tm_mon + 1) & 0x1F;
     buffer[7] = decimalToBcd(time.tm_year - 100);
 
@@ -266,7 +266,7 @@ bool PCF8563::set_timeAlarm(struct tm time)
     buffer[2] &= ~RTCC_ALARM;
     buffer[3] = decimalToBcd(time.tm_mday);
     buffer[3] &= ~RTCC_ALARM;
-    buffer[4] = (time.tm_wday - 1);
+    buffer[4] = time.tm_wday;
     buffer[4] &= ~RTCC_ALARM;
 
     // First set alarm values, then enable
@@ -304,7 +304,8 @@ bool PCF8563::get_timeAlarm(struct tm *time)
     /* Start at beginning, read entire memory in one go */
     Wire.beginTransmission(Rtcc_Addr);
     Wire.write((byte) start);
-    Wire.endTransmission();
+    if(I2C_OK != Wire.endTransmission())
+        return false;
 
     /* As per data sheet, have to read everything all in one operation */
     Wire.requestFrom(Rtcc_Addr, 4);
@@ -314,7 +315,7 @@ bool PCF8563::get_timeAlarm(struct tm *time)
     time->tm_min = bcdToDecimal(buffer[0] & 0x7F);
     time->tm_hour = bcdToDecimal(buffer[1] & 0x3F);
     time->tm_mday = bcdToDecimal(buffer[2] & 0x3F);
-    time->tm_wday = bcdToDecimal(buffer[3] & 0x07) + 1;
+    time->tm_wday = bcdToDecimal(buffer[3] & 0x07);
     
     time->tm_sec = 0;
     time->tm_mon = 0;

@@ -202,7 +202,7 @@ int32_t power_sleep(e_SLEEP_MODE e_mode, e_WAKEUP_TYPE e_wakeupType, uint32_t u3
     case e_SLEEP_MODE_OFF:
       digitalWrite(PWR_OFF, HIGH);
       pinMode(PWR_OFF, OUTPUT);
-      
+
       delay(100);
 
       TRACE_CrLf("[POWER] error power off (motion or power on)");

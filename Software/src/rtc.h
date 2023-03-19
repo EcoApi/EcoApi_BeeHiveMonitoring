@@ -32,6 +32,7 @@ extern "C" {
 /***************************************************************************************/
 /*	Shared Functions																  
 /***************************************************************************************/  
+bool rtc_isTsValid(time_t ts);
 int32_t rtc_init(time_t *p_startTime);
 int32_t rtc_deinit(void);
 time_t rtc_read(void);

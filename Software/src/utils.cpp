@@ -172,3 +172,16 @@ void unwedge_i2c_bus(uint32_t scl_pin, uint32_t sda_pin) {
     pinMode(scl_pin, INPUT);
     pinMode(sda_pin, INPUT);
 }
+
+/***************************************************************************************
+ *
+ *	\fn		uint32_t time_lapse(uint32_t u32_start, uint32_t u32_end)
+ *	\brief 
+ *
+ ***************************************************************************************/
+uint32_t time_lapse(uint32_t u32_start, uint32_t u32_end) {
+	if(u32_end >= u32_start)
+		return u32_end - u32_start;
+
+	return 0xFFFFFFFF - u32_end + u32_start;
+}

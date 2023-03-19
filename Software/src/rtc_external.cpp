@@ -124,6 +124,7 @@ int32_t rtc_external_write(time_t timestamp) {
  ***************************************************************************************/
 int32_t rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
   time_t now;
+  struct tm time_alarm;
   uint8_t i;
 
   // modulo 60 check because min alarm is 1 minute 
@@ -163,7 +164,23 @@ int32_t rtc_external_enableWakeUpRtc(uint32_t u32_sleepTime /* second */) {
       return ERROR;  
   }
 
-  TRACE_CrLf("[RTC] alarm, now %d, sleep %d s", (uint32_t) now, u32_sleepTime);
+  i = 5;
+  while(true) {
+    if(true == rtc.get_timeAlarm(&time_alarm))
+      break;
+    
+    TRACE_CrLf("[RTC] retry get_timeAlarm");
+
+    if(i-- == 0)
+      return ERROR;  
+  }
+
+  TRACE_CrLf("[RTC] alarm, now %d, %02d:%02d day %02d wday %02d, sleep %d s", (uint32_t) now, 
+                                                                                    time_alarm.tm_hour,
+                                                                                    time_alarm.tm_min,
+                                                                                    time_alarm.tm_mday,
+                                                                                    time_alarm.tm_wday,
+                                                                                    u32_sleepTime);
 
   return OK;  
 }
