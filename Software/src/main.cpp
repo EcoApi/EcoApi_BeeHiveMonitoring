@@ -171,9 +171,9 @@ void setup(void) {
       TRACE_CrLf("[RTC] init");
     else {
       TRACE_CrLf("[RTC] ok, timestamp: %d, sleep time %d, last send time %d, last update time %d", (uint32_t) startTime,
-                                                                                                   (uint32_t) startTime - t_ramRet.lastSendTime,
-                                                                                                   t_ramRet.lastSendTime,
-                                                                                                   t_ramRet.lastUpdateTime);
+                                                                                                   (uint32_t) startTime - t_ramRet.dataCommon.lastSendTime,
+                                                                                                   t_ramRet.dataCommon.lastSendTime,
+                                                                                                   t_ramRet.dataCommon.lastUpdateTime);
 
       /*TRACE_CrLf("rtc is wkup %d, rtc is en %d, is p rst %d, is sw rst %d, is pwr on %d, pwr sb %d", rtc_isWakeUpRtc(),
                                                                                        rtc_isEnabledWakeUpRtc(),
@@ -190,9 +190,9 @@ void setup(void) {
         t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn = FALSE;
 
       if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn) {
-        TRACE_CrLf("[POWER] motion or power on detected, last time %d", t_ramRet.lastSendMotionOrPowerTime);
+        TRACE_CrLf("[POWER] motion or power on detected, last time %d", t_ramRet.dataCommon.lastSendMotionOrPowerTime);
 
-        if((t_ramRet.lastSendMotionOrPowerTime + DEFAULT_MOTION_DETECT_PERIOD) > startTime) {
+        if((t_ramRet.dataCommon.lastSendMotionOrPowerTime + DEFAULT_MOTION_DETECT_PERIOD) > startTime) {
 #if (TEST_HARDWARE == 0) && (TEST_AUDIO == 0) && (TEST_USB_CDC == 0)
           TRACE_CrLf("[POWER] go standby");
          
@@ -223,9 +223,9 @@ void setup(void) {
     if (ramret_isNew())
       TRACE_CrLf("[RRAM] initialized to default");
     else {
-      if((t_ramRet.lastUpdateTime + DEFAULT_UPDATE_TIME_PERIOD) < startTime) {
-        t_ramRet.lastUpdateTime = startTime;
-        t_ramRet.timeUpdated = FALSE;
+      if((t_ramRet.dataCommon.lastUpdateTime + DEFAULT_UPDATE_TIME_PERIOD) < startTime) {
+        t_ramRet.dataCommon.lastUpdateTime = startTime;
+        t_ramRet.dataCommon.timeUpdated = FALSE;
 
         TRACE_CrLf("[RRAM] restored, ask update time");
       } else
@@ -238,17 +238,29 @@ void setup(void) {
 #elif (TEST_AUDIO == 1)
   uint32_t vRef = analog_getInternalVref();
 
+#if (USE_EEPROM == 1)
+  audio_setup(&t_eeprom, vRef, audio_detectType());
+#else
   audio_setup(&t_ramRet, vRef, audio_detectType());
+#endif
 #elif (TEST_HARDWARE == 1)
   test_hardware();
 #else
 #if (LORA_ENABLE == 1)
-  if (t_ramRet.audioSettings.sendData == FALSE) {
+  if (t_ramRet.dataCommon.sendAudioData == FALSE) {
+#if (USE_EEPROM == 1)
+    if (sensor_setup(&t_eeprom, &t_ramRet, FLAG_ALL_WITHOUT_AUDIO) != OK) {
+#else
     if (sensor_setup(&t_ramRet, &t_ramRet, FLAG_ALL_WITHOUT_AUDIO) != OK) {
+#endif
       // todo qos
     }
   } else {
-    if (sensor_setup(&t_ramRet, &t_ramRet, FLAG_AUDIO_INFO) != OK) {
+#if (USE_EEPROM == 1)    
+    if (sensor_setup(&t_eeprom, &t_ramRet, FLAG_AUDIO_INFO) != OK) {
+#else
+    if (sensor_setup(&t_ramRet, &t_ramRet, FLAG_ALL_WITHOUT_AUDIO) != OK) {
+#endif      
       // todo qos
     }
   }
@@ -349,7 +361,7 @@ void loop(void) {
   // delay(5000);
 
   if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn)
-    t_ramRet.lastSendMotionOrPowerTime = rtc_read();
+    t_ramRet.dataCommon.lastSendMotionOrPowerTime = rtc_read();
 
   ramret_save(&t_ramRet);
 
@@ -390,7 +402,11 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
     sendSize += (3 * sizeof(uint32_t));
 
     // tx interval : measurement_interval_min (1 byte)
+#if (USE_EEPROM == 1)
+    payload[sendSize++] = t_eeprom.sendFrequency;
+#else
     payload[sendSize++] = t_ramRet.sendFrequency;
+#endif
 
     // hw version : hardware_version (1 bytes)
     payload[sendSize++] = (uint8_t)HW_VERSION;
@@ -409,7 +425,7 @@ static int32_t lora_sendDataCallback(uint8_t *payload, uint8_t payloadSize, uint
   }
 
   if (t_ramRet.telemetryData.contentInfo.details.boot == TRUE) {
-    payload[sendSize++] = t_ramRet.boot;
+    payload[sendSize++] = t_ramRet.dataCommon.boot;
   }
 
   if (t_ramRet.telemetryData.contentInfo.details.temperatureOutside == TRUE) {
@@ -523,7 +539,7 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void *pv_data, uint32_t siz
     TRACE_CrLf("[LORA] data sended");
 
     if (t_ramRet.telemetryData.contentInfo.details.baseInfo == TRUE) {
-      t_ramRet.baseInfoSended = TRUE;
+      t_ramRet.dataCommon.baseInfoSended = TRUE;
       TRACE_CrLf("[LORA] base info sended");
     }
 
@@ -583,14 +599,14 @@ static void lora_eventCallback(e_LORA_EVENT e_event, void *pv_data, uint32_t siz
     if(time_lapse(now, *p_time) < 10) {
       TRACE_CrLf("[LORA] time offset < 10");
       
-      t_ramRet.timeUpdated = TRUE;
+      t_ramRet.dataCommon.timeUpdated = TRUE;
       
       break;
     }  
 
     if(OK == rtc_write(*p_time)) {
-      t_ramRet.timeUpdated = TRUE;
-      t_ramRet.lastUpdateTime = *p_time;
+      t_ramRet.dataCommon.timeUpdated = TRUE;
+      t_ramRet.dataCommon.lastUpdateTime = *p_time;
     }
 
     // read and check if error set 0 ts !!! wait diag before implementation
@@ -642,35 +658,43 @@ static void gotoSleep(void) {
   uint32_t runTime = constrain(now - startTime, 0, 0xffffffff);
   uint32_t sleepTime = 60;
 
-  if (t_ramRet.audioSettings.sendData == FALSE) { // if not send audio data
-    if(t_ramRet.sensorPresence.audio_enable && (++t_ramRet.audioSettings.sendDataCounter >= t_ramRet.audioSettings.sendDataMaxCycle)) { // if time to send audio (next cycle)
-      t_ramRet.audioSettings.sendData = TRUE;
+#if (USE_EEPROM == 1)
+  uint8_t sendFrequency = t_eeprom.sendFrequency;
+  bool audio_enable = t_eeprom.sensorPresence.audio_enable;
+#else
+  uint8_t sendFrequency = t_ramRet.sendFrequency;
+  bool audio_enable = t_ramRet.sensorPresence.audio_enable;
+#endif
+
+  if (t_ramRet.dataCommon.sendAudioData == FALSE) { // if not send audio data
+    if(audio_enable && (++t_ramRet.dataCommon.sendAudioDataCounter >= t_ramRet.dataCommon.sendAudioDataMaxCycle)) { // if time to send audio (next cycle)
+      t_ramRet.dataCommon.sendAudioData = TRUE;
       sleepTime = MIN_TO_SEC(AUDIO_SEND_DATA_OFFSET); // short suspend for sending audio data
 
-      TRACE_CrLf("[RTC] send audio data %d / %d next wakeup", t_ramRet.audioSettings.sendDataCounter, t_ramRet.audioSettings.sendDataMaxCycle);
+      TRACE_CrLf("[RTC] send audio data %d / %d next wakeup", t_ramRet.dataCommon.sendAudioDataCounter, t_ramRet.dataCommon.sendAudioDataMaxCycle);
     } else {
-      sleepTime = MIN_TO_SEC(t_ramRet.sendFrequency) /*- runTime*/; // compute real suspend time
+      sleepTime = MIN_TO_SEC(sendFrequency) /*- runTime*/; // compute real suspend time
 
-      TRACE_CrLf("[RTC] send audio data %d / %d", t_ramRet.audioSettings.sendDataCounter, t_ramRet.audioSettings.sendDataMaxCycle);
+      TRACE_CrLf("[RTC] send audio data %d / %d", t_ramRet.dataCommon.sendAudioDataCounter, t_ramRet.dataCommon.sendAudioDataMaxCycle);
     }
   } else { // just send audio data
-    t_ramRet.audioSettings.sendData = FALSE;
-    t_ramRet.audioSettings.sendDataCounter = 0;
+    t_ramRet.dataCommon.sendAudioData = FALSE;
+    t_ramRet.dataCommon.sendAudioDataCounter = 0;
 
-    sleepTime = MIN_TO_SEC(t_ramRet.sendFrequency) /*- runTime*/ - MIN_TO_SEC(AUDIO_SEND_DATA_OFFSET); // compute real suspend time with offset send audio data adjustment
+    sleepTime = MIN_TO_SEC(sendFrequency) /*- runTime*/ - MIN_TO_SEC(AUDIO_SEND_DATA_OFFSET); // compute real suspend time with offset send audio data adjustment
   }
 
-  if (sleepTime > MIN_TO_SEC(t_ramRet.sendFrequency))
-    sleepTime = MIN_TO_SEC(t_ramRet.sendFrequency);
+  if (sleepTime > MIN_TO_SEC(sendFrequency))
+    sleepTime = MIN_TO_SEC(sendFrequency);
 
-  t_ramRet.lastSendTime = now;
+  t_ramRet.dataCommon.lastSendTime = now;
 
   if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn)
-    t_ramRet.lastSendMotionOrPowerTime = now;
+    t_ramRet.dataCommon.lastSendMotionOrPowerTime = now;
 
   sleepTime = constrain(sleepTime, MIN_SLEEP_PERIOD, MAX_SLEEP_PERIOD);
 
-  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d s, runtime %d s", t_ramRet.lastSendTime, sleepTime, runTime);
+  TRACE_CrLf("[RTC] before standby, timestamp: %d, sleep time %d s, runtime %d s", t_ramRet.dataCommon.lastSendTime, sleepTime, runTime);
 
   ramret_save(&t_ramRet);
 
@@ -829,7 +853,7 @@ static void test_hardware(void) {
   while(i--) {
     delay(500);
     
-    //hx711_getData(&telemetryData);
+    hx711_getData(&telemetryData);
     
     digitalToggle(LED_INFO);
   };
@@ -852,8 +876,8 @@ static void test_hardware(void) {
 #endif
 
   if(t_ramRet.telemetryData.contentInfo.details.motionDetectionOrPowerOn) {
-    t_ramRet.lastSendMotionOrPowerTime = rtc_read();
-    TRACE_CrLf("[POWER] last motion %d", t_ramRet.lastSendMotionOrPowerTime);
+    t_ramRet.dataCommon.lastSendMotionOrPowerTime = rtc_read();
+    TRACE_CrLf("[POWER] last motion %d", t_ramRet.dataCommon.lastSendMotionOrPowerTime);
   }
 
   // SET_3V3_EXTERNAL(false);

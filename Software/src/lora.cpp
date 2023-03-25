@@ -310,7 +310,7 @@ static void lora_sendJob(osjob_t* j) {
         if(fn_event_ != NULL)
           fn_event_(e_SEND_FAILED, NULL, 0);
       } else {
-        if(pt_ramRet_->timeUpdated == FALSE)  
+        if(pt_ramRet_->dataCommon.timeUpdated == FALSE)  
           LMIC_requestNetworkTime(lora_requestNetworkTimeCallback, &userUTCTime);
 
         // prepare upstream data transmission at the next possible time.
@@ -336,7 +336,7 @@ static void lora_sendJob(osjob_t* j) {
  ***************************************************************************************/
 static void lora_initJob(osjob_t* j) {
   if(ramret_isNew() != TRUE) {
-    if((pt_ramRet_->forceNewJoining == FALSE) && lora_infoLoad(&lmicInfo) == OK) {
+    if((pt_ramRet_->dataCommon.forceNewJoining == FALSE) && lora_infoLoad(&lmicInfo) == OK) {
       LMIC_setSession(lmicInfo.netid, lmicInfo.devaddr, lmicInfo.nwkKey, lmicInfo.artKey);
 
       LMIC.seqnoUp = pt_ramRet_->loraSettings.seqnoUp;
@@ -349,9 +349,9 @@ static void lora_initJob(osjob_t* j) {
       return; 
     }
 
-    if(pt_ramRet_->forceNewJoining == TRUE) {
+    if(pt_ramRet_->dataCommon.forceNewJoining == TRUE) {
       TRACE_CrLf("[LORA] force joining") ;
-      pt_ramRet_->forceNewJoining = FALSE;
+      pt_ramRet_->dataCommon.forceNewJoining = FALSE;
     }
   } 
 

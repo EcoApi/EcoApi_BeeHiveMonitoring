@@ -72,7 +72,7 @@ static int32_t sensor_updateContentInfo(t_RamRet *pt_ramRet, t_telemetryData *pt
 
   /* base info */
   if(dataFlag_ & FLAG_BASE_INFO)
-    pt_telemetryData->contentInfo.details.baseInfo = (pt_ramRet->baseInfoSended == FALSE) ? TRUE : FALSE;
+    pt_telemetryData->contentInfo.details.baseInfo = (pt_ramRet->dataCommon.baseInfoSended == FALSE) ? TRUE : FALSE;
   else
     pt_telemetryData->contentInfo.details.baseInfo = FALSE;
 
@@ -203,6 +203,12 @@ int32_t sensor_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet, uint16_t dataFlag
     e_AUDIO_TYPE e_audioType = audio_detectType();
     pt_eeprom_->sensorPresence.audio_enable = (e_audioType == e_AUDIO_TYPE_NONE) ? FALSE : TRUE;
     pt_eeprom_->sensorPresence.audio_type = (e_audioType == e_AUDIO_TYPE_I2S) ? TRUE : FALSE;
+
+#if (USE_EEPROM == 1)
+    eeprom_save(pt_eeprom);
+#else
+    ramret_save(pt_ramRet);
+#endif
   }  
   
   /* todo detect all connected sensor here or in get data call and store presence in ram ret */ 

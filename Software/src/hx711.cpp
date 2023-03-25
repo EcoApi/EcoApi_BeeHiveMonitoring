@@ -138,7 +138,7 @@ static void hx711_calibrate(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
          
         prevData = data; // keep old data
       } else {
-        pt_ramRet->hx711_calibrated = TRUE;
+        pt_ramRet->dataCommon.hx711_calibrated = TRUE;
         done = true;
 
         TRACE_CrLf("[HX711] stop calibration, new currentOffset: %d, new calibration_factor: %0.0f", pt_eeprom->hx711Settings.offset,
@@ -185,7 +185,7 @@ int32_t hx711_setup(t_RamRet *pt_eeprom, t_RamRet *pt_ramRet) {
 
   scale.power_up();
 
-  if(pt_ramRet_->hx711_calibrated == FALSE) {  
+  if(pt_ramRet_->dataCommon.hx711_calibrated == FALSE) {  
     hx711_calibrate(pt_eeprom_, pt_ramRet_);
 
 #if (USE_EEPROM == 1)

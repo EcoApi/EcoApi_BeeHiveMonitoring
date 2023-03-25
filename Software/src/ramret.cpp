@@ -51,7 +51,7 @@ int32_t ramret_init(t_RamRet *pt_ramRet, bool init) {
 
   //TRACE_DUMP("[FRAM] read : ", (uint8_t*) pt_ramRet, sizeof(t_RamRet));
 
-  if(init == true || 0 == pt_ramRet->isUsed || RAMRET_MAGIC != pt_ramRet->u32_magicStart || RAMRET_MAGIC != pt_ramRet->u32_magicEnd) {
+  if((init == true) || (RAMRET_MAGIC != pt_ramRet->u32_magicStart) || (RAMRET_MAGIC != pt_ramRet->u32_magicEnd)) {
     memset(pt_ramRet, 0, sizeof(t_RamRet)); 
 
     u8_ramRetIsNew = TRUE;
@@ -65,7 +65,6 @@ int32_t ramret_init(t_RamRet *pt_ramRet, bool init) {
     pt_ramRet->audioSettings.binOffset = AUDIO_DEFAULT_BIN_OFFSET;
     pt_ramRet->audioSettings.binSize = AUDIO_DEFAULT_BIN_SIZE;
     pt_ramRet->audioSettings.binCount = AUDIO_MAX_BINS;
-    pt_ramRet->audioSettings.sendDataMaxCycle = AUDIO_DEFAULT_MAX_SEND_DATA_CYCLE;
     pt_ramRet->audioSettings.samplingFrequency = AUDIO_DEFAULT_SAMPLING_FREQUENCY;
     // gain
     // other audio
@@ -74,13 +73,14 @@ int32_t ramret_init(t_RamRet *pt_ramRet, bool init) {
     pt_ramRet->sendFrequency = DEFAULT_SEND_FREQUENCY;
 #endif
 
-    pt_ramRet->lastSendMotionOrPowerTime = 0;
-    pt_ramRet->lastUpdateTime = 0;
-    pt_ramRet->lastSendTime = 0;
-    pt_ramRet->hx711_calibrated = false;
+    pt_ramRet->dataCommon.lastSendMotionOrPowerTime = 0;
+    pt_ramRet->dataCommon.lastUpdateTime = 0;
+    pt_ramRet->dataCommon.lastSendTime = 0;
+    pt_ramRet->dataCommon.hx711_calibrated = false;
+
+    pt_ramRet->dataCommon.sendAudioDataMaxCycle = AUDIO_DEFAULT_MAX_SEND_DATA_CYCLE;
 
     /* common */
-    pt_ramRet->isUsed = TRUE;
     pt_ramRet->u32_magicStart = RAMRET_MAGIC;
     pt_ramRet->u32_magicEnd = RAMRET_MAGIC;
   }  

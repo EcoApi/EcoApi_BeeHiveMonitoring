@@ -33,7 +33,7 @@
 /***************************************************************************************/
 /*	Local variables                                                                    
 /***************************************************************************************/
-I2C_eeprom eeprom(0x54, I2C_DEVICESIZE_24LC02);
+I2C_eeprom eeprom(0x50, I2C_DEVICESIZE_24LC32);
 
 static bool eepromIsNew = false;
 
@@ -68,7 +68,6 @@ int32_t eeprom_init(t_Eeprom *pt_eeprom) {
     pt_eeprom->audioSettings.binOffset = AUDIO_DEFAULT_BIN_OFFSET;
     pt_eeprom->audioSettings.binSize = AUDIO_DEFAULT_BIN_SIZE;
     pt_eeprom->audioSettings.binCount = AUDIO_MAX_BINS;
-    pt_eeprom->audioSettings.sendDataMaxCycle = AUDIO_DEFAULT_MAX_SEND_DATA_CYCLE;
     pt_eeprom->audioSettings.samplingFrequency = AUDIO_DEFAULT_SAMPLING_FREQUENCY;
     // gain
     // other audio
